@@ -1,0 +1,55 @@
+name: Deploy QWiK Frontend (Dev)
+
+on:
+  push:
+    branches:
+      - dev # dev 브랜치에 푸시될 때 실행
+    # paths 필터는 선택사항으로
+    # 레포지토리 전체가 프론트엔드이므로 굳이 특정 폴더를 지정하지 않아도 되지만
+    # 문서 수정(README 등)시 배포를 막고 싶다면 아래 주석을 해제할 것
+    # paths:
+    #   - 'src/**'
+    #   - 'public/**'
+    #   - 'package.json'
+    #   - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # 루트에서 명령어를 실행해야 하므로 working-directory 지정이 필요 없음
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          # [변경점 2] package-lock.json 경로 수정 (하위 폴더 제거)
+          cache-dependency-path: 'package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          CI: false
+          REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+        # [변경점 3] 빌드 명령어도 루트에서 바로 실행
+        run: npm run build
+        # 결과물은 루트의 ./build (또는 Vite 사용 시 ./dist) 폴더에 생성됨
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Deploy to S3
+        run: aws s3 sync ./build s3://qwik-frontend-dev-2025 --delete
+
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id E2E1HJ5OMNM3G7 --paths "/*"
