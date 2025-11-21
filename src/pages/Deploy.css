@@ -1,0 +1,30 @@
+.deploy-section {
+  height: 100vh;
+  padding-top: 200px;
+}
+
+.deploy-section .wrap {
+  width: 794px;
+}
+
+.deploy-section .input-box {
+  display: flex;
+  gap: 10px;
+}
+
+.deploy-section .input-box input {
+  flex: 1;
+}
+
+.deploy-section .input-box .post-repository-btn {
+  padding: 5px 32px;
+  border-radius: 16px;
+}
+
+.deploy-section .log-container {
+  margin-top: 60px;
+  background-color: #efe0d18a;
+  min-height: 300px;
+  padding: 20px;
+  border-radius: 16px;
+}

@@ -1,0 +1,27 @@
+.header {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: calc(100% - 20px);
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 10px 30px 10px 20px;
+  box-shadow: 0px 3px 10px #d8d8d8;
+}
+
+.header .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header .header-container img {
+  display: inline-block;
+  width: 135px;
+  margin-top: 5px;
+}
+
+.header .header-container .nav {
+  display: flex;
+  gap: 40px;
+}

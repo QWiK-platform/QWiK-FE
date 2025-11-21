@@ -1,0 +1,167 @@
+.project-detail-section {
+  height: 100vh;
+  padding-top: 150px;
+}
+
+.project-detail-section .wrap {
+  width: 590px;
+}
+
+.project-detail-section .project-info-container {
+  position: relative;
+}
+
+.project-detail-section .project-info-container .title {
+  font-size: 3rem;
+}
+
+.project-detail-section .project-info-container .toggle-box {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 35px;
+  background-color: var(--secondary-bg);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  box-shadow: 0px 0px 8px var(--secondary-color);
+}
+
+.project-detail-section .toggle-box .toggle {
+  display: inline-block;
+  width: 26px;
+  aspect-ratio: 1 / 1;
+  background-color: #fff;
+  border-radius: 50px;
+  margin: 4px;
+}
+
+.project-detail-section .toggle-box:hover {
+  background-color: var(--secondary-color);
+}
+
+.project-detail-section .toggle-box.active .toggle {
+  margin-left: calc(100% - 31px);
+}
+
+.project-detail-section .toggle-box.inactive .toggle {
+  margin-left: 4px;
+}
+
+.project-detail-section .subdomain-box {
+  line-height: 4rem;
+}
+
+.project-detail-section .subdomain-box .project-url {
+  display: inline-block;
+  font-size: 2rem;
+}
+.project-detail-section .subdomain-box .change-subdomain-btn {
+  display: inline-block;
+  margin-left: 20px;
+  padding: 0px 10px;
+  background-color: var(--accent-bg);
+  border-radius: 20px;
+  transition: 0.3s ease-in-out;
+}
+
+.project-detail-section .change-subdomain-btn:hover {
+  color: #fff;
+  background-color: var(--accent-color);
+}
+.project-detail-section .resource-container {
+  margin-top: 40px;
+}
+.project-detail-section .memory-container,
+.project-detail-section .traffic-container {
+  margin-bottom: 20px;
+}
+
+.project-detail-section .resource-container .text-box {
+  display: flex;
+  justify-content: space-between;
+}
+.project-detail-section .resource-container .title {
+}
+.project-detail-section .resource-container .usage {
+}
+.project-detail-section .resource-container .used {
+  font-weight: 400;
+}
+.project-detail-section .resource-container .bar-box {
+  margin-top: 5px;
+  height: 10px;
+  background-color: var(--secondary-bg);
+}
+
+.project-detail-section .resource-container .fill-box {
+}
+
+.project-detail-section .history-container {
+  margin-top: 100px;
+}
+
+.project-detail-section .history-container .title {
+  font-size: 2rem;
+}
+
+.project-detail-section .history-container .history-box {
+  margin-top: 16px;
+  padding: 10px 15px;
+  border-radius: 16px;
+  background-color: var(--bg-sub-color);
+}
+
+.project-detail-section .history-box p {
+  line-height: 1.8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.project-detail-section .history-box p span {
+  margin-right: 10px;
+}
+
+/* change subdomain modal */
+
+.change-subdomain-modal .text-box .title {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.change-subdomain-modal .notice-box {
+  margin-top: 20px;
+}
+
+.change-subdomain-modal .notice-box p {
+  margin: 6px 0;
+}
+
+.change-subdomain-modal .notice-box span {
+  color: #afafaf;
+}
+
+.change-subdomain-modal .input-box {
+  margin: 20px 0;
+}
+
+.change-subdomain-modal .input-box input[type="text"] {
+  width: calc(100% - 90px);
+}
+
+.change-subdomain-modal .input-box button {
+  display: inline-block;
+  margin-left: 5px;
+  padding: 5px 14px;
+  background-color: var(--secondary-color);
+  border-radius: 16px;
+  transition: 0.3s;
+}
+
+.change-subdomain-modal .input-box button:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+}

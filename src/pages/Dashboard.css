@@ -1,0 +1,146 @@
+.dashboard-section {
+  height: 100vh;
+  padding-top: 150px;
+}
+
+.dashboard-section .info-text-container h3 {
+  font-size: 2.4rem;
+  font-weight: bold;
+}
+
+.dashboard-section .info-text-container p {
+  margin-top: 10px;
+}
+
+.dashboard-section .resource-container {
+  margin-top: 40px;
+}
+
+.dashboard-section .memory-container,
+.dashboard-section .traffic-container {
+  width: 50%;
+}
+
+.dashboard-section .memory-container {
+  margin-bottom: 20px;
+}
+
+.dashboard-section .resource-container .text-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dashboard-section .resource-container .text-box .title {
+  font-weight: 400;
+}
+
+.dashboard-section .resource-container .bar-box {
+  background-color: var(--secondary-bg);
+  height: 10px;
+  margin-top: 6px;
+}
+
+.dashboard-section .project-list-container {
+  margin-top: 70px;
+}
+
+.dashboard-section .project-counter {
+  text-align: right;
+  font-weight: 500;
+}
+
+.dashboard-section .project-list-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.dashboard-section .project-list-box .project-box {
+  width: calc((100% - 60px) / 4);
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 12px;
+  position: relative;
+  cursor: pointer;
+}
+
+.dashboard-section .project-box .git-repository {
+  display: inline-bolock;
+  font-size: 1.2rem;
+  background-color: var(--secondary-bg);
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.dashboard-section .project-box .status {
+  position: absolute;
+  right: 10px;
+  top: 18px;
+  width: 14px;
+  aspect-ratio: 1/1;
+  border-radius: 24px;
+}
+
+.status.active {
+  background-color: #23a038;
+}
+
+.status.inactive {
+  background-color: #ff1818;
+}
+
+.dashboard-section .project-box .project-title {
+  font-size: 2rem;
+  font-weight: 400;
+  margin-top: 10px;
+}
+.dashboard-section .project-box .project-url {
+  font-size: 1.4rem;
+  line-height: 2;
+}
+.dashboard-section .project-box .version {
+  margin-top: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 98%;
+}
+.dashboard-section .project-box .date-box {
+  display: flex;
+  margin-top: 15px;
+  font-size: 1.3rem;
+  gap: 3px;
+}
+
+.dashboard-section .date-box p {
+  font-family: "pretendard";
+  font-weight: 300;
+}
+.dashboard-section .date-box span {
+  font-family: "source code pro";
+}
+
+.dashboard-section .project-box.full,
+.dashboard-section .project-box.available {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.dashboard-section .project-box.full i,
+.dashboard-section .project-box.available i {
+  width: 80px;
+  line-height: 80px;
+  font-size: 3rem;
+  color: #fff;
+  background-color: var(--secondary-color);
+  border-radius: 100%;
+  text-align: center;
+}
+
+.dashboard-section .project-box.full p,
+.dashboard-section .project-box.available p {
+  margin-top: 20px;
+}

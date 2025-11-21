@@ -1,0 +1,190 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap");
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* html & body setting */
+
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* color setting */
+:root {
+  --primary-color: #93806b;
+  --secondary-color: #cbbbab;
+  --secondary-bg: #efe0d1;
+  --accent-color: #4a758b;
+  --accent-bg: #d1e0e8;
+  --text-color: #5c4f46;
+  --bg-color: #fdf9f5;
+  --bg-sub-color: #e2dad1;
+}
+
+/* layout setting */
+section {
+  background: var(--bg-color);
+  width: 100%;
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+.wrap {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+/* text settiong */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.title-text {
+  font-weight: 300;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span {
+  line-height: 1.2;
+  color: var(--text-color);
+}
+
+.eng {
+  font-family: "Source Code Pro";
+}
+
+/* modal popup setting */
+
+.modal-bg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #22222299;
+}
+
+.modal-popup {
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.btn-box {
+  text-align: center;
+}
+
+.modal-popup button {
+  display: inline-block;
+  padding: 6px 20px;
+  background-color: var(--secondary-bg);
+  border-radius: 20px;
+  transition: 0.3s;
+}
+
+.modal-popup button:hover {
+  background-color: #cbbbab;
+}
+
+.btn-box button:first-child {
+  margin-right: 10px;
+}
+
+button.impact {
+  color: #fff;
+  background-color: var(--accent-color);
+}
+
+button.impact:hover {
+  background-color: #305c72;
+}
+
+/* input setting */
+
+input::placeholder {
+  font-family: "Pretendard", sans-serif; /* 한글이니까 */
+}
+input {
+  font-family: "Source Code Pro", monospace; /* 입력값은 영어 */
+}
+
+input[type="text"] {
+  display: inline-block;
+  border: none;
+  background-color: var(--bg-sub-color);
+  line-height: 2;
+  border-radius: 16px;
+  text-indent: 16px;
+  outline: none;
+}
+
+input[type="text"]:focus {
+  box-shadow: 0 0 4px 2px var(--secondary-bg);
+}
