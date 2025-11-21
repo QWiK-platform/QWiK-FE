@@ -1,0 +1,90 @@
+.login-section {
+  height: 100vh;
+  padding-top: 300px;
+}
+
+.login-section .wrap {
+  width: 385px;
+  text-align: center;
+}
+
+.login-section .info-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-section .info-container .slogun-text {
+  font-size: 2.6rem;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.login-section .info-container .img-box {
+  width: 100px;
+}
+
+.login-section .login-container .btn-box {
+  display: inline-block;
+  margin: 30px 0 20px;
+  background-color: #24292f;
+  color: #f0f6fc;
+  padding: 10px 40px;
+  border-radius: 16px;
+  font-size: 1.8rem;
+}
+
+.login-section .login-container .btn-box button {
+  color: inherit;
+  margin-left: 15px;
+}
+
+.login-section .login-container .term-container {
+  font-size: 1.4rem;
+}
+
+.login-section .login-container .term-container span {
+  display: inline-block;
+  color: var(--accent-color);
+  cursor: pointer;
+}
+
+.login-section .term-open-modal {
+  width: 400px;
+}
+
+.login-section .term-open-modal .term-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #222;
+  text-align: center;
+}
+
+.login-section .term-open-modal .term-updated-date {
+  text-align: right;
+  color: #afafaf;
+  font-size: 1.4rem;
+  line-height: 3rem;
+}
+
+.login-section .term-content-container {
+  padding: 10px;
+  height: 500px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.login-section .term-content-container h5 {
+  font-size: 1.8rem;
+  color: inherit;
+  margin-bottom: 10px;
+}
+
+.login-section .term-content-container .sub-title {
+  color: inherit;
+  margin-bottom: 20px;
+}
+
+.login-section .term-content-container .term-text {
+  margin-bottom: 20px;
+}
