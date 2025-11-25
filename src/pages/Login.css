@@ -41,6 +41,7 @@
 
 .login-section .login-container .term-container {
   font-size: 1.4rem;
+  word-break: keep-all;
 }
 
 .login-section .login-container .term-container span {

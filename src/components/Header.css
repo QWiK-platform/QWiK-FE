@@ -11,17 +11,44 @@
 
 .header .header-container {
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
+  font-size: 2rem;
+  color: var(--text-color);
 }
 
-.header .header-container img {
+.header .header-container .logo-box {
+  display: flex;
+  align-items: center;
+  width: calc((100% - 1200px) / 2);
+}
+
+.header .header-container .logo-box a {
+  display: inline-block;
+  height: 33px;
+}
+
+.header .logo-box img {
   display: inline-block;
   width: 135px;
-  margin-top: 5px;
 }
 
-.header .header-container .nav {
+.header .header-container .nav-container {
+  width: 1200px;
+}
+
+.header .header-container .services-nav {
   display: flex;
   gap: 40px;
+}
+
+.header .header-container .header-right {
+  display: flex;
+  justify-content: right;
+  width: calc((100% - 1200px) / 2);
+}
+
+.header .services-nav a.active,
+.pricing-link.active {
+  font-weight: 500;
 }

@@ -40,6 +40,21 @@
   margin-top: 6px;
 }
 
+.dashboard-section .resource-container .fill-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.dashboard-section .resource-container .fill-bar.warning {
+  background: linear-gradient(90deg, #ff9500, #ff6b00);
+}
+
+.dashboard-section .resource-container .fill-bar.danger {
+  background: linear-gradient(90deg, #ff4757, #ff3742);
+}
+
 .dashboard-section .project-list-container {
   margin-top: 70px;
 }

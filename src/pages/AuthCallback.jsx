@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import client from "../api/client";
+import "./AuthCallback.css";
 
 async function sendCodeToBackend(code) {
   // 보내기 전 데이터 확인
@@ -57,7 +58,27 @@ const AuthCallback = () => {
     handleCallback();
   }, []);
 
-  return <section className="wrap">로그인 처리 중</section>;
+  return (
+    <section className="auth-section">
+      <div className="wrap">
+        <div class="lds-spinner">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <p>GitHub에서 정보를 연동중입니다.</p>
+      </div>
+    </section>
+  );
 };
 
 export default AuthCallback;
