@@ -1,11 +1,11 @@
 .index-section {
-  padding-top: 222px;
+  padding-top: 182px;
   font-family: "Source Code Pro";
 }
 
 .index-section .service-info-container {
   display: flex;
-  padding-bottom: 145px;
+  padding-bottom: 105px;
   border-bottom: solid 1px var(--secondary-color);
 }
 
@@ -21,6 +21,7 @@
 
 .service-info-container .step-container {
   width: calc(100% - 488px);
+  margin-top: 10px;
 }
 
 .step-container .step-box {

@@ -36,9 +36,9 @@ const Login = () => {
               <img src="/logo-qwik.svg" alt="QWiK 로고" />
             </div>
           </div>
-          <div className="btn-box">
+          <div className="btn-box" onClick={handleGitHubLogin}>
             <i className="fab fa-github"></i>
-            <button onClick={handleGitHubLogin}>GitHub으로 시작하기</button>
+            <button>GitHub으로 시작하기</button>
           </div>
           <div className="term-container">
             <p>

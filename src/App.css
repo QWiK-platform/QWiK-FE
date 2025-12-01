@@ -146,6 +146,7 @@ pre {
 
 .btn-box {
   text-align: center;
+  cursor: pointer;
 }
 
 .modal-popup button {

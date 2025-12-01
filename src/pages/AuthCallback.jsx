@@ -43,14 +43,14 @@ const AuthCallback = () => {
           if (result.access_token) {
             localStorage.setItem("token", result.access_token);
             console.log(result.access_token);
-            // navigate("/dashboard");
+            navigate("/dashboard");
           } else {
             console.error("로그인 실패");
-            // navigate("/");
+            navigate("/");
           }
         } catch (error) {
           console.error("에러 확인됨", error);
-          // navigate("/");
+          navigate("/");
         }
       }
     };

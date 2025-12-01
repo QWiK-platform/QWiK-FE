@@ -2,6 +2,7 @@ import React from "react";
 import "./Index.css";
 
 const Index = () => {
+
   const indexDeploymentsList = [
     {
       id: 1,
@@ -100,7 +101,7 @@ const Index = () => {
                       <div className="text-box">
                         <p className="project-name">{deployment.name}</p>
                         <span className="percent-num">
-                          {deployment.resource}
+                          {deployment.resource}%
                         </span>
                       </div>
                       <div className="progress-bar-box">

@@ -25,7 +25,8 @@
 
 .header .header-container .logo-box a {
   display: inline-block;
-  height: 33px;
+  line-height: 0;
+  font-size: 0;
 }
 
 .header .logo-box img {
