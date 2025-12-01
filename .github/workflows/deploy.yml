@@ -12,6 +12,7 @@ on:
     #   - 'public/**'
     #   - 'package.json'
     #   - '.github/workflows/deploy.yml'
+  workflow_dispatch:
 
 jobs:
   deploy:
