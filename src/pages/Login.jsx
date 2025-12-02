@@ -20,9 +20,9 @@ const Login = () => {
   // 로그인 핸들링
   const handleGitHubLogin = () => {
     const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID || "임시값";
-    // const redirectUri = `${window.location.origin}/auth/callback`;
-    // const gitHubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user,public_repo`;
-    const gitHubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}`;
+    const redirectUri = `${window.location.origin}/auth/github/callback`;
+    const gitHubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user,public_repo`;
+    // const gitHubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}`;
 
     window.location.href = gitHubAuthUrl;
   };
