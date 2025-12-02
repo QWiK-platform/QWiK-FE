@@ -19,7 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/auth/github/callback" element={<AuthCallback />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/deploy" element={<Deploy />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/project/:id" element={<ProjectDetail />} />
