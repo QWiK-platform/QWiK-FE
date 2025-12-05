@@ -13,9 +13,12 @@ async function sendCodeToBackend(code) {
 
   try {
     const response = await client.post("/auth/github/callback", { code });
+    // 디버깅
+    console.log("OAuth 응답:", response.data);
     return response.data;
   } catch (error) {
-    console.error("fetch 과정에서 에러:", error);
+    // 디버깅
+    console.error("OAuth 콜백 에러:", error);
     throw error;
   }
 }

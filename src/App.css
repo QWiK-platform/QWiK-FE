@@ -115,6 +115,7 @@ span {
 
 .eng {
   font-family: "Source Code Pro";
+  word-spacing: -0.12rem;
 }
 
 pre {
@@ -168,10 +169,22 @@ pre {
 button.impact {
   color: #fff;
   background-color: var(--accent-color);
+  transition: 0.3s ease-in-out;
 }
 
 button.impact:hover {
-  background-color: #305c72;
+  background-color: #163a4d;
+}
+
+button.main {
+  color: var(--text-color);
+  background-color: var(--secondary-color);
+  transition: 0.3s ease-in-out;
+}
+
+button.main:hover {
+  color: #fff;
+  background-color: var(--primary-color);
 }
 
 /* input setting */
@@ -200,4 +213,28 @@ input[type="text"]:focus {
 button {
   display: inline-block;
   color: var(--text-color);
+}
+
+/* scroll */
+/* 스크롤바 전체 */
+::-webkit-scrollbar {
+  width: 8px; /* 스크롤바 너비 */
+}
+
+/* 스크롤바 배경 */
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  border-radius: 10px;
+}
+
+/* 스크롤바 핸들 */
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-bg);
+  border-radius: 10px;
+  transition: all 0.3 ease;
+}
+
+/* 스크롤바 핸들 호버 */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
 }
