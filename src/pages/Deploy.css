@@ -1,19 +1,27 @@
 .deploy-section {
   height: 100vh;
-  padding-top: 200px;
 }
 
 .deploy-section .wrap {
   width: 794px;
 }
 
-.deploy-section .input-box {
+.deploy-section .input-container {
+  padding-top: 260px;
+  transition: 0.3s ease-in-out;
+}
+
+.deploy-section .input-container .input-box {
   display: flex;
   gap: 10px;
 }
-
 .deploy-section .input-box input {
   flex: 1;
+}
+
+.deploy-section .input-box button.disabled {
+  background-color: var(--accent-bg);
+  cursor: default;
 }
 
 .deploy-section .input-box .post-repository-btn {
@@ -22,9 +30,63 @@
 }
 
 .deploy-section .log-container {
+  margin-top: 40px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: var(--text-color);
+  color: var(--bg-color);
+  opacity: 0;
+  transform: 0.5s ease-in-out;
+}
+
+.deploy-section .log-box {
+  height: 270px;
+  overflow-y: auto;
+}
+
+.deploy-section .log-container p {
+  color: inherit;
+}
+
+.deploy-section .result-container {
+  opacity: 0;
+  transform: 0.5s ease-in-out;
   margin-top: 60px;
-  background-color: #efe0d18a;
-  min-height: 300px;
-  padding: 20px;
+  text-align: center;
+}
+
+.deploy-section .result-container .text-box p {
+  line-height: 1.6;
+}
+
+.deploy-section .result-container .text-box .title-text {
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 2.6;
+}
+
+.deploy-section .result-container .btn-box {
+  margin-top: 40px;
+}
+
+.deploy-section .result-container .btn-box button {
+  padding: 10px 14px;
   border-radius: 16px;
+}
+
+/* step-2 */
+
+.deploy-section.step-3 .input-container,
+.deploy-section.step-2 .input-container {
+  padding-top: 150px;
+}
+
+.deploy-section.step-2 .log-container {
+  opacity: 1;
+}
+
+/* step-3 */
+
+.deploy-section.step-3 .result-container {
+  opacity: 1;
 }
