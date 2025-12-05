@@ -58,7 +58,7 @@
   font-size: 3.6rem;
 }
 
-.step-box.last {
+.step-bo .step-info-text-box.last {
   margin-bottom: 0;
   cursor: pointer;
 }

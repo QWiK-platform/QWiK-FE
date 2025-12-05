@@ -1,55 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
-// 유저 목업
-import { mockUserData } from "../data/mockData";
+import client from "../api/client";
 // 플랜 정보
 import { planList } from "../data/pricing/planList";
 
 const Dashboard = () => {
-  const [projects, setProjects] = useState([]);
+  const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  // 현재 사용자 정보
-  const currentUser = mockUserData[0];
-
-  // 현재 사용자의 플랜 정보
-  const currentPlan = planList[currentUser.membership.tier];
-  const maxProjects = currentPlan?.projects || 0;
-
-  // 계산된 값들
-  const totalProjects = projects.length;
-  const activeProjects = projects.filter(
-    (project) => project.status === "active"
-  ).length;
-  const inactiveProjects = totalProjects - activeProjects;
-  const remainingSlots = maxProjects - totalProjects;
-  const canAddMore = remainingSlots > 0;
-
-  // 사용률 계산
-  const calculateUsagePercentage = (used, total) => {
-    const usedValue = parseFloat(used.replace(/[A-Za-z]/g, ""));
-    const totalValue = parseFloat(total.replace(/[A-Za-z]/g, ""));
-    return Math.min((usedValue / totalValue) * 100, 100);
-  };
-
-  const memoryPercentage = calculateUsagePercentage(
-    currentUser.membership.usage.memory,
-    currentPlan?.memory
-  );
-
-  const trafficPercentage = calculateUsagePercentage(
-    currentUser.membership.usage.traffic,
-    currentPlan?.traffic
-  );
-
-  // 바 색상 결정
-  const getBarClass = (percentage) => {
-    if (percentage >= 90) return "danger";
-    if (percentage >= 70) return "warning";
-    return "";
-  };
 
   // 날짜 포맷팅
   const formatDate = (dateString, includeTime = false) => {
@@ -68,18 +27,9 @@ const Dashboard = () => {
     return `${year}.${month}.${day}`;
   };
 
-  // 커밋 메시지 정리
-  const formatCommitMessage = (message, lastUpdated) => {
-    if (!message) {
-      return lastUpdated ? formatDate(lastUpdated, true) : "No update info";
-    }
-    const parts = message.split("\n");
-    return parts.length > 1 ? parts[1] : message;
-  };
-
   // 프로젝트 클릭 핸들러
   const handleProjectClick = (project) => {
-    navigate(`/project/${project.repository_name}`);
+    navigate(`/project/${project.repo_name}`); // repository_name → repo_name
   };
 
   // 프로젝트 추가 버튼 클릭
@@ -93,34 +43,27 @@ const Dashboard = () => {
 
   // API 호출
   useEffect(() => {
-    const fetchProjects = async () => {
+    console.log("client 헤더:", client.defaults.headers);
+    console.log("저장된 토큰:", localStorage.getItem("token"));
+
+    const fetchDashboard = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:8000/projects");
-        const data = await response.json();
+        const response = await client.get("/dashboard");
 
-        if (response.ok) {
-          const userProjects = data.projects.filter(
-            (project) => project.username === currentUser.username // username 속성 접근
-          );
-
-          const projectsWithStatus = userProjects.map((project) => ({
-            ...project,
-            status: "active",
-          }));
-
-          setProjects(projectsWithStatus);
-          console.log("사용자 프로젝트:", projectsWithStatus);
+        if (response.status === 200) {
+          setDashboardData(response.data);
+          console.log("dashboard 데이터:", response.data);
         }
       } catch (error) {
-        console.error("프로젝트 API 에러:", error);
+        console.error("대시보드 API 에러:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProjects();
-  }, [currentUser.username]); // dependency 수정
+    fetchDashboard();
+  }, []);
 
   if (loading) {
     return (
@@ -132,15 +75,61 @@ const Dashboard = () => {
     );
   }
 
+  // 계산된 값들
+  const totalProjects = dashboardData?.projects?.length || 0;
+  const activeProjects =
+    dashboardData?.projects?.filter((p) => p.status === "active").length || 0;
+  const inactiveProjects = totalProjects - activeProjects;
+
+  // 플랜 정보 (API 데이터 직접 사용)
+  const maxProjects = dashboardData?.plan_limits?.projects || 0;
+  const canAddMore = totalProjects < maxProjects;
+
+  // 메모리/트래픽 limit도 API 데이터 사용
+  const memoryLimit = `${dashboardData?.plan_limits?.memory}MB`;
+  const trafficLimit = `${dashboardData?.plan_limits?.traffic}GB`;
+
+  // 사용률 계산 함수
+  const calculateUsagePercentage = (used, total) => {
+    if (!used || !total) return 0;
+    return Math.min((used / total) * 100, 100);
+  };
+
+  const memoryPercentage = calculateUsagePercentage(
+    dashboardData?.usage?.memory,
+    dashboardData?.plan_limits?.memory
+  );
+
+  const trafficPercentage = calculateUsagePercentage(
+    dashboardData?.usage?.traffic,
+    dashboardData?.plan_limits?.traffic
+  );
+
+  // 바 색상 결정
+  const getBarClass = (percentage) => {
+    if (percentage >= 90) return "danger";
+    if (percentage >= 70) return "warning";
+    return "";
+  };
+
+  // 커밋 메시지 정리 함수
+  const formatCommitMessage = (message, lastUpdated) => {
+    if (!message) {
+      return lastUpdated ? formatDate(lastUpdated, true) : "No update info";
+    }
+    const parts = message.split("\n");
+    return parts.length > 1 ? parts[1] : message;
+  };
+
   return (
     <section className="dashboard-section">
       <div className="wrap">
         {/* 사용자 정보 */}
         <div className="info-text-container">
           <h3 className="title-text">
-            {currentUser.username} 님의 서비스 이용 현황입니다.
+            {dashboardData?.github_name} 님의 서비스 이용 현황입니다.
             {/* <span className="membership-badge">
-              {currentUser.membership.tier}
+              {dashboardData?.membership.tier}
             </span> */}
           </h3>
           <p>
@@ -155,10 +144,11 @@ const Dashboard = () => {
             <div className="text-box">
               <p className="title">메모리 사용량</p>
               <p className="usage eng">
-                <span className="used">
-                  {currentUser.membership.usage.memory}
+                <span className="used">{dashboardData?.usage?.memory}</span>/
+                <span className="total">
+                  {dashboardData?.plan_limits?.memory}
                 </span>
-                /<span className="total">{currentPlan?.memory}</span>
+                MB
               </p>
             </div>
             <div className="bar-box">
@@ -172,10 +162,10 @@ const Dashboard = () => {
             <div className="text-box">
               <p className="title">트래픽 사용량</p>
               <p className="usage eng">
-                <span className="used">
-                  {currentUser.membership.usage.traffic}
+                <span className="used">{dashboardData?.usage?.traffic}</span>/
+                <span className="total">
+                  {dashboardData?.plan_limits?.traffic}MB
                 </span>
-                /<span className="total">{currentPlan?.traffic}</span>
               </p>
             </div>
             <div className="bar-box">
@@ -194,18 +184,18 @@ const Dashboard = () => {
           </p>
           <div className="project-list-box">
             {/* 기존 프로젝트들 */}
-            {projects.map((project) => (
+            {dashboardData?.projects?.map((project) => (
               <div
-                key={project.repository_name}
+                key={project.project_id}
                 className="project-box eng"
                 onClick={() => handleProjectClick(project)}
                 style={{ cursor: "pointer" }}
               >
                 <span className="git-repository">
-                  {project.username}/{project.repository_name}
+                  {dashboardData?.github_name}/{project.repo_name}
                 </span>
                 <span className={`status ${project.status || "active"}`}></span>
-                <p className="project-title">{project.project_name}</p>
+                <p className="project-title">{project.repo_name}</p>
                 <p className="project-url">{project.subdomain}</p>
                 <p className="version">
                   ver.{" "}
@@ -232,7 +222,6 @@ const Dashboard = () => {
                 </div>
               </div>
             ))}
-
             {/* 프로젝트 추가 버튼 */}
             <div
               className={`project-box ${canAddMore ? "available" : "full"}`}

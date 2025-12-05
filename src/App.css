@@ -115,6 +115,7 @@ span {
 
 .eng {
   font-family: "Source Code Pro";
+  word-spacing: -0.12rem;
 }
 
 pre {

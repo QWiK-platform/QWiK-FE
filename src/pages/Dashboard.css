@@ -120,12 +120,15 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 98%;
+  letter-spacing: -0.12rem;
+  font-weight: 400;
 }
 .dashboard-section .project-box .date-box {
   display: flex;
   margin-top: 15px;
   font-size: 1.3rem;
   gap: 3px;
+  letter-spacing: -0.04rem;
 }
 
 .dashboard-section .date-box p {
