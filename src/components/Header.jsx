@@ -1,19 +1,11 @@
 import "./Header.css";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // ✅ 올바른 useState
+const Header = ({ isLoggedIn, setIsLoggedIn }) => {
+  // Props로 받기
   const navigate = useNavigate();
   const location = useLocation();
-
-  // 컴포넌트 마운트 시 로그인 상태 확인
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, []);
 
   const handleLogin = () => {
     navigate("/login");
@@ -22,7 +14,7 @@ const Header = () => {
   // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setIsLoggedIn(false);
+    setIsLoggedIn(false); // 부모 컴포넌트 상태 업데이트
     navigate("/");
   };
 
