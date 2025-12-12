@@ -3,7 +3,9 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // setIsLoggedIn 처리될 때까지
+  const isLoggedIn = useState(false);
   const navigate = useNavigate();
   const location = useLocation(); // 이것만 추가!
 

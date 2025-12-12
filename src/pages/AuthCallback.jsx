@@ -64,7 +64,7 @@ const AuthCallback = () => {
   return (
     <section className="auth-section">
       <div className="wrap">
-        <div class="lds-spinner">
+        <div className="lds-spinner">
           <div></div>
           <div></div>
           <div></div>

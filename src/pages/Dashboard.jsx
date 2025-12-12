@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import client from "../api/client";
 // 플랜 정보
-import { planList } from "../data/pricing/planList";
+// import { planList } from "../data/pricing/planList";
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -86,8 +86,8 @@ const Dashboard = () => {
   const canAddMore = totalProjects < maxProjects;
 
   // 메모리/트래픽 limit도 API 데이터 사용
-  const memoryLimit = `${dashboardData?.plan_limits?.memory}MB`;
-  const trafficLimit = `${dashboardData?.plan_limits?.traffic}GB`;
+  // const memoryLimit = `${dashboardData?.plan_limits?.memory}MB`;
+  // const trafficLimit = `${dashboardData?.plan_limits?.traffic}GB`;
 
   // 사용률 계산 함수
   const calculateUsagePercentage = (used, total) => {
