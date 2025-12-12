@@ -43,7 +43,7 @@ const ProjectDetail = () => {
               <p className="title">메모리 사용량</p>
               <p className="usage eng">
                 <span className="used">NNN</span>/
-                <span className="total">2GB</span>
+                <span className="total">200MB</span>
               </p>
             </div>
             <div className="bar-box">
@@ -64,7 +64,7 @@ const ProjectDetail = () => {
           </div>
         </div>
         <div className="history-container">
-          <p className="title">배포 히스토리</p>
+          <p className="title">프로젝트 히스토리</p>
           <div className="history-box">
             <p>
               <span className="eng">yy.mm.dd hh:mm</span> commit message

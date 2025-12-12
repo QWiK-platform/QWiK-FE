@@ -46,10 +46,6 @@ select {
 }
 
 button {
-  cursor: pointer;
-}
-
-button {
   border: none;
   background: none;
   cursor: pointer;
@@ -142,7 +138,7 @@ pre {
 .modal-popup {
   background-color: #fff;
   padding: 16px;
-  border-radius: 16px;
+  border-radius: 10px;
 }
 
 .btn-box {
@@ -154,7 +150,7 @@ pre {
   display: inline-block;
   padding: 6px 20px;
   background-color: var(--secondary-bg);
-  border-radius: 20px;
+  border-radius: 10px;
   transition: 0.3s;
 }
 
@@ -201,8 +197,8 @@ input[type="text"] {
   border: none;
   background-color: var(--bg-sub-color);
   line-height: 2;
-  border-radius: 16px;
-  text-indent: 16px;
+  border-radius: 10px;
+  text-indent: 14px;
   outline: none;
 }
 

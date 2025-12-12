@@ -1,10 +1,45 @@
 import React, { useState } from "react";
 import "./Deploy.css";
+import client from "../api/client";
 
 const Deploy = () => {
   const [step, setStep] = useState(1);
   const [deployStatus, setDeployStatus] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [repositoryUrl, setRepositoryUrl] = useState(""); // input 값 저장
+  const [deployResult, setDeployResult] = useState(null); // API 응답 저장
+
+  console.log("현재 step:", step);
+  console.log("readOnly 상태:", step !== 1);
+
+  const handleDeploy = async () => {
+    console.log("RepositoryUrl 값:", repositoryUrl);
+    console.log("trim 후:", repositoryUrl.trim());
+    console.log("빈 문자열인가?:", !repositoryUrl.trim());
+
+    if (!repositoryUrl.trim()) {
+      alert("레포지토리 URL을 입력해주세요!");
+      return;
+    }
+
+    try {
+      setStep(2);
+      const response = await client.post("/deploy", {
+        repo_url: repositoryUrl,
+      });
+      setDeployResult(response.data);
+
+      setTimeout(() => {
+        setStep(3);
+        setDeployStatus("success");
+      }, 5000);
+    } catch (error) {
+      console.error("배포 실패:", error);
+      setStep(3);
+      setDeployStatus("failure");
+      setErrorMessage(error.response?.data.message || "배포에 실패했습니다.");
+    }
+  };
 
   return (
     <section className={`deploy-section step-${step}`}>
@@ -65,18 +100,24 @@ const Deploy = () => {
               type="text"
               className="repository-url"
               placeholder="본인 소유의 레포지토리 링크를 입력해주세요."
+              value={repositoryUrl}
+              onChange={(e) => setRepositoryUrl(e.target.value)}
               readOnly={step !== 1}
             />
             <button
               className={`post-repository-btn ${
                 step === 1 ? "impact" : "disabled"
               }`}
+              onClick={handleDeploy}
+              disabled={step !== 1}
             >
               배포
             </button>
           </div>
         </div>
-        {step === 2 && (
+        {step === 2 && <div className="progress-bar-container"></div>}
+        {/* 실시간 로그 기준 */}
+        {/* {step === 2 && (
           <div className="log-container eng">
             <div className="log-box">
               <p>code building</p>
@@ -97,7 +138,7 @@ const Deploy = () => {
               <p>code building</p>
             </div>
           </div>
-        )}
+        )} */}
         {step === 3 && deployStatus === "success" && (
           <div className="result-container success">
             <div className="text-box">
