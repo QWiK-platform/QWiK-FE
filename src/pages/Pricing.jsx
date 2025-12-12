@@ -43,7 +43,7 @@ const Pricing = () => {
         </div>
         <div className="plan-container">
           {plansArray.map((planItem) => (
-            <div key={planItem.id} className="plan-box">
+            <div key={planItem.id} className="plan-box pos-rel">
               {planItem.isPopular && <div className="popular-badge">인기</div>}
               <span className="title">{planItem.planName}</span>
               <div className="explanation-box">{planItem.description}</div>

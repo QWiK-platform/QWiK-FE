@@ -43,9 +43,6 @@ const Dashboard = () => {
 
   // API 호출
   useEffect(() => {
-    console.log("client 헤더:", client.defaults.headers);
-    console.log("저장된 토큰:", localStorage.getItem("token"));
-
     const fetchDashboard = async () => {
       try {
         setLoading(true);
@@ -53,7 +50,6 @@ const Dashboard = () => {
 
         if (response.status === 200) {
           setDashboardData(response.data);
-          console.log("dashboard 데이터:", response.data);
         }
       } catch (error) {
         console.error("대시보드 API 에러:", error);
@@ -187,7 +183,7 @@ const Dashboard = () => {
             {dashboardData?.projects?.map((project) => (
               <div
                 key={project.project_id}
-                className="project-box eng"
+                className="project-box eng pos-rel"
                 onClick={() => handleProjectClick(project)}
                 style={{ cursor: "pointer" }}
               >

@@ -7,10 +7,6 @@
   width: 590px;
 }
 
-.project-detail-section .project-info-container {
-  position: relative;
-}
-
 .project-detail-section .project-info-container .title {
   font-size: 3rem;
 }

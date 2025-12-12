@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Deploy.css";
 import client from "../api/client";
+import ProgressBar from "../components/ProgressBar";
 
 const Deploy = () => {
   const [step, setStep] = useState(1);
@@ -115,7 +116,7 @@ const Deploy = () => {
             </button>
           </div>
         </div>
-        {step === 2 && <div className="progress-bar-container"></div>}
+        {step === 2 && <ProgressBar />}
         {/* 실시간 로그 기준 */}
         {/* {step === 2 && (
           <div className="log-container eng">
