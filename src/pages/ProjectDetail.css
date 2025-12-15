@@ -98,8 +98,20 @@
   margin-top: 100px;
 }
 
+.project-detail-section .history-container .title-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
 .project-detail-section .history-container .title {
-  font-size: 2rem;
+  font-size: 2.4rem;
+  font-weight: 400;
+}
+
+.project-detail-section .history-container .project-reload-btn {
+  padding: 5px 12px;
+  border-radius: 8px;
 }
 
 .project-detail-section .history-container .history-box {

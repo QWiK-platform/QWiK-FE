@@ -13,7 +13,7 @@ import "./App.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
@@ -26,9 +26,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
-          <Route 
-            path="/auth/callback" 
-            element={<AuthCallback setIsLoggedIn={setIsLoggedIn} />} 
+          <Route
+            path="/auth/callback"
+            element={<AuthCallback setIsLoggedIn={setIsLoggedIn} />}
           />
           <Route path="/deploy" element={<Deploy />} />
           <Route path="/dashboard" element={<Dashboard />} />

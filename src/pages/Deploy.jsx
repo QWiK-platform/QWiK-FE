@@ -107,7 +107,7 @@ const Deploy = () => {
             />
             <button
               className={`post-repository-btn ${
-                step === 1 ? "impact" : "disabled"
+                step === 1 ? "accent" : "disabled"
               }`}
               onClick={handleDeploy}
               disabled={step !== 1}
@@ -151,7 +151,7 @@ const Deploy = () => {
             </div>
             <div className="btn-box">
               <button className="move-to-site main">사이트로 이동</button>
-              <button className="move-to-detail impact">
+              <button className="move-to-detail accent">
                 상세페이지로 이동
               </button>
             </div>
@@ -165,7 +165,7 @@ const Deploy = () => {
             </div>
             <div className="btn-box">
               <button
-                className="retry-btn impact"
+                className="retry-btn accent"
                 onClick={() => {
                   setStep(1);
                   setDeployStatus(null);
