@@ -25,20 +25,30 @@ const Deploy = () => {
 
     try {
       setStep(2);
-      const response = await client.post("/deploy", {
-        repo_url: repositoryUrl,
-      });
-      setDeployResult(response.data);
 
-      setTimeout(() => {
-        setStep(3);
+      console.log("📤 보내는 데이터:", { github_url: repositoryUrl }); // 로그도 수정
+
+      const response = await client.post("/deploy", {
+        github_url: repositoryUrl, // ✅ repo_url → github_url로 변경
+      });
+
+      console.log("✅ API 응답:", response.data);
+
+      setDeployResult(response.data);
+      setStep(3);
+
+      // status 값으로 성공/실패 판단
+      if (response.data.status === "success") {
         setDeployStatus("success");
-      }, 5000);
+      } else {
+        setDeployStatus("failure");
+        setErrorMessage(response.data.message || "배포 실패");
+      }
     } catch (error) {
-      console.error("배포 실패:", error);
+      console.error("❌ API 에러:", error.response?.data);
       setStep(3);
       setDeployStatus("failure");
-      setErrorMessage(error.response?.data.message || "배포에 실패했습니다.");
+      setErrorMessage(error.response?.data?.message || "API 호출 실패");
     }
   };
 
