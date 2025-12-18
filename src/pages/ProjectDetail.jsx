@@ -70,7 +70,12 @@ const ProjectDetail = () => {
           </div>
         </div>
         <div className="history-container">
-          <p className="title">프로젝트 히스토리</p>
+          <div className="title-box">
+            <p className="title">프로젝트 히스토리</p>
+            <button className="project-reload-btn accent">
+              프로젝트 Reload <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
           <div className="history-box">
             <p>
               <span className="eng">yy.mm.dd hh:mm</span> commit message
@@ -109,7 +114,7 @@ const ProjectDetail = () => {
               <button className="cancel-btn" onClick={handleCloseModal}>
                 닫기
               </button>
-              <button className="change-btn impact">변경</button>
+              <button className="change-btn accent">변경</button>
             </div>
           </div>
         </div>

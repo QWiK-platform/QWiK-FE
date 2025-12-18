@@ -87,7 +87,7 @@ const Login = () => {
             </div>
             <div className="btn-box">
               <button
-                className="term-close-btn impact"
+                className="term-close-btn accent"
                 onClick={handleCloseTermsModal}
               >
                 닫기

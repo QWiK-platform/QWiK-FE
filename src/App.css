@@ -103,13 +103,13 @@ pre {
   margin-right: 10px;
 }
 
-button.impact {
+button.accent {
   color: #fff;
   background-color: var(--accent-color);
   transition: 0.3s ease-in-out;
 }
 
-button.impact:hover {
+button.accent:hover {
   background-color: #163a4d;
 }
 
