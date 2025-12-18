@@ -2,7 +2,6 @@ import React from "react";
 import "./Index.css";
 
 const Index = () => {
-
   const indexDeploymentsList = [
     {
       id: 1,
@@ -82,13 +81,13 @@ const Index = () => {
                 <div className="disk-usage-box">
                   <h4>Disk Usage</h4>
                   <div className="graph-box">
-                    <div className="pie-chart"></div>
+                    <div className="pie-chart pos-rel"></div>
                   </div>
                 </div>
                 <div className="traffic-usage-box">
                   <h4>Traffic Usage</h4>
                   <div className="graph-box">
-                    <div className="pie-chart"></div>
+                    <div className="pie-chart pos-rel"></div>
                   </div>
                 </div>
               </div>
@@ -104,7 +103,7 @@ const Index = () => {
                           {deployment.resource}%
                         </span>
                       </div>
-                      <div className="progress-bar-box">
+                      <div className="progress-bar-box pos-rel">
                         <div
                           className="fill-bar"
                           style={{ width: `${deployment.resource}%` }}
