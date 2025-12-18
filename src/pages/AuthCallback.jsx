@@ -9,7 +9,7 @@ async function sendCodeToBackend(code) {
     return response.data;
   } catch (error) {
     // 디버깅
-    console.error("OAuth 콜백 에러:", error);
+    console.error("OAuth 콜백 에러:", error.response);
     throw error;
   }
 }
@@ -37,11 +37,11 @@ const AuthCallback = ({ setIsLoggedIn }) => {
             navigate("/dashboard");
           } else {
             console.error("로그인 실패");
-            navigate("/");
+            // navigate("/");
           }
         } catch (error) {
           console.error("에러 확인됨", error);
-          navigate("/");
+          // navigate("/");
         }
       }
     };
