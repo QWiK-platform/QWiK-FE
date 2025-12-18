@@ -4,17 +4,8 @@ import client from "../api/client";
 import "./AuthCallback.css";
 
 async function sendCodeToBackend(code) {
-  // 보내기 전 데이터 확인
-  console.log("=== 전송 데이터 확인 ===");
-  console.log("보낼 code:", code);
-  console.log("code 길이:", code?.length);
-  console.log("code에 특수문자:", /[^a-zA-Z0-9]/.test(code));
-  console.log("JSON.stringify 결과:", JSON.stringify({ code: code }));
-
   try {
     const response = await client.post("/auth/github/callback", { code });
-    // 디버깅
-    console.log("OAuth 응답:", response.data);
     return response.data;
   } catch (error) {
     // 디버깅
@@ -23,7 +14,7 @@ async function sendCodeToBackend(code) {
   }
 }
 
-const AuthCallback = () => {
+const AuthCallback = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,17 +26,14 @@ const AuthCallback = () => {
 
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
-      console.log("code", code);
-      console.log("code 타입:", typeof code);
+
       if (code) {
         try {
           const result = await sendCodeToBackend(code);
 
-          console.log("백엔드 응답:", result);
-
           if (result.access_token) {
             localStorage.setItem("token", result.access_token);
-            console.log(result.access_token);
+            setIsLoggedIn(true);
             navigate("/dashboard");
           } else {
             console.error("로그인 실패");
