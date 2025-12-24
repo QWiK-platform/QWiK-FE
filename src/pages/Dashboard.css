@@ -16,12 +16,12 @@
   margin-top: 40px;
 }
 
-.dashboard-section .memory-container,
+.dashboard-section .storage-container,
 .dashboard-section .traffic-container {
   width: 50%;
 }
 
-.dashboard-section .memory-container {
+.dashboard-section .storage-container {
   margin-bottom: 20px;
 }
 
@@ -30,8 +30,15 @@
   justify-content: space-between;
 }
 
+.dashboard-section .resource-container .title-box {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
 .dashboard-section .resource-container .text-box .title {
-  font-weight: 400;
+  font-size: 2rem;
+  font-weight: 500;
 }
 
 .dashboard-section .resource-container .bar-box {

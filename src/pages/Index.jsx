@@ -69,7 +69,7 @@ const Index = () => {
                 .map((deployment) => (
                   <div key={deployment.id} className="deployment-box">
                     <span className="project-name">{deployment.name}</span>
-                    <span className="domain-text">.qwik.com</span>
+                    <span className="domain-text">.qw1k.cloud</span>
                   </div>
                 ))}
             </div>
@@ -79,15 +79,21 @@ const Index = () => {
             <div className="monitor-container">
               <div className="usage-box">
                 <div className="disk-usage-box">
-                  <h4>Disk Usage</h4>
+                  <h4>Storage Usage</h4>
                   <div className="graph-box">
-                    <div className="pie-chart pos-rel"></div>
+                    <div className="pie-chart pos-rel">
+                      <span className="pie-chart-bg"></span>
+                      <span className="pie-chart-fill"></span>
+                    </div>
                   </div>
                 </div>
                 <div className="traffic-usage-box">
                   <h4>Traffic Usage</h4>
                   <div className="graph-box">
-                    <div className="pie-chart pos-rel"></div>
+                    <div className="pie-chart pos-rel">
+                      <span className="pie-chart-bg"></span>
+                      <span className="pie-chart-fill"></span>
+                    </div>
                   </div>
                 </div>
               </div>

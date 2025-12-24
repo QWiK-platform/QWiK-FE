@@ -2,18 +2,112 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import client from "../api/client";
-// 플랜 정보
-// import { planList } from "../data/pricing/planList";
+import Tooltip from "../components/Tooltip";
 
 const Dashboard = () => {
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [userLoading, setUserLoading] = useState(true);
+  const [projectsLoading, setProjectsLoading] = useState(true);
   const navigate = useNavigate();
 
-  // 날짜 포맷팅
+  // 유저 API 호출
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setUserLoading(true);
+        const response = await client.get("/user");
+
+        if (response.status === 200) {
+          setUser(response.data);
+          console.log("✅ 유저 데이터:", response.data);
+        }
+      } catch (error) {
+        console.error("❌ 유저 API 에러:", error);
+      } finally {
+        setUserLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  // 프로젝트 API 호출
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        setProjectsLoading(true);
+        const response = await client.get("/dashboard");
+
+        if (response.status === 200) {
+          setProjects(response.data.projects);
+          console.log("✅ 대시보드 더미데이터:", response.data.projects);
+        }
+      } catch (error) {
+        console.error("❌ 대시보드 API 에러:", error);
+      } finally {
+        setProjectsLoading(false);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
+
+  // 로딩 체크
+  if (userLoading) {
+    return (
+      <section className="dashboard-section">
+        <div className="wrap">
+          <div className="loading">사용자 정보 로딩 중...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!user) {
+    return (
+      <section className="dashboard-section">
+        <div className="wrap">
+          <div className="loading">사용자 정보를 불러올 수 없습니다.</div>
+        </div>
+      </section>
+    );
+  }
+
+  // 유틸리티 함수들
+  const formatStorage = (bytes) => {
+    const mb = Math.round(bytes / 1048576);
+
+    // if (mb >= 1000) {
+    //   const gb = mb / 1000;
+    //   return gb % 1 === 0 ? `${gb} GB` : `${gb.toFixed(1)} GB`;
+    // }
+
+    return `${mb} MB`;
+  };
+
+  const calculateUsagePercentage = (used, total) => {
+    if (!used || !total) return 0;
+    return Math.min((used / total) * 100, 100);
+  };
+
+  const calculateTotalUsage = (usageType) => {
+    if (!projects || projects.length === 0) return 0;
+
+    return projects.reduce((total, project) => {
+      const projectUsage = project.usage?.[usageType] || 0; // MB 단위
+      return total + projectUsage;
+    }, 0);
+  };
+
+  const getBarClass = (percentage) => {
+    if (percentage >= 90) return "danger";
+    if (percentage >= 70) return "warning";
+    return "";
+  };
+
   const formatDate = (dateString, includeTime = false) => {
     if (!dateString) return "";
-
     const date = new Date(dateString);
     const year = date.getFullYear().toString().slice(-2);
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -27,12 +121,10 @@ const Dashboard = () => {
     return `${year}.${month}.${day}`;
   };
 
-  // 프로젝트 클릭 핸들러
-  const handleProjectClick = (project) => {
-    navigate(`/project/${project.repo_name}`); // repository_name → repo_name
+  const formatCommitMessage = (message) => {
+    return message || "초기 배포";
   };
 
-  // 프로젝트 추가 버튼 클릭
   const handleAddProject = () => {
     if (canAddMore) {
       navigate("/deploy");
@@ -41,81 +133,35 @@ const Dashboard = () => {
     }
   };
 
-  // API 호출
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        setLoading(true);
-        const response = await client.get("/dashboard");
+  const handleProjectClick = (project) => {
+    navigate(`/project/${project.project_id}`);
+  };
 
-        if (response.status === 200) {
-          setDashboardData(response.data);
-        }
-      } catch (error) {
-        console.error("대시보드 API 에러:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboard();
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="dashboard-section">
-        <div className="wrap">
-          <div className="loading">로딩 중...</div>
-        </div>
-      </section>
-    );
-  }
-
-  // 계산된 값들
-  const totalProjects = dashboardData?.projects?.length || 0;
-  const activeProjects =
-    dashboardData?.projects?.filter((p) => p.status === "active").length || 0;
+  // 계산 값들
+  const totalProjects = projects?.length || 0;
+  const activeProjects = projects?.filter((p) => p.status === true).length || 0;
   const inactiveProjects = totalProjects - activeProjects;
 
-  // 플랜 정보 (API 데이터 직접 사용)
-  const maxProjects = dashboardData?.plan_limits?.projects || 0;
+  const maxProjects = user?.plan?.projects || 0;
   const canAddMore = totalProjects < maxProjects;
 
-  // 메모리/트래픽 limit도 API 데이터 사용
-  // const memoryLimit = `${dashboardData?.plan_limits?.memory}MB`;
-  // const trafficLimit = `${dashboardData?.plan_limits?.traffic}GB`;
+  // 사용량 계산 (실제 계산된 값 사용)
+  const totalStorageUsed = calculateTotalUsage("storage_used");
+  const totalTrafficUsed = calculateTotalUsage("traffic_used");
 
-  // 사용률 계산 함수
-  const calculateUsagePercentage = (used, total) => {
-    if (!used || !total) return 0;
-    return Math.min((used / total) * 100, 100);
-  };
+  // 제한량
+  const storageLimit = (user?.plan?.storage / 1048576) * user?.plan?.projects;
+  const trafficLimit = user?.plan?.traffic / 1048576;
 
-  const memoryPercentage = calculateUsagePercentage(
-    dashboardData?.usage?.memory,
-    dashboardData?.plan_limits?.memory
+  // 퍼센티지
+  const storagePercentage = calculateUsagePercentage(
+    totalStorageUsed,
+    storageLimit
   );
-
   const trafficPercentage = calculateUsagePercentage(
-    dashboardData?.usage?.traffic,
-    dashboardData?.plan_limits?.traffic
+    totalTrafficUsed,
+    trafficLimit
   );
-
-  // 바 색상 결정
-  const getBarClass = (percentage) => {
-    if (percentage >= 90) return "danger";
-    if (percentage >= 70) return "warning";
-    return "";
-  };
-
-  // 커밋 메시지 정리 함수
-  const formatCommitMessage = (message, lastUpdated) => {
-    if (!message) {
-      return lastUpdated ? formatDate(lastUpdated, true) : "No update info";
-    }
-    const parts = message.split("\n");
-    return parts.length > 1 ? parts[1] : message;
-  };
 
   return (
     <section className="dashboard-section">
@@ -123,10 +169,8 @@ const Dashboard = () => {
         {/* 사용자 정보 */}
         <div className="info-text-container">
           <h3 className="title-text">
-            {dashboardData?.github_name} 님의 서비스 이용 현황입니다.
-            {/* <span className="membership-badge">
-              {dashboardData?.membership.tier}
-            </span> */}
+            {user.username} 님의 서비스 이용 현황입니다.
+            {/* <span className="membership-badge">{user.plan.name}</span> */}
           </h3>
           <p>
             배포한 프로젝트는 {totalProjects}개이며, 현재 활성화 프로젝트는{" "}
@@ -136,31 +180,45 @@ const Dashboard = () => {
 
         {/* 리소스 사용량 */}
         <div className="resource-container">
-          <div className="memory-container">
+          <div className="storage-container">
             <div className="text-box">
-              <p className="title">메모리 사용량</p>
+              <div className="title-box">
+                <p className="title">스토리지 사용량</p>
+                <Tooltip
+                  content={`현재 사용중인 ${
+                    user?.plan?.name
+                  } 요금제는 한 프로젝트 당 ${formatStorage(
+                    user?.plan?.storage
+                  )}입니다.`}
+                >
+                  <i className="fa-solid fa-circle-info"></i>
+                </Tooltip>
+              </div>
               <p className="usage eng">
-                <span className="used">{dashboardData?.usage?.memory}</span>/
-                <span className="total">
-                  {dashboardData?.plan_limits?.memory}
-                </span>
-                MB
+                <span className="used">{Math.round(totalStorageUsed)}</span>/
+                <span className="total">{Math.round(storageLimit)}</span>
+                <span> MB</span>
               </p>
             </div>
             <div className="bar-box">
               <div
-                className={`fill-bar ${getBarClass(memoryPercentage)}`}
-                style={{ width: `${memoryPercentage}%` }}
+                className={`fill-bar ${getBarClass(storagePercentage)}`}
+                style={{ width: `${storagePercentage}%` }}
               ></div>
             </div>
           </div>
           <div className="traffic-container">
             <div className="text-box">
-              <p className="title">트래픽 사용량</p>
+              <div className="title-box">
+                <p className="title">트래픽 사용량</p>
+                <Tooltip content="트래픽 초과시 프로젝트 전체 비활성화될 수 있습니다.">
+                  <i className="fa-solid fa-circle-info"></i>
+                </Tooltip>
+              </div>
               <p className="usage eng">
-                <span className="used">{dashboardData?.usage?.traffic}</span>/
+                <span className="used">{Math.round(totalTrafficUsed)}</span>/
                 <span className="total">
-                  {dashboardData?.plan_limits?.traffic}MB
+                  {formatStorage(user.plan.traffic)}
                 </span>
               </p>
             </div>
@@ -179,45 +237,59 @@ const Dashboard = () => {
             {totalProjects} / {maxProjects}
           </p>
           <div className="project-list-box">
-            {/* 기존 프로젝트들 */}
-            {dashboardData?.projects?.map((project) => (
-              <div
-                key={project.project_id}
-                className="project-box eng pos-rel"
-                onClick={() => handleProjectClick(project)}
-                style={{ cursor: "pointer" }}
-              >
-                <span className="git-repository">
-                  {dashboardData?.github_name}/{project.repo_name}
-                </span>
-                <span className={`status ${project.status || "active"}`}></span>
-                <p className="project-title">{project.repo_name}</p>
-                <p className="project-url">{project.subdomain}</p>
-                <p className="version">
-                  ver.{" "}
-                  <span>
-                    {formatCommitMessage(
-                      project.commit_message,
-                      project.last_updated_at
-                    )}
-                  </span>
-                </p>
-                <div className="date-box">
-                  <p className="origin">
-                    최초 <span>{formatDate(project.created_at)}</span>
-                  </p>
-                  {project.last_updated_at && (
-                    <>
-                      <span>/</span>
-                      <p className="update">
-                        마지막{" "}
-                        <span>{formatDate(project.last_updated_at, true)}</span>
-                      </p>
-                    </>
-                  )}
-                </div>
+            {/* 프로젝트 로딩 */}
+            {projectsLoading && (
+              <div className="project-box">
+                <p>프로젝트 로딩 중...</p>
               </div>
-            ))}
+            )}
+
+            {/* 프로젝트 목록 */}
+            {!projectsLoading &&
+              projects.map((project) => (
+                <div
+                  key={project.project_id}
+                  className="project-box eng pos-rel"
+                  onClick={() => handleProjectClick(project)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <span className="git-repository">
+                    {user.username}/{project.repo_name}
+                  </span>
+                  <span
+                    className={`status ${
+                      project.status ? "active" : "inactive"
+                    }`}
+                  ></span>
+                  <p className="project-title">{project.repo_name}</p>
+                  {/* 추후 domain -> subdomain 으로 변경 */}
+                  <p className="project-url">{project.domain}</p>
+                  <p className="version">
+                    ver.{" "}
+                    <span>
+                      {formatCommitMessage(
+                        project.commit_message,
+                        project.reload_at
+                      )}
+                    </span>
+                  </p>
+                  <div className="date-box">
+                    <p className="origin">
+                      최초 <span>{formatDate(project.created_at)}</span>
+                    </p>
+                    {project.reload_at && (
+                      <>
+                        <span>/</span>
+                        <p className="update">
+                          마지막{" "}
+                          <span>{formatDate(project.reload_at, true)}</span>
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+
             {/* 프로젝트 추가 버튼 */}
             <div
               className={`project-box ${canAddMore ? "available" : "full"}`}

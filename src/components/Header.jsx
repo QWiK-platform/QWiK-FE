@@ -1,9 +1,10 @@
 import "./Header.css";
-import React from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
-  // Props로 받기
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,6 +19,11 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     navigate("/");
   };
 
+  // width: 600px 이하 메뉴 토글
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <header className="header">
       <div className="header-container">
@@ -27,9 +33,16 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
           </Link>
         </div>
 
-        <div className="nav-container">
+        <div
+          className={`wrap nav-container ${
+            isMobileMenuOpen ? "mobile-open" : ""
+          }`}
+        >
           {isLoggedIn && (
             <nav className="services-nav">
+              <button className="close-btn mob" onClick={toggleMobileMenu}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
               <Link
                 to="/deploy"
                 className={location.pathname === "/deploy" ? "active" : ""}
@@ -54,15 +67,28 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
               >
                 MY
               </Link>
+              <button className="logout-btn mob" onClick={handleLogout}>
+                LOGOUT
+              </button>
             </nav>
           )}
         </div>
 
         <div className="header-right">
           {isLoggedIn ? (
-            <button className="logout-btn" onClick={handleLogout}>
-              LOGOUT
-            </button>
+            <>
+              <button className="logout-btn desk" onClick={handleLogout}>
+                LOGOUT
+              </button>
+              <button
+                className="mobile-menu-toggle mob"
+                onClick={toggleMobileMenu}
+              >
+                <span className="hamburger">
+                  <i className="fa-solid fa-bars-staggered"></i>
+                </span>
+              </button>
+            </>
           ) : (
             <button className="login-btn" onClick={handleLogin}>
               LOGIN
@@ -72,6 +98,11 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       </div>
     </header>
   );
+};
+
+Header.propTypes = {
+  isLoggedIn: PropTypes.bool.isRequired,
+  setIsLoggedIn: PropTypes.func.isRequired,
 };
 
 export default Header;
