@@ -1,11 +1,10 @@
 .tooltip-wrapper {
-  position: relative;
 }
 
 .tooltip-wrapper .tooltip-content {
   position: absolute;
   top: -100%;
-  left: 0;
+  left: 100px;
   width: max-content;
 
   font-size: 1.4rem;
@@ -19,4 +18,10 @@
   font-size: 1.8rem;
   color: var(--accent-color);
   cursor: help;
+}
+
+@media (max-width: 768px) {
+  .tooltip-wrapper .tooltip-content {
+    left: 0;
+  }
 }
