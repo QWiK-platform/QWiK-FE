@@ -1,3 +1,5 @@
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
 /* color setting */
 :root {
   --primary-color: #93806b;
@@ -8,6 +10,7 @@
   --text-color: #5c4f46;
   --bg-color: #fdf9f5;
   --bg-sub-color: #e2dad1;
+  --wrap: 1200px;
 }
 
 /* layout setting */
@@ -19,7 +22,7 @@ section {
 }
 
 .wrap {
-  width: 1200px;
+  width: var(--wrap);
   margin: 0 auto;
 }
 
@@ -147,11 +150,6 @@ input[type="text"]:focus {
   box-shadow: 0 0 4px 2px var(--secondary-bg);
 }
 
-button {
-  display: inline-block;
-  color: var(--text-color);
-}
-
 /* scroll */
 /* 스크롤바 전체 */
 ::-webkit-scrollbar {
@@ -174,4 +172,68 @@ button {
 /* 스크롤바 핸들 호버 */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-color);
+}
+
+/* 반응형 */
+
+.desk {
+  display: block;
+}
+
+.tab {
+  display: none;
+}
+
+.mob {
+  display: none;
+}
+
+@media (max-width: 1199px) {
+  :root {
+    --wrap: 768px;
+  }
+}
+
+@media (max-width: 880px) {
+  :root {
+    --wrap: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --wrap: 520px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --wrap: 400px;
+  }
+
+  .desk {
+    display: none;
+  }
+
+  .mob {
+    display: block;
+  }
+}
+
+@media (max-width: 440px) {
+  :root {
+    --wrap: 360px;
+  }
+}
+
+@media (max-width: 400px) {
+  :root {
+    --wrap: 340px;
+  }
+}
+
+@media (max-width: 375px) {
+  :root {
+    --wrap: 310px;
+  }
 }

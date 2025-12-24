@@ -1,0 +1,22 @@
+.tooltip-wrapper {
+  position: relative;
+}
+
+.tooltip-wrapper .tooltip-content {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: max-content;
+
+  font-size: 1.4rem;
+  padding: 3px;
+  border-radius: 3px;
+  background-color: var(--accent-bg);
+}
+
+.tooltip-wrapper .fa-circle-info {
+  display: inline-block;
+  font-size: 1.8rem;
+  color: var(--accent-color);
+  cursor: help;
+}

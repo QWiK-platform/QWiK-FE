@@ -3,7 +3,7 @@ import "./ProjectDetail.css";
 
 const ProjectDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newSubdomain, setNewSubdomain] = useState("");
+  // const [newSubdomain, setNewSubdomain] = useState("");
 
   // 모달 핸들링
   const handleOpenModal = () => {
@@ -73,7 +73,7 @@ const ProjectDetail = () => {
           <div className="title-box">
             <p className="title">프로젝트 히스토리</p>
             <button className="project-reload-btn accent">
-              프로젝트 Reload <i class="fa-solid fa-arrows-rotate"></i>
+              프로젝트 Reload <i className="fa-solid fa-arrows-rotate"></i>
             </button>
           </div>
           <div className="history-box">

@@ -28,16 +28,17 @@
   display: flex;
   line-height: 6rem;
   margin-bottom: 20px;
+  justify-content: space-between;
+  gap: 35px;
 }
 
 .step-box .step-num {
-  width: calc(100% - 590px);
   font-size: 2.4rem;
   line-height: inherit;
 }
 
 .step-box .step-info-text-box {
-  width: 590px;
+  width: 82%;
   background-color: var(--secondary-color);
   border-radius: 16px;
   text-align: center;
@@ -98,7 +99,7 @@
 }
 
 .deployments-list-box .deployment-box .domain-text {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 .service-overview-container .dashboard-container {
@@ -134,19 +135,18 @@
 }
 
 /* 전체 원 (테두리만) */
-.pie-chart::before {
-  content: "";
-  position: absolute;
+.pie-chart .pie-chart-bg {
+  display: block;
   width: 100%;
   height: 100%;
   border: 3px solid var(--secondary-color);
   border-radius: 50%;
   box-sizing: border-box;
+  z-index: 0;
 }
 
 /* 1/4 채워진 부분 */
-.pie-chart::after {
-  content: "";
+.pie-chart .pie-chart-fill {
   position: absolute;
   top: 0;
   right: 0;
@@ -157,6 +157,7 @@
   border-left: none;
   border-bottom: none;
   box-sizing: border-box;
+  z-index: 0;
 }
 
 .index-section .text-box {
@@ -189,18 +190,209 @@
   background: var(--accent-color);
   border-radius: 4px;
   width: 0;
-
-  /* 애니메이션 */
-  /* animation: fillUp 1.5s ease-out forwards;
-  animation-delay: 0.3s; */
 }
 
-/* 애니메이션 */
-@keyframes fillUp {
-  from {
-    width: 0%;
+/* 반응형 */
+
+@media (max-width: 1199px) {
+  .index-section {
+    padding-top: 150px;
   }
-  to {
-    width: var(--fill-width);
+
+  .index-section .service-info-container {
+    display: block;
+    padding-bottom: 50px;
+  }
+
+  .index-section .service-info-container .copyright-box {
+    width: 100%;
+  }
+
+  .service-info-container .step-container {
+    width: 100%;
+    margin-top: 90px;
+  }
+
+  .index-section .service-overview-container {
+    display: block;
+  }
+
+  .service-overview-container .deployments-list-container {
+    width: 100%;
+  }
+
+  .service-overview-container .dashboard-container {
+    width: 100%;
+    margin-top: 50px;
+  }
+
+  .deployments-list-box .deployment-box {
+    margin-bottom: 10px;
+  }
+
+  .deployments-list-box .deployment-box .project-name {
+    font-size: 2rem;
+  }
+
+  .deployments-list-box .deployment-box .domain-text {
+    font-size: 1.6rem;
+  }
+
+  .monitor-container h4 {
+    font-size: 2rem;
+    font-weight: 400;
+  }
+}
+
+@media (max-width: 880px) {
+  .service-info-container .copyright-box h2 {
+    padding-right: 100px;
+  }
+
+  .step-box .step-info-text-box {
+    width: 78%;
+  }
+
+  .monitor-container .usage-box h4 {
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .service-info-container .copyright-box h2 {
+    padding-right: 0;
+  }
+
+  .step-box .step-num {
+    font-size: 2.2rem;
+  }
+
+  .step-box .step-info-text-box {
+    font-size: 2.2rem;
+  }
+
+  .pie-chart {
+    width: 100px;
+  }
+
+  .index-section .project-box {
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .service-info-container .copyright-box h2 {
+    font-size: 7rem;
+    line-height: 8rem;
+  }
+
+  .step-container .step-box {
+    line-height: 5rem;
+    gap: 20px;
+    margin-bottom: 10px;
+  }
+
+  .step-box .step-num {
+    font-size: 1.8rem;
+  }
+
+  .step-box .step-info-text-box {
+    font-size: 1.8rem;
+  }
+
+  .deployments-list-container .deployments-list-box {
+    padding: 15px 10px;
+  }
+
+  .deployments-list-box .deployment-box {
+    margin-bottom: 6px;
+  }
+
+  .deployments-list-box .deployment-box .project-name {
+    font-size: 1.8rem;
+  }
+
+  .deployments-list-box .deployment-box .domain-text {
+    font-size: 1.4rem;
+  }
+
+  .monitor-container h4 {
+    font-size: 1.8rem;
+  }
+
+  .index-section .monitor-container .disk-usage-box h4 {
+    line-height: 1.2;
+  }
+
+  .pie-chart {
+    width: 75px;
+  }
+
+  .index-section .progress-bar-box {
+    display: none;
+  }
+
+  .index-section .text-box {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 440px) {
+  .index-section .service-overview-container {
+    padding-top: 60px;
+  }
+  .service-info-container .copyright-box h2 {
+    font-size: 6rem;
+    line-height: 7rem;
+  }
+
+  .step-container .step-box {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .step-box .step-num {
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  .step-box .step-info-text-box {
+    width: 100%;
+  }
+
+  .service-overview-container .monitor-container {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .pie-chart {
+    width: 100px;
+  }
+
+  .index-section .progress-bar-box {
+    display: block;
+  }
+}
+
+@media (max-width: 375px) {
+  .index-section {
+    padding-top: 135px;
+  }
+
+  .service-info-container .copyright-box h2 {
+    font-size: 5.6rem;
+  }
+
+  .service-info-container .step-container {
+    margin-top: 70px;
+  }
+
+  .step-box .step-info-text-box {
+    font-size: 1.6rem;
+  }
+
+  .monitor-container h4 {
+    font-size: 1.6rem;
   }
 }

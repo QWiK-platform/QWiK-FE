@@ -46,9 +46,16 @@ select {
 }
 
 button {
+  display: inline-block;
   border: none;
   background: none;
   cursor: pointer;
+  color: inherit;
+}
+
+i {
+  display: inline-block;
+  color: inherit;
 }
 
 ul,
