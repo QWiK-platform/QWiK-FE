@@ -194,7 +194,26 @@
 
 /* 반응형 */
 
-@media (max-width: 1199px) {
+@media (max-width: 1300px) {
+  .step-container .step-box {
+    gap: 20px;
+  }
+
+  .step-box .step-num {
+    font-size: 2rem;
+  }
+
+  .step-box .step-info-text-box {
+    width: 79%;
+    font-size: 2rem;
+  }
+
+  .deployments-list-container .deployments-list-box {
+    padding: 32px 10px;
+  }
+}
+
+@media (max-width: 1200px) {
   .index-section {
     padding-top: 150px;
   }
@@ -211,6 +230,15 @@
   .service-info-container .step-container {
     width: 100%;
     margin-top: 90px;
+  }
+
+  .step-box .step-num,
+  .step-box .step-info-text-box {
+    font-size: 2.4rem;
+  }
+
+  .deployments-list-container .deployments-list-box {
+    padding: 22px 10px;
   }
 
   .index-section .service-overview-container {

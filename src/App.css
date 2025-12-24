@@ -188,7 +188,13 @@ input[type="text"]:focus {
   display: none;
 }
 
-@media (max-width: 1199px) {
+@media (max-width: 1300px) {
+  :root {
+    --wrap: 1000px;
+  }
+}
+
+@media (max-width: 1200px) {
   :root {
     --wrap: 768px;
   }
@@ -216,6 +222,10 @@ input[type="text"]:focus {
   }
 
   .mob {
+    display: block;
+  }
+
+  .tab-block {
     display: block;
   }
 }

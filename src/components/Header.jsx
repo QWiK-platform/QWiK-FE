@@ -17,6 +17,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     localStorage.removeItem("token");
     setIsLoggedIn(false); // 부모 컴포넌트 상태 업데이트
     navigate("/");
+    setIsMobileMenuOpen(false);
   };
 
   // width: 600px 이하 메뉴 토글
@@ -45,24 +46,28 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
               </button>
               <Link
                 to="/deploy"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={location.pathname === "/deploy" ? "active" : ""}
               >
                 Deploy
               </Link>
               <Link
                 to="/dashboard"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={location.pathname === "/dashboard" ? "active" : ""}
               >
                 Dashboard
               </Link>
               <Link
                 to="/pricing"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={location.pathname === "/pricing" ? "active" : ""}
               >
                 Pricing
               </Link>
               <Link
                 to="/settings"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={location.pathname === "/settings" ? "active" : ""}
               >
                 MY
