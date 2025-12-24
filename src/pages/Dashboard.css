@@ -3,6 +3,11 @@
   padding-top: 150px;
 }
 
+.dashboard-section .user-info-container {
+  width: 50%;
+  min-width: 600px;
+}
+
 .dashboard-section .info-text-container h3 {
   font-size: 2.4rem;
   font-weight: bold;
@@ -14,11 +19,6 @@
 
 .dashboard-section .resource-container {
   margin-top: 40px;
-}
-
-.dashboard-section .storage-container,
-.dashboard-section .traffic-container {
-  width: 50%;
 }
 
 .dashboard-section .storage-container {
@@ -167,4 +167,64 @@
 .dashboard-section .project-box.full p,
 .dashboard-section .project-box.available p {
   margin-top: 20px;
+}
+
+@media (max-width: 1300px) {
+  .dashboard-section .project-list-box .project-box {
+    width: calc((100% - 40px) / 3);
+  }
+
+  .dashboard-section .project-list-box .project-box:last-child {
+    padding: 24px 0;
+  }
+}
+
+@media (max-width: 1200px) {
+  .dashboard-section .project-list-box .project-box {
+    width: calc((100% - 20px) / 2);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-section {
+    height: auto;
+  }
+
+  .dashboard-section .user-info-container {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .dashboard-section .info-text-container p .tab-block {
+    line-height: 1.5;
+  }
+
+  .dashboard-section .info-text-container p .tab-block:first-child {
+    display: block;
+  }
+
+  .dashboard-section .project-list-box .project-box {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-section {
+    padding-top: 130px;
+  }
+
+  .dashboard-section .info-text-container p {
+    margin-top: 20px;
+  }
+
+  .dashboard-section .resource-container {
+    margin-top: 60px;
+  }
+
+  .dashboard-section .date-box span {
+    font-weight: 400;
+    margin-left: 6px;
+    letter-spacing: -2px;
+    font-size: 1.4rem;
+  }
 }

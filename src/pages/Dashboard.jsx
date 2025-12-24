@@ -167,70 +167,80 @@ const Dashboard = () => {
     <section className="dashboard-section">
       <div className="wrap">
         {/* 사용자 정보 */}
-        <div className="info-text-container">
-          <h3 className="title-text">
-            {user.username} 님의 서비스 이용 현황입니다.
-            {/* <span className="membership-badge">{user.plan.name}</span> */}
-          </h3>
-          <p>
-            배포한 프로젝트는 {totalProjects}개이며, 현재 활성화 프로젝트는{" "}
-            {activeProjects}개, 비활성화 프로젝트는 {inactiveProjects}개입니다.
-          </p>
-        </div>
+        <div className="user-info-container">
+          <div className="info-text-container">
+            <h3 className="title-text">
+              <span className="tab-block">{user.username} 님의 </span>
+              <span className="tab-block">서비스 이용 현황입니다.</span>
+              {/* <span className="membership-badge">{user.plan.name}</span> */}
+            </h3>
+            <p>
+              <span className="tab-block">
+                배포한 프로젝트는 {totalProjects}개이며,{" "}
+              </span>
+              <span className="tab-block">
+                현재 활성화 프로젝트는 {activeProjects}개,{" "}
+              </span>
+              <span className="tab-block">
+                비활성화 프로젝트는 {inactiveProjects}
+                개입니다.
+              </span>
+            </p>
+          </div>
 
-        {/* 리소스 사용량 */}
-        <div className="resource-container">
-          <div className="storage-container">
-            <div className="text-box">
-              <div className="title-box">
-                <p className="title">스토리지 사용량</p>
-                <Tooltip
-                  content={`현재 사용중인 ${
-                    user?.plan?.name
-                  } 요금제는 한 프로젝트 당 ${formatStorage(
-                    user?.plan?.storage
-                  )}입니다.`}
-                >
-                  <i className="fa-solid fa-circle-info"></i>
-                </Tooltip>
+          {/* 리소스 사용량 */}
+          <div className="resource-container">
+            <div className="storage-container">
+              <div className="text-box">
+                <div className="title-box">
+                  <p className="title">스토리지 사용량</p>
+                  <Tooltip
+                    content={`현재 사용중인 ${
+                      user?.plan?.name
+                    } 요금제는 한 프로젝트 당 ${formatStorage(
+                      user?.plan?.storage
+                    )}입니다.`}
+                  >
+                    <i className="fa-solid fa-circle-info"></i>
+                  </Tooltip>
+                </div>
+                <p className="usage eng">
+                  <span className="used">{Math.round(totalStorageUsed)}</span>/
+                  <span className="total">{Math.round(storageLimit)}</span>
+                  <span> MB</span>
+                </p>
               </div>
-              <p className="usage eng">
-                <span className="used">{Math.round(totalStorageUsed)}</span>/
-                <span className="total">{Math.round(storageLimit)}</span>
-                <span> MB</span>
-              </p>
+              <div className="bar-box">
+                <div
+                  className={`fill-bar ${getBarClass(storagePercentage)}`}
+                  style={{ width: `${storagePercentage}%` }}
+                ></div>
+              </div>
             </div>
-            <div className="bar-box">
-              <div
-                className={`fill-bar ${getBarClass(storagePercentage)}`}
-                style={{ width: `${storagePercentage}%` }}
-              ></div>
+            <div className="traffic-container">
+              <div className="text-box">
+                <div className="title-box">
+                  <p className="title">트래픽 사용량</p>
+                  <Tooltip content="트래픽 초과시 프로젝트 전체 비활성화될 수 있습니다.">
+                    <i className="fa-solid fa-circle-info"></i>
+                  </Tooltip>
+                </div>
+                <p className="usage eng">
+                  <span className="used">{Math.round(totalTrafficUsed)}</span>/
+                  <span className="total">
+                    {formatStorage(user.plan.traffic)}
+                  </span>
+                </p>
+              </div>
+              <div className="bar-box">
+                <div
+                  className={`fill-bar ${getBarClass(trafficPercentage)}`}
+                  style={{ width: `${trafficPercentage}%` }}
+                ></div>
+              </div>
             </div>
           </div>
-          <div className="traffic-container">
-            <div className="text-box">
-              <div className="title-box">
-                <p className="title">트래픽 사용량</p>
-                <Tooltip content="트래픽 초과시 프로젝트 전체 비활성화될 수 있습니다.">
-                  <i className="fa-solid fa-circle-info"></i>
-                </Tooltip>
-              </div>
-              <p className="usage eng">
-                <span className="used">{Math.round(totalTrafficUsed)}</span>/
-                <span className="total">
-                  {formatStorage(user.plan.traffic)}
-                </span>
-              </p>
-            </div>
-            <div className="bar-box">
-              <div
-                className={`fill-bar ${getBarClass(trafficPercentage)}`}
-                style={{ width: `${trafficPercentage}%` }}
-              ></div>
-            </div>
-          </div>
         </div>
-
         {/* 프로젝트 목록 */}
         <div className="project-list-container">
           <p className="project-counter eng">
@@ -263,7 +273,7 @@ const Dashboard = () => {
                   ></span>
                   <p className="project-title">{project.repo_name}</p>
                   {/* 추후 domain -> subdomain 으로 변경 */}
-                  <p className="project-url">{project.domain}</p>
+                  <p className="project-url">{project.subdomain}</p>
                   <p className="version">
                     ver.{" "}
                     <span>
