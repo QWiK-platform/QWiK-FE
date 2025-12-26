@@ -194,13 +194,7 @@ const Dashboard = () => {
               <div className="text-box">
                 <div className="title-box">
                   <p className="title">스토리지 사용량</p>
-                  <Tooltip
-                    content={`현재 사용중인 ${
-                      user?.plan?.name
-                    } 요금제는 한 프로젝트 당 ${formatStorage(
-                      user?.plan?.storage
-                    )}입니다.`}
-                  >
+                  <Tooltip content="총 용량 = 프로젝트 당 스토리지 × 프로젝트 배포 가능 개수">
                     <i className="fa-solid fa-circle-info"></i>
                   </Tooltip>
                 </div>

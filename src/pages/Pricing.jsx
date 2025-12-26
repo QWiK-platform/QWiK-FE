@@ -16,9 +16,9 @@ const Pricing = () => {
   const getBenefits = (plan) => {
     const benefits = [
       `프로젝트 최대 ${plan.projects}개 배포`,
-      `프로젝트 당 메모리 ${plan.projectCapacity} 제공`,
-      `계정 당 총 메모리 ${plan.memory} 제공`,
-      `계정 당 총 트래픽 ${plan.traffic} 제공`,
+      `프로젝트 당 스토리지 ${plan.projectCapacity} MB 제공`,
+      `계정 당 총 메모리 ${plan.memory} MB 제공`,
+      `계정 당 총 트래픽 ${plan.traffic} MB 제공`,
     ];
 
     if (plan.domains > 0) {

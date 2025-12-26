@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./Index.css";
 
 const Index = () => {
+  const navigate = useNavigate();
   const indexDeploymentsList = [
     {
       id: 1,
@@ -38,7 +40,10 @@ const Index = () => {
           <div className="step-container">
             <div className="step-box">
               <span className="step-num">step 1</span>
-              <div className="step-info-text-box first">
+              <div
+                className="step-info-text-box first"
+                onClick={() => navigate("/login")}
+              >
                 <i className="fab fa-github"></i>GitHub Login
               </div>
             </div>

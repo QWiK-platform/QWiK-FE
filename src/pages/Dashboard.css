@@ -28,6 +28,7 @@
 .dashboard-section .resource-container .text-box {
   display: flex;
   justify-content: space-between;
+  position: relative;
 }
 
 .dashboard-section .resource-container .title-box {
