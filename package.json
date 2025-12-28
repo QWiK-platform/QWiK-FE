@@ -2,7 +2,6 @@
   "name": "platform-frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://qwik-alb-1978166395.ap-northeast-2.elb.amazonaws.com",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@testing-library/dom": "^10.4.1",
