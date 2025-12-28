@@ -16,7 +16,7 @@ const Dashboard = () => {
     const fetchUser = async () => {
       try {
         setUserLoading(true);
-        const response = await client.get("/user");
+        const response = await client.get("/user/");
 
         if (response.status === 200) {
           setUser(response.data);
