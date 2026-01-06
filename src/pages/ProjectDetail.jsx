@@ -8,7 +8,7 @@ const ProjectDetail = () => {
   // 모달 핸들링
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    setNewSubdomain("");
+    // setNewSubdomain("");
   };
 
   const handleCloseModal = () => {
@@ -32,7 +32,7 @@ const ProjectDetail = () => {
                 rel="noopener noreferrer"
                 className="project-url eng"
               >
-                subdomain.qwik.com
+                subdomain.qw1k.cloud
               </a>
               <button
                 className="change-subdomain-btn"
