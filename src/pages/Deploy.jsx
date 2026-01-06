@@ -19,10 +19,10 @@ const Deploy = () => {
     setStep(2);
 
     try {
-      console.log("📤 보내는 데이터:", { github_url: repositoryUrl });
+      console.log("📤 보내는 데이터:", { repo_url: repositoryUrl });
 
       const response = await client.post("/deploy", {
-        github_url: repositoryUrl,
+        repo_ur: repositoryUrl,
       });
 
       console.log("✅ API 응답:", response.data);
