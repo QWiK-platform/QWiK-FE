@@ -12,7 +12,7 @@ const Login = () => {
     setModalOpen(true);
   };
 
-  const handleCloseTermsModal = (termsType) => {
+  const handleCloseTermsModal = () => {
     setModalOpen(false);
     setCurrentTerms(null);
   };
@@ -33,7 +33,7 @@ const Login = () => {
       <div className="wrap">
         <div className="login-container">
           <div className="info-container">
-            <p className="slogun-text">간편한 자동배포의 시작,</p>
+            <p className="slogun-text">간편하고 빠른 배포의 시작,</p>
             <div className="img-box">
               <img src="/logo-qwik.svg" alt="QWiK 로고" />
             </div>

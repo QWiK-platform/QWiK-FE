@@ -1,12 +1,3 @@
-.progress-component
-  .progress-container
-  .text-box
-  .progress-text
-  .percent-num
-  .progress-bar
-  .fill {
-}
-
 .progress-component .text-box {
   display: flex;
   justify-content: space-between;
@@ -24,6 +15,11 @@
   height: 16px;
   border-radius: 10px;
   background-color: var(--secondary-bg);
+  overflow: hidden;
+}
+
+.progress-component .progress-bar .fill {
+  background-color: var(--accent-color);
 }
 
 /* deploy page */

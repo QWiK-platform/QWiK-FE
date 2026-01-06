@@ -2,14 +2,40 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./ProgressBar.css";
 
-const ProgressBar = ({
-  targetProgress = 0,
-  progressText = "progress text",
-  duration = 1500,
-}) => {
+const ProgressBar = ({ mockMode = true }) => {
   const [displayProgress, setDisplayProgress] = useState(0);
+  const [progressText, setProgressText] = useState("배포 준비 중");
+  const [targetProgress, setTargetProgress] = useState(0);
 
-  // targetProgress가 변경될 때마다 부드럽게 애니메이션
+  // 단계별 진행
+  useEffect(() => {
+    if (!mockMode) return;
+
+    const steps = [
+      { progress: 0, message: "코드 검사" },
+      { progress: 10, message: "용량 확인" },
+      { progress: 20, message: "의존성 설치" },
+      { progress: 60, message: "코드 빌드" },
+      { progress: 80, message: "배포 준비" },
+      { progress: 100, message: "배포 완료" },
+    ];
+
+    let currentStep = 0;
+
+    const interval = setInterval(() => {
+      if (currentStep < steps.length) {
+        setTargetProgress(steps[currentStep].progress);
+        setProgressText(steps[currentStep].message);
+        currentStep++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [mockMode]);
+
+  // 숫자 부드럽게 애니메이션
   useEffect(() => {
     let startTime = null;
     let startValue = displayProgress;
@@ -18,7 +44,7 @@ const ProgressBar = ({
     const animate = (timestamp) => {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+      const progress = Math.min(elapsed / 1500, 1); // 1.5초 애니메이션
 
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const currentValue = startValue + (targetProgress - startValue) * easeOut;
@@ -39,7 +65,7 @@ const ProgressBar = ({
         cancelAnimationFrame(animationFrame);
       }
     };
-  }, [targetProgress, duration]);
+  }, [targetProgress]); // displayProgress 의존성 제거
 
   return (
     <div className="progress-component">
@@ -52,8 +78,8 @@ const ProgressBar = ({
           <div
             className="fill"
             style={{
-              width: `${displayProgress}%`,
-              transition: "width 0.1s ease-out",
+              width: `${displayProgress}%`, // 숫자와 동기화
+              transition: "none", // JS 애니메이션 사용
             }}
           ></div>
         </div>
@@ -63,9 +89,7 @@ const ProgressBar = ({
 };
 
 ProgressBar.propTypes = {
-  targetProgress: PropTypes.number,
-  progressText: PropTypes.string,
-  duration: PropTypes.number,
+  mockMode: PropTypes.bool,
 };
 
 export default ProgressBar;

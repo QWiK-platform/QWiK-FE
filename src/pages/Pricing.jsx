@@ -3,6 +3,11 @@ import "./Pricing.css";
 import { planList } from "../data/pricing/planList";
 
 const Pricing = () => {
+  // MB를 GB로 변환하는 함수
+  const formatTraffic = (trafficMB) => {
+    const trafficGB = trafficMB / 1000;
+    return trafficGB >= 1 ? `${trafficGB} GB` : `${trafficMB} MB`;
+  };
   // planList 객체를 배열로 변환하고 sortId로 정렬
   const plansArray = Object.entries(planList)
     .map(([key, plan]) => ({
@@ -17,8 +22,8 @@ const Pricing = () => {
     const benefits = [
       `프로젝트 최대 ${plan.projects}개 배포`,
       `프로젝트 당 스토리지 ${plan.projectCapacity} MB 제공`,
-      `계정 당 총 메모리 ${plan.memory} MB 제공`,
-      `계정 당 총 트래픽 ${plan.traffic} MB 제공`,
+      // `계정 당 총 메모리 ${plan.memory} MB 제공`,
+      `계정 당 총 트래픽 ${formatTraffic(plan.traffic)} 제공`,
     ];
 
     if (plan.domains > 0) {
@@ -26,7 +31,9 @@ const Pricing = () => {
     }
 
     if (plan.extraBenefit?.traffic) {
-      benefits.push(`트래픽 ${plan.extraBenefit.traffic} 추가 1회 무료`);
+      benefits.push(
+        `트래픽 ${formatTraffic(plan.extraBenefit.traffic)} 추가 1회 무료`
+      );
     }
 
     return benefits;

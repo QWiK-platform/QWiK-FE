@@ -1,35 +1,30 @@
 import React, { useState } from "react";
 import "./Deploy.css";
-import client from "../api/client";
+// import client from "../api/client";  // API 연동시 사용
 import ProgressBar from "../components/ProgressBar";
 
 const Deploy = () => {
   const [step, setStep] = useState(1);
   const [deployStatus, setDeployStatus] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [repositoryUrl, setRepositoryUrl] = useState(""); // input 값 저장
-  const [deployResult, setDeployResult] = useState(null); // API 응답 저장
-
-  console.log("현재 step:", step);
-  console.log("readOnly 상태:", step !== 1);
+  const [errorMessage, setErrorMessage] = useState(""); // eslint-disable-line no-unused-vars
+  const [repositoryUrl, setRepositoryUrl] = useState("");
+  const [deployResult, setDeployResult] = useState(null); // eslint-disable-line no-unused-vars
 
   const handleDeploy = async () => {
-    console.log("RepositoryUrl 값:", repositoryUrl);
-    console.log("trim 후:", repositoryUrl.trim());
-    console.log("빈 문자열인가?:", !repositoryUrl.trim());
-
     if (!repositoryUrl.trim()) {
       alert("레포지토리 URL을 입력해주세요!");
       return;
     }
 
-    try {
-      setStep(2);
+    setStep(2);
 
-      console.log("📤 보내는 데이터:", { github_url: repositoryUrl }); // 로그도 수정
+    // 실제 API 연동시 사용할 코드 (현재 주석)
+    /*
+    try {
+      console.log("📤 보내는 데이터:", { github_url: repositoryUrl });
 
       const response = await client.post("/deploy", {
-        github_url: repositoryUrl, // ✅ repo_url → github_url로 변경
+        github_url: repositoryUrl,
       });
 
       console.log("✅ API 응답:", response.data);
@@ -37,7 +32,6 @@ const Deploy = () => {
       setDeployResult(response.data);
       setStep(3);
 
-      // status 값으로 성공/실패 판단
       if (response.data.status === "success") {
         setDeployStatus("success");
       } else {
@@ -50,6 +44,7 @@ const Deploy = () => {
       setDeployStatus("failure");
       setErrorMessage(error.response?.data?.message || "API 호출 실패");
     }
+    */
   };
 
   return (
@@ -104,6 +99,7 @@ const Deploy = () => {
           실패
         </button>
       </div>
+
       <div className="wrap">
         <div className="input-container">
           <div className="input-box">
@@ -126,30 +122,9 @@ const Deploy = () => {
             </button>
           </div>
         </div>
-        {step === 2 && <ProgressBar />}
-        {/* 실시간 로그 기준 */}
-        {/* {step === 2 && (
-          <div className="log-container eng">
-            <div className="log-box">
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-              <p>code building</p>
-            </div>
-          </div>
-        )} */}
+
+        {step === 2 && <ProgressBar mockMode={true} />}
+
         {step === 3 && deployStatus === "success" && (
           <div className="result-container success">
             <div className="text-box">
@@ -167,6 +142,7 @@ const Deploy = () => {
             </div>
           </div>
         )}
+
         {step === 3 && deployStatus === "failure" && (
           <div className="result-container failure">
             <div className="text-box">

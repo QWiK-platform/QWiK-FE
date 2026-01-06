@@ -1,0 +1,15 @@
+.my-page-section {
+  height: 100vh;
+}
+
+.my-page-section .plan-container {
+  margin-top: 50px;
+}
+
+.my-page-section .usage-container {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  width: 500px;
+}
