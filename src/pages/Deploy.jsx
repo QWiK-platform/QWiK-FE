@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Deploy.css";
-// import client from "../api/client";  // API 연동시 사용
+import client from "../api/client";
 import ProgressBar from "../components/ProgressBar";
 
 const Deploy = () => {
@@ -18,8 +18,6 @@ const Deploy = () => {
 
     setStep(2);
 
-    // 실제 API 연동시 사용할 코드 (현재 주석)
-    /*
     try {
       console.log("📤 보내는 데이터:", { github_url: repositoryUrl });
 
@@ -44,12 +42,11 @@ const Deploy = () => {
       setDeployStatus("failure");
       setErrorMessage(error.response?.data?.message || "API 호출 실패");
     }
-    */
   };
 
   return (
     <section className={`deploy-section step-${step}`}>
-      {/* 🎮 임시 리모컨 (개발용) */}
+      {/* 🎮 임시 리모컨 (개발용)
       <div
         style={{
           position: "fixed",
@@ -98,8 +95,7 @@ const Deploy = () => {
         >
           실패
         </button>
-      </div>
-
+      </div> */}
       <div className="wrap">
         <div className="input-container">
           <div className="input-box">
