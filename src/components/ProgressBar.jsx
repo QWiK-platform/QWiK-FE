@@ -12,7 +12,7 @@ const ProgressBar = ({ mockMode = true }) => {
     if (!mockMode) return;
 
     const steps = [
-      { progress: 0, message: "코드 검사" },
+      { progress: 5, message: "코드 검사" },
       { progress: 10, message: "용량 확인" },
       { progress: 20, message: "의존성 설치" },
       { progress: 60, message: "코드 빌드" },

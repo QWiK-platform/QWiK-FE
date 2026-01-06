@@ -1,6 +1,8 @@
 export const serviceTerms = {
   title: "QWiK 서비스 이용약관",
   lastUpdated: "2025.11.21",
+  effectiveDate: "2025.11.21",
+
   sections: [
     {
       id: "article1",

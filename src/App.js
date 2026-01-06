@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"; // ✅ 추가
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
+import Footer from './components/Footer';
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Deploy from "./pages/Deploy";
@@ -9,6 +10,7 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Settings from "./pages/Settings";
 import AuthCallback from "./pages/AuthCallback";
 import Pricing from "./pages/Pricing";
+import Term from './components/Term';
 import "./App.css";
 
 function App() {
@@ -35,7 +37,9 @@ function App() {
           <Route path="/project/:id" element={<ProjectDetail />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/terms/:type" element={<Term />} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );

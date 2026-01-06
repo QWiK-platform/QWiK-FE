@@ -2,6 +2,8 @@ export const repositoryAccess = {
   title: "GitHub 레포지토리 접근 동의서",
   subtitle: "QWiK 서비스 이용을 위해 다음 권한에 동의합니다",
   lastUpdated: "2025.11.21",
+  effectiveDate: "2025.11.21",
+
   sections: [
     {
       id: "scope",
