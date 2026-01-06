@@ -1,12 +1,3 @@
-.progress-component
-  .progress-container
-  .text-box
-  .progress-text
-  .percent-num
-  .progress-bar
-  .fill {
-}
-
 .progress-component .text-box {
   display: flex;
   justify-content: space-between;
@@ -24,6 +15,21 @@
   height: 16px;
   border-radius: 10px;
   background-color: var(--secondary-bg);
+}
+
+.progress-component .progress-bar .fill {
+  border-radius: inherit;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    #c4a484 0%,
+    /* 파스텔 브라운 */ #a8b5d1 25%,
+    /* 연한 블루 그레이 */ #8fc4e0 50%,
+    /* 스카이 블루 */ #7a8cb8 75%,
+    /* 톤다운 블루 */ #c4a484 100% /* 다시 브라운으로 (무한 루프) */
+  );
+  background-size: 300% 100%;
+  animation: endless-flow 6s linear infinite;
 }
 
 /* deploy page */
@@ -47,5 +53,14 @@
   }
   100% {
     content: "";
+  }
+}
+
+@keyframes endless-flow {
+  0% {
+    background-position: 300% 0%;
+  }
+  100% {
+    background-position: 0% 0%;
   }
 }
