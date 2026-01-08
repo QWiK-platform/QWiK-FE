@@ -37,3 +37,9 @@
 .term-section .term-content .term-section-content pre {
   color: var(--text-color);
 }
+
+@media (max-width: 680px) {
+  .term-section .wrap {
+    width: calc(100% - 40px);
+  }
+}

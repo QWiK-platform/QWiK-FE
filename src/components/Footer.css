@@ -18,3 +18,11 @@ footer .company-info-container {
   font-size: 1.2rem;
   line-height: 3;
 }
+
+@media (max-width: 768px) {
+  footer .term-container {
+    display: block;
+    text-align: center;
+    line-height: 1.8;
+  }
+}

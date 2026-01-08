@@ -19,28 +19,28 @@ const ProjectDetail = () => {
     <section className="project-detail-section">
       <div className="wrap">
         <div className="project-info-container">
+          <div className="btn-box">
+            <button className="project-delete-btn eng">DELETE</button>
+          </div>
           <p className="project-address eng">githubId/repository-name</p>
           <div className="title-box pos-rel">
             <p className="title">Project Name</p>
             <div className="toggle-box inactive">
               <span className="toggle"></span>
             </div>
-            <div className="subdomain-box">
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="project-url eng"
-              >
-                subdomain.qw1k.cloud
-              </a>
-              <button
-                className="change-subdomain-btn"
-                onClick={handleOpenModal}
-              >
-                변경하기
-              </button>
-            </div>
+          </div>
+          <div className="subdomain-box">
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="project-url eng"
+            >
+              subdomain.qw1k.cloud
+            </a>
+            <button className="change-subdomain-btn" onClick={handleOpenModal}>
+              변경하기
+            </button>
           </div>
         </div>
         <div className="resource-container">
