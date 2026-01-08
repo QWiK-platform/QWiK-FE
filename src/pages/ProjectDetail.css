@@ -166,16 +166,16 @@
 
 /* change subdomain modal */
 
-.change-subdomain-modal .text-box .title {
+.project-detail-section .text-box .title {
   font-size: 2rem;
   font-weight: 500;
 }
 
-.change-subdomain-modal .notice-box {
+.project-detail-section .notice-box {
   margin-top: 20px;
 }
 
-.change-subdomain-modal .notice-box p {
+.project-detail-section .notice-box p {
   margin: 6px 0;
 }
 
@@ -203,6 +203,18 @@
 .change-subdomain-modal .input-box button:hover {
   background-color: var(--primary-color);
   color: #fff;
+}
+
+.delete-project-modal .input-box {
+  margin: 5px 0;
+}
+
+.delete-project-modal .input-box input {
+  width: 100%;
+}
+
+.delete-project-modal .btn-box {
+  margin-top: 20px;
 }
 
 @media (max-width: 650px) {

@@ -170,7 +170,7 @@ const ProjectDetail = () => {
               >
                 취소
               </button>
-              <button className="delete-btn">삭제</button>
+              <button className="delete-btn accent">삭제</button>
             </div>
           </div>
         </div>
