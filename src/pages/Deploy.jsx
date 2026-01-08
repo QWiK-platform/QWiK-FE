@@ -46,56 +46,6 @@ const Deploy = () => {
 
   return (
     <section className={`deploy-section step-${step}`}>
-      {/* 🎮 임시 리모컨 (개발용)
-      <div
-        style={{
-          position: "fixed",
-          top: "150px",
-          right: "80px",
-          background: "#fff",
-          border: "2px solid #ccc",
-          padding: "10px",
-          borderRadius: "8px",
-          zIndex: 1000,
-          fontSize: "12px",
-        }}
-      >
-        <div style={{ marginBottom: "5px", fontWeight: "bold" }}>
-          🎮 Dev Remote (Step: {step}, Status: {deployStatus || "none"})
-        </div>
-        <button
-          onClick={() => {
-            setStep(1);
-            setDeployStatus(null);
-          }}
-        >
-          1단계
-        </button>
-        <button
-          onClick={() => {
-            setStep(2);
-            setDeployStatus(null);
-          }}
-        >
-          2단계
-        </button>
-        <button
-          onClick={() => {
-            setStep(3);
-            setDeployStatus("success");
-          }}
-        >
-          성공
-        </button>
-        <button
-          onClick={() => {
-            setStep(3);
-            setDeployStatus("failure");
-          }}
-        >
-          실패
-        </button>
-      </div> */}
       <div className="wrap">
         <div className="input-container">
           <div className="input-box">

@@ -2,17 +2,26 @@ import React, { useState } from "react";
 import "./ProjectDetail.css";
 
 const ProjectDetail = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [subdomainModalOpen, setSubdomainModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   // const [newSubdomain, setNewSubdomain] = useState("");
 
   // 모달 핸들링
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleOpenSubdomainModal = () => {
+    setSubdomainModalOpen(true);
     // setNewSubdomain("");
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseSubdomainModal = () => {
+    setSubdomainModalOpen(false);
+  };
+
+  const handleOpenDeleteModal = () => {
+    setDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeleteModalOpen(false);
   };
 
   return (
@@ -20,7 +29,12 @@ const ProjectDetail = () => {
       <div className="wrap">
         <div className="project-info-container">
           <div className="btn-box">
-            <button className="project-delete-btn eng">DELETE</button>
+            <button
+              className="project-delete-btn eng"
+              onClick={() => setDeleteModalOpen(true)}
+            >
+              DELETE
+            </button>
           </div>
           <p className="project-address eng">githubId/repository-name</p>
           <div className="title-box pos-rel">
@@ -38,7 +52,10 @@ const ProjectDetail = () => {
             >
               subdomain.qw1k.cloud
             </a>
-            <button className="change-subdomain-btn" onClick={handleOpenModal}>
+            <button
+              className="change-subdomain-btn"
+              onClick={() => setSubdomainModalOpen(true)}
+            >
               변경하기
             </button>
           </div>
@@ -87,7 +104,7 @@ const ProjectDetail = () => {
           </div>
         </div>
       </div>
-      {isModalOpen && (
+      {subdomainModalOpen && (
         <div className="modal-bg">
           <div className="modal-popup change-subdomain-modal">
             <div className="text-box">
@@ -111,10 +128,49 @@ const ProjectDetail = () => {
               <button className="check for duplicates">중복확인</button>
             </div>
             <div className="confirm-btn-box btn-box">
-              <button className="cancel-btn" onClick={handleCloseModal}>
+              <button
+                className="cancel-btn"
+                onClick={() => setSubdomainModalOpen(false)}
+              >
                 닫기
               </button>
               <button className="change-btn accent">변경</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {deleteModalOpen && (
+        <div className="modal-bg">
+          <div className="modal-popup delete-project-modal">
+            <div className="title-box">
+              <p className="title">프로젝트를 삭제하시겠습니까?</p>
+              <div className="notice-box">
+                <p>프로젝트 삭제를 위해서는 아래 값을 정확하게 입력해주세요.</p>
+                <p>삭제 이후에는 해당 프로젝트 내용을 복구할 수 없습니다.</p>
+              </div>
+            </div>
+            <div className="input-box">
+              <input
+                type="text"
+                className="check-repository"
+                placeholder="레포지토리 이름을 입력해주세요."
+              />
+            </div>
+            <div className="input-box">
+              <input
+                type="text"
+                className="check-subdomain"
+                placeholder="삭제하고자 하는 프로젝트의 주소를 정확하게 입력해주세요."
+              />
+            </div>
+            <div className="btn-box delete-btn-box">
+              <button
+                className="cancel-btn"
+                onClick={() => setDeleteModalOpen(false)}
+              >
+                취소
+              </button>
+              <button className="delete-btn">삭제</button>
             </div>
           </div>
         </div>
