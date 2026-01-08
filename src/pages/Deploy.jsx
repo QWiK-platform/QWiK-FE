@@ -22,7 +22,7 @@ const Deploy = () => {
       console.log("📤 보내는 데이터:", { repo_url: repositoryUrl });
 
       const response = await client.post("/deploy", {
-        repo_ur: repositoryUrl,
+        repo_url: repositoryUrl,
       });
 
       console.log("✅ API 응답:", response.data);
