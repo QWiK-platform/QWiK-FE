@@ -107,7 +107,7 @@ const ProjectDetail = () => {
       {subdomainModalOpen && (
         <div className="modal-bg">
           <div className="modal-popup change-subdomain-modal">
-            <div className="text-box">
+            <div className="title-box">
               <p className="title">변경 전 확인해주세요!</p>
               <div className="notice-box">
                 <p>변경 버튼을 눌러야만 변경됩니다.</p>
@@ -160,7 +160,7 @@ const ProjectDetail = () => {
               <input
                 type="text"
                 className="check-subdomain"
-                placeholder="삭제하고자 하는 프로젝트의 주소를 정확하게 입력해주세요."
+                placeholder="삭제하는 프로젝트의 주소를 정확하게 입력해주세요."
               />
             </div>
             <div className="btn-box delete-btn-box">

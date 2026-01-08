@@ -166,16 +166,16 @@
 
 /* change subdomain modal */
 
-.project-detail-section .text-box .title {
+.project-detail-section .modal-popup .title-box .title {
   font-size: 2rem;
   font-weight: 500;
 }
 
-.project-detail-section .notice-box {
+.project-detail-section .modal-popup .notice-box {
   margin-top: 20px;
 }
 
-.project-detail-section .notice-box p {
+.project-detail-section .modal-popup .notice-box p {
   margin: 6px 0;
 }
 
