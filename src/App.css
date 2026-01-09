@@ -65,6 +65,12 @@ pre {
   overflow-wrap: break-word;
 }
 
+.ellipsis-1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* modal popup setting */
 
 .modal-bg {

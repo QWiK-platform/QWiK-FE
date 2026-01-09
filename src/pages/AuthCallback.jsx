@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import client from "../api/client";
+import Loader from "../components/Loader";
 import "./AuthCallback.css";
 
 async function sendCodeToBackend(code) {
@@ -53,21 +54,7 @@ const AuthCallback = ({ setIsLoggedIn }) => {
   return (
     <section className="auth-section">
       <div className="wrap">
-        <div className="lds-spinner">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <p>GitHub에서 정보를 연동중입니다.</p>
+        <Loader text="GitHub에서 정보를 연동중입니다." />
       </div>
     </section>
   );

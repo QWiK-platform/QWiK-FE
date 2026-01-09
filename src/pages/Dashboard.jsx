@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import client from "../api/client";
+import Loader from "../components/Loader";
 import Tooltip from "../components/Tooltip";
 
 const Dashboard = () => {
@@ -9,6 +10,8 @@ const Dashboard = () => {
   const [projects, setProjects] = useState([]);
   const [userLoading, setUserLoading] = useState(true);
   const [projectsLoading, setProjectsLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] =
+    useState("사용자 정보 로딩 중...");
   const navigate = useNavigate();
 
   // 유저 API 호출
@@ -53,12 +56,25 @@ const Dashboard = () => {
     fetchDashboard();
   }, []);
 
+  // 로딩 메시지 변경용 useEffect
+  useEffect(() => {
+    if (userLoading) {
+      setLoadingMessage("사용자 정보 로딩 중..."); // 초기 메시지
+
+      const timer = setTimeout(() => {
+        setLoadingMessage("프로젝트 카드 구성 중...");
+      }, 1500); // 2초 후 메시지 변경
+
+      return () => clearTimeout(timer);
+    }
+  }, [userLoading]);
+
   // 로딩 체크
   if (userLoading) {
     return (
       <section className="dashboard-section">
         <div className="wrap">
-          <div className="loading">사용자 정보 로딩 중...</div>
+          <Loader text={loadingMessage} />
         </div>
       </section>
     );
@@ -266,8 +282,9 @@ const Dashboard = () => {
                     }`}
                   ></span>
                   <p className="project-title">{project.repo_name}</p>
-                  {/* 추후 domain -> subdomain 으로 변경 */}
-                  <p className="project-url">{project.subdomain}</p>
+                  <p className="project-url ellipsis-1">
+                    {project.subdomain}.qw1k.cloud
+                  </p>
                   <p className="version">
                     ver.{" "}
                     <span>
