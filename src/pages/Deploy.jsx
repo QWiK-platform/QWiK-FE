@@ -187,7 +187,7 @@ const Deploy = () => {
         )}
 
         {/* ✅ 성공 결과 */}
-        {step === 3 && deployStatus === "success" && domainReady && (
+        {step === 3 && deployStatus === "Success" && domainReady && (
           <div className="result-container success">
             <div className="text-box">
               <p className="success-message title-text">
@@ -219,7 +219,7 @@ const Deploy = () => {
         )}
 
         {/* ❌ 실패 결과 */}
-        {step === 3 && deployStatus === "failure" && (
+        {step === 3 && deployStatus === "Failed" && (
           <div className="result-container failure">
             <div className="text-box">
               <p className="error-message title-text">배포에 실패했습니다</p>
