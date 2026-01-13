@@ -27,8 +27,8 @@ const Deploy = () => {
     // deploymentId가 있고 success가 아닐 때만 폴링
     if (
       deploymentId &&
-      deployStatus !== "success" &&
-      deployStatus !== "failure"
+      deployStatus !== "Success" &&
+      deployStatus !== "Failed"
     ) {
       pollingInterval = setInterval(() => {
         pollDeployStatus();
@@ -36,7 +36,7 @@ const Deploy = () => {
     }
 
     // success이고 domain이 있지만 아직 준비 안됐을 때
-    if (deployStatus === "success" && domain && !domainReady) {
+    if (deployStatus === "Success" && domain && !domainReady) {
       domainInterval = setInterval(() => {
         checkDomainReady();
       }, 5000);
@@ -81,7 +81,7 @@ const Deploy = () => {
         error.response?.data?.message || "배포 시작에 실패했습니다."
       );
       setStep(3);
-      setDeployStatus("failure");
+      setDeployStatus("Failed");
     }
   };
 
@@ -97,11 +97,11 @@ const Deploy = () => {
 
       setDeployStatus(status);
 
-      if (status === "success") {
+      if (status === "Success") {
         // 성공하면 도메인 체크 시작
         const domainFromApi = response.data.domain || domain;
         setDomain(domainFromApi);
-      } else if (status === "failure") {
+      } else if (status === "Failed") {
         setStep(3);
         setErrorMessage(response.data.message || "빌드에 실패했습니다.");
       }
