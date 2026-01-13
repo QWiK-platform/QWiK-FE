@@ -1,17 +1,18 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./ProgressBar.css";
 
-const ProgressBar = ({ mockMode = true }) => {
+const ProgressBar = ({ phase = 1, deploymentId = null, onComplete = null }) => {
   const [displayProgress, setDisplayProgress] = useState(0);
   const [progressText, setProgressText] = useState("배포 준비 중");
   const [targetProgress, setTargetProgress] = useState(0);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
-  // 단계별 진행
-  useEffect(() => {
-    if (!mockMode) return;
-
-    const steps = [
+  // Phase별 설정
+  const getPhaseConfig = (phase) => {
+    const allSteps = [
       { progress: 5, message: "코드 검사" },
       { progress: 10, message: "용량 확인" },
       { progress: 20, message: "의존성 설치" },
@@ -20,20 +21,57 @@ const ProgressBar = ({ mockMode = true }) => {
       { progress: 100, message: "배포 완료" },
     ];
 
-    let currentStep = 0;
+    switch (phase) {
+      case 1:
+        return {
+          steps: allSteps.slice(0, 2), // 0, 1번 (코드검사, 용량확인)
+          interval: 1500,
+          startIndex: 0,
+        };
+      case 2:
+        return {
+          steps: allSteps.slice(2, 5), // 2, 3, 4번 (의존성~배포준비)
+          interval: 8000,
+          startIndex: 2,
+        };
+      case 3:
+        return {
+          steps: allSteps.slice(5, 6), // 5번 (배포완료)
+          interval: 0,
+          startIndex: 5,
+        };
+      default:
+        return { steps: [], interval: 0, startIndex: 0 };
+    }
+  };
 
-    const interval = setInterval(() => {
-      if (currentStep < steps.length) {
-        setTargetProgress(steps[currentStep].progress);
-        setProgressText(steps[currentStep].message);
-        currentStep++;
-      } else {
-        clearInterval(interval);
+  // Phase별 진행
+  useEffect(() => {
+    const config = getPhaseConfig(phase);
+    if (config.steps.length === 0) return;
+
+    let stepIndex = 0;
+    setCurrentStepIndex(config.startIndex);
+
+    const runSteps = () => {
+      if (stepIndex < config.steps.length) {
+        const currentStep = config.steps[stepIndex];
+        setTargetProgress(currentStep.progress); // 이게 바뀌면 아래 useEffect 작동
+        setProgressText(currentStep.message);
+        stepIndex++;
+
+        if (stepIndex < config.steps.length && config.interval > 0) {
+          setTimeout(runSteps, config.interval);
+        } else if (phase === 3 && onComplete) {
+          setTimeout(() => {
+            onComplete();
+          }, 2000);
+        }
       }
-    }, 2000);
+    };
 
-    return () => clearInterval(interval);
-  }, [mockMode]);
+    runSteps();
+  }, [phase, onComplete]);
 
   // 숫자 부드럽게 애니메이션
   useEffect(() => {
@@ -89,7 +127,9 @@ const ProgressBar = ({ mockMode = true }) => {
 };
 
 ProgressBar.propTypes = {
-  mockMode: PropTypes.bool,
+  phase: PropTypes.number,
+  deploymentId: PropTypes.string,
+  onComplete: PropTypes.func,
 };
 
 export default ProgressBar;

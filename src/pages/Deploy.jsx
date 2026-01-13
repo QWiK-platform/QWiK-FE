@@ -9,6 +9,13 @@ const Deploy = () => {
   const [errorMessage, setErrorMessage] = useState(""); // eslint-disable-line no-unused-vars
   const [repositoryUrl, setRepositoryUrl] = useState("");
   const [deployResult, setDeployResult] = useState(null); // eslint-disable-line no-unused-vars
+  const [deployPhase, setDeployPhase] = useState(1);
+  const [deploymentId, setDeploymentId] = useState(null);
+
+  // ProgressBar 완료 콜백
+  const handleProgressComplete = () => {
+    setStep(3); // Step 3으로 이동
+  };
 
   const handleDeploy = async () => {
     if (!repositoryUrl.trim()) {
@@ -16,26 +23,16 @@ const Deploy = () => {
       return;
     }
 
+    setDeployPhase(1);
     setStep(2);
 
     try {
-      console.log("📤 보내는 데이터:", { repo_url: repositoryUrl });
-
       const response = await client.post("/deploy", {
         repo_url: repositoryUrl,
       });
 
-      console.log("✅ API 응답:", response.data);
-
-      setDeployResult(response.data);
-      setStep(3);
-
-      if (response.data.status === "success") {
-        setDeployStatus("success");
-      } else {
-        setDeployStatus("failure");
-        setErrorMessage(response.data.message || "배포 실패");
-      }
+      setDeploymentId(response.data.deployment_id);
+      setDeployPhase(2);
     } catch (error) {
       console.error("❌ API 에러:", error.response?.data);
       setStep(3);
@@ -69,7 +66,13 @@ const Deploy = () => {
           </div>
         </div>
 
-        {step === 2 && <ProgressBar mockMode={true} />}
+        {step === 2 && (
+          <ProgressBar
+            phase={deployPhase}
+            deploymentId={deploymentId}
+            onComplete={handleProgressComplete}
+          />
+        )}
 
         {step === 3 && deployStatus === "success" && (
           <div className="result-container success">

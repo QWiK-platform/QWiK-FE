@@ -10,6 +10,7 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Settings from "./pages/Settings";
 import AuthCallback from "./pages/AuthCallback";
 import Pricing from "./pages/Pricing";
+import Terms from './pages/Terms';
 import Term from './components/Term';
 import "./App.css";
 
@@ -34,9 +35,10 @@ function App() {
           />
           <Route path="/deploy" element={<Deploy />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/project/:id" element={<ProjectDetail />} />
+          <Route path="/project/:projectId" element={<ProjectDetail />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="/terms/:type" element={<Term />} />
         </Routes>
         <Footer />

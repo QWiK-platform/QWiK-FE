@@ -1,10 +1,41 @@
-import React, { useState } from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import client from "../api/client";
 import "./ProjectDetail.css";
 
 const ProjectDetail = () => {
+  const navigate = useNavigate();
+  const { projectId } = useParams();
+
   const [subdomainModalOpen, setSubdomainModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   // const [newSubdomain, setNewSubdomain] = useState("");
+
+  // project delete api
+  useEffect(() => {
+    console.log("extracting params from a link", projectId);
+    if (!projectId) {
+      alert("잘못된 접근입니다.");
+      navigate("/dashboard");
+    }
+  }, [projectId, navigate]);
+
+  const handleDeleteProject = async () => {
+    try {
+      console.log("project id to delete", projectId);
+      const response = await client.delete(`/projects/${projectId}`);
+      console.log("deletion complete", response.data);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("delete error", error);
+      console.error("original error", error.response);
+      console.error("error data", error.response?.data);
+    } finally {
+      setDeleteModalOpen(false);
+    }
+  };
 
   // 모달 핸들링
   const handleOpenSubdomainModal = () => {
@@ -170,7 +201,12 @@ const ProjectDetail = () => {
               >
                 취소
               </button>
-              <button className="delete-btn accent">삭제</button>
+              <button
+                className="delete-btn accent"
+                onClick={handleDeleteProject}
+              >
+                삭제
+              </button>
             </div>
           </div>
         </div>

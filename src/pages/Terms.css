@@ -1,0 +1,39 @@
+.terms-section .term-open-modal {
+  width: 400px;
+}
+
+.terms-section .term-open-modal .term-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #222;
+  text-align: center;
+}
+
+.terms-section .term-open-modal .term-updated-date {
+  text-align: right;
+  color: #afafaf;
+  font-size: 1.4rem;
+  line-height: 3rem;
+}
+
+.terms-section .term-content-container {
+  padding: 10px;
+  height: 500px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.terms-section .term-content-container h5 {
+  font-size: 1.8rem;
+  color: inherit;
+  margin-bottom: 10px;
+}
+
+.terms-section .term-content-container .sub-title {
+  color: inherit;
+  margin-bottom: 20px;
+}
+
+.terms-section .term-content-container .term-text {
+  margin-bottom: 20px;
+}

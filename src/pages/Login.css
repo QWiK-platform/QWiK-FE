@@ -39,6 +39,9 @@
   margin-left: 15px;
 }
 
+.login-section .login-container .login-explain {
+  font-size: 1.4rem;
+}
 .login-section .login-container .term-container {
   font-size: 1.4rem;
   word-break: keep-all;

@@ -69,6 +69,10 @@ const Dashboard = () => {
     }
   }, [userLoading]);
 
+  const handleProjectClick = (project) => {
+    navigate(`/project/${project.project_id}`);
+  };
+
   // 로딩 체크
   if (userLoading) {
     return (
@@ -147,10 +151,6 @@ const Dashboard = () => {
     } else {
       navigate("/pricing");
     }
-  };
-
-  const handleProjectClick = (project) => {
-    navigate(`/project/${project.project_id}`);
   };
 
   // 계산 값들
