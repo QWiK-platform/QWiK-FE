@@ -4,22 +4,22 @@ import client from "../api/client";
 import ProgressBar from "../components/ProgressBar";
 
 const Deploy = () => {
-  // 🎯 핵심 상태만 남기기
+  // 핵심 상태만 남기기
   const [step, setStep] = useState(1); // 1: 입력, 2: 진행, 3: 완료
   const [repositoryUrl, setRepositoryUrl] = useState("");
 
-  // 🚀 배포 관련 상태
+  // 배포 관련 상태
   const [deploymentId, setDeploymentId] = useState(null);
-  const [deployStatus, setDeployStatus] = useState(null); // 'queue', 'building', 'success', 'failure'
+  const [deployStatus, setDeployStatus] = useState(null);
   const [domain, setDomain] = useState(null);
   const [domainReady, setDomainReady] = useState(false);
   const [projectId, setProjectId] = useState(null);
 
-  // 📊 진행 상태
+  // 진행 상태
   const [currentPhase, setCurrentPhase] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // 🔄 폴링 정리용
+  // 폴링 정리용
   useEffect(() => {
     let pollingInterval = null;
     let domainInterval = null;
@@ -32,7 +32,7 @@ const Deploy = () => {
     ) {
       pollingInterval = setInterval(() => {
         pollDeployStatus();
-      }, 5000); // 5초로 변경 (너무 자주 호출 방지)
+      }, 5000);
     }
 
     // success이고 domain이 있지만 아직 준비 안됐을 때
@@ -49,7 +49,7 @@ const Deploy = () => {
     };
   }, [deploymentId, deployStatus, domain, domainReady]);
 
-  // 🚀 배포 시작
+  // 배포 시작
   const handleDeploy = async () => {
     if (!repositoryUrl.trim()) {
       alert("레포지토리 URL을 입력해주세요!");
@@ -85,7 +85,7 @@ const Deploy = () => {
     }
   };
 
-  // 📊 배포 상태 폴링
+  // 배포 상태 폴링
   const pollDeployStatus = async () => {
     if (!deploymentId) return;
 
@@ -107,38 +107,45 @@ const Deploy = () => {
       }
     } catch (error) {
       console.error("❌ 상태 폴링 에러:", error);
-      // 에러가 나도 계속 시도 (네트워크 일시적 문제일 수 있음)
     }
   };
 
-  // 🌐 도메인 준비 상태 체크
+  // 도메인 준비 상태 체크
   const checkDomainReady = async () => {
     if (!domain) return;
 
     try {
       const response = await fetch(`https://${domain}.qw1k.cloud`, {
         method: "HEAD",
-        mode: "no-cors",
+        mode: "cors", //200이랑 403 구분
         cache: "no-cache",
       });
 
-      console.log("📊 no-cors 응답:", response);
-
-      // no-cors에서는 에러가 안 나면 = 도메인 접근 가능
-      console.log("🎉 도메인 접근 가능 - 준비 완료!");
-      setDomainReady(true);
+      if (response.ok) {
+        setDomainReady(true);
+      } else {
+        console.log(`❌ ${response.status} - 아직 준비 중`);
+      }
     } catch (error) {
-      console.log("❌ 네트워크 에러:", error.message);
-      // 진짜 네트워크 에러 = 아직 준비 안됨
+      if (
+        error.message.includes("CORS") ||
+        error.message.includes("Access-Control-Allow-Origin") ||
+        error.name === "TypeError"
+      ) {
+        console.log("CORS 에러 감지 = 서버 응답 있음, 도메인 준비 완료!");
+        setDomainReady(true);
+      } else {
+        console.log("❌ 네트워크 에러:", error.message);
+      }
     }
   };
 
-  // 🎯 ProgressBar 완료 콜백
+  // ProgressBar 완료 콜백
   const handleProgressComplete = () => {
     setStep(3);
   };
 
-  // 🔄 새로고침 방지
+  // 새로고침 방지
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (step === 2) {

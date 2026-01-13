@@ -26,7 +26,7 @@ const ProgressBar = ({
     return statusMap[status] || { progress: 0, message: "준비 중" };
   }, []);
 
-  // 🚀 Phase 1: 초기 단계
+  // Phase 1: 초기 단계
   useEffect(() => {
     if (phase === 1) {
       setTargetProgress(5);
@@ -41,7 +41,7 @@ const ProgressBar = ({
     }
   }, [phase]);
 
-  // 📦 Phase 2: deployment ID 받음
+  // Phase 2: deployment ID 받음
   useEffect(() => {
     if (phase === 2 && deploymentId) {
       setTargetProgress(15);
@@ -49,7 +49,7 @@ const ProgressBar = ({
     }
   }, [phase, deploymentId]);
 
-  // 🔄 Phase 3: 실제 배포 진행
+  // Phase 3: 실제 배포 진행
   useEffect(() => {
     if (phase === 3 && deployStatus) {
       const statusInfo = getProgressByStatus(deployStatus);
@@ -96,7 +96,7 @@ const ProgressBar = ({
     }
   }, [phase, deployStatus, buildingStartTime, getProgressByStatus]);
 
-  // 🌐 도메인 준비 완료
+  // 도메인 준비 완료
   useEffect(() => {
     if (domainReady) {
       setTargetProgress(100);
@@ -110,7 +110,7 @@ const ProgressBar = ({
     }
   }, [domainReady, onComplete]);
 
-  // 🎨 부드러운 애니메이션 (기존 방식 유지)
+  // 부드러운 애니메이션
   useEffect(() => {
     let startTime = null;
     let startValue = displayProgress;
@@ -119,7 +119,7 @@ const ProgressBar = ({
     const animate = (timestamp) => {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / 1500, 1); // 1.5초 애니메이션 (기존 유지)
+      const progress = Math.min(elapsed / 1500, 1);
 
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const currentValue = startValue + (targetProgress - startValue) * easeOut;
@@ -154,7 +154,7 @@ const ProgressBar = ({
             className="fill"
             style={{
               width: `${displayProgress}%`,
-              transition: "none", // 기존 방식 유지
+              transition: "none",
             }}
           />
         </div>
