@@ -111,9 +111,7 @@ const Deploy = () => {
   };
 
   // 도메인 준비 상태 체크
-
-  /*
-    const checkDomainReady = async () => {
+  const checkDomainReady = async () => {
     if (!domain) return;
 
     try {
@@ -123,30 +121,20 @@ const Deploy = () => {
         cache: "no-cache",
       });
 
-      console.log("🎉 200 OK - 콜스 없이 성공!");
-      setDomainReady(true);
-    } catch (error) {
-      console.log("❌ 콜스 에러 발생:", error.message);
-      console.log("🎉 콜스 에러지만 서버 응답 있음 - 준비 완료!");
-      setDomainReady(true);
-    }
-  };
-  */
+      console.log("📊 상태코드:", response.status);
+      console.log("📊 OK:", response.ok);
 
-  const checkDomainReady = async () => {
-    if (!domain) return;
-
-    try {
-      const response = await fetch(`https://${domain}.qw1k.cloud`, {
-        method: "HEAD",
-        cache: "no-cache",
-      });
-
-      if (response.ok) {
+      if (response.status === 200) {
+        console.log("🎉 200 OK - 준비 완료!");
         setDomainReady(true);
+      } else if (response.status === 403) {
+        console.log("❌ 403 Forbidden - 아직 대기");
+      } else {
+        console.log(`❌ ${response.status} - 계속 대기`);
       }
     } catch (error) {
-      console.log("네트워크 에러:", error.message);
+      // 이제 진짜 네트워크 에러만 여기로 옴
+      console.log("❌ 네트워크 에러:", error.message);
     }
   };
 
