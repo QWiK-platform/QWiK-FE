@@ -13,6 +13,7 @@ const ProgressBar = ({
   const [progressText, setProgressText] = useState("배포 준비 중");
   const [targetProgress, setTargetProgress] = useState(0);
   const [buildingStartTime, setBuildingStartTime] = useState(null);
+  const [buildingTimer, setBuildingTimer] = useState(null);
 
   // 🎯 단계별 진행률 매핑
   const getProgressByStatus = useCallback((status) => {
@@ -60,23 +61,27 @@ const ProgressBar = ({
           break;
 
         case "Building":
-          // building 시작 시간 기록 (중복 방지)
           if (!buildingStartTime) {
             setBuildingStartTime(Date.now());
             setTargetProgress(40);
             setProgressText("의존성 설치");
 
-            // 10초 후 빌드 단계로 진행 (체감 15-16초에 맞춤)
-            setTimeout(() => {
+            const timer = setTimeout(() => {
               setTargetProgress(80);
               setProgressText("코드 빌드");
-            }, 8000);
+            }, 10000);
+
+            setBuildingTimer(timer);
           }
           break;
 
         case "Success":
-          setTargetProgress(statusInfo.progress);
-          setProgressText(statusInfo.message);
+          if (buildingTimer) {
+            clearTimeout(buildingTimer);
+            setBuildingTimer(null);
+          }
+          setTargetProgress(90);
+          setProgressText("도메인 등록");
           break;
 
         case "Failed":

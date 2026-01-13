@@ -118,16 +118,25 @@ const Deploy = () => {
     try {
       const response = await fetch(`https://${domain}.qw1k.cloud`, {
         method: "HEAD",
-        mode: "no-cors",
+        mode: "cors",
         cache: "no-cache",
       });
 
-      console.log("📊 응답:", response);
-      console.log("🎉 도메인 접근 가능 - 준비 완료!");
-      setDomainReady(true);
+      console.log("📊 응답 상태:", response.status);
+
+      // 200만 "준비 완료"로 판단
+      if (response.status === 200) {
+        console.log("🎉 도메인 준비 완료!");
+        setDomainReady(true);
+      } else if (response.status === 403) {
+        console.log("❌ 403 Access Denied - 권한 문제");
+        // 계속 대기 (403은 아직 준비 안된 상태)
+      } else {
+        console.log(`❌ ${response.status} - 아직 준비 중`);
+      }
     } catch (error) {
-      console.log("❌ 네트워크 에러:", error.name, error.message);
-      console.log("⏳ 아직 엣지 전파 중...");
+      console.log("❌ 네트워크 에러:", error.message);
+      // CORS 에러나 네트워크 에러 = 아직 준비 안됨
     }
   };
 
