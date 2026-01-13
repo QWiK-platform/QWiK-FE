@@ -1,49 +1,158 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Deploy.css";
 import client from "../api/client";
 import ProgressBar from "../components/ProgressBar";
 
 const Deploy = () => {
-  const [step, setStep] = useState(1);
-  const [deployStatus, setDeployStatus] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(""); // eslint-disable-line no-unused-vars
+  // 🎯 핵심 상태만 남기기
+  const [step, setStep] = useState(1); // 1: 입력, 2: 진행, 3: 완료
   const [repositoryUrl, setRepositoryUrl] = useState("");
-  const [deployResult, setDeployResult] = useState(null); // eslint-disable-line no-unused-vars
-  const [deployPhase, setDeployPhase] = useState(1);
+
+  // 🚀 배포 관련 상태
   const [deploymentId, setDeploymentId] = useState(null);
+  const [deployStatus, setDeployStatus] = useState(null); // 'queue', 'building', 'success', 'failure'
+  const [domain, setDomain] = useState(null);
+  const [domainReady, setDomainReady] = useState(false);
+  const [projectId, setProjectId] = useState(null);
 
-  // ProgressBar 완료 콜백
-  const handleProgressComplete = () => {
-    setStep(3); // Step 3으로 이동
-  };
+  // 📊 진행 상태
+  const [currentPhase, setCurrentPhase] = useState(1);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  // 🔄 폴링 정리용
+  useEffect(() => {
+    let pollingInterval = null;
+    let domainInterval = null;
+
+    // deploymentId가 있고 success가 아닐 때만 폴링
+    if (
+      deploymentId &&
+      deployStatus !== "success" &&
+      deployStatus !== "failure"
+    ) {
+      pollingInterval = setInterval(() => {
+        pollDeployStatus();
+      }, 5000); // 5초로 변경 (너무 자주 호출 방지)
+    }
+
+    // success이고 domain이 있지만 아직 준비 안됐을 때
+    if (deployStatus === "success" && domain && !domainReady) {
+      domainInterval = setInterval(() => {
+        checkDomainReady();
+      }, 5000);
+    }
+
+    // cleanup
+    return () => {
+      if (pollingInterval) clearInterval(pollingInterval);
+      if (domainInterval) clearInterval(domainInterval);
+    };
+  }, [deploymentId, deployStatus, domain, domainReady]);
+
+  // 🚀 배포 시작
   const handleDeploy = async () => {
     if (!repositoryUrl.trim()) {
       alert("레포지토리 URL을 입력해주세요!");
       return;
     }
 
-    setDeployPhase(1);
     setStep(2);
+    setCurrentPhase(1);
+    setErrorMessage("");
 
     try {
       const response = await client.post("/deploy", {
         repo_url: repositoryUrl,
       });
 
-      setDeploymentId(response.data.deployment_id);
-      setDeployPhase(2);
+      const { deployment_id, project_id, domain, status } = response.data;
+      setDeploymentId(deployment_id);
+      setDomain(domain);
+      setProjectId(project_id);
+      setCurrentPhase(2);
+
+      // 1초 후 Phase 3으로 이동 (실제 폴링 시작)
+      setTimeout(() => {
+        setCurrentPhase(3);
+      }, 1000);
     } catch (error) {
-      console.error("❌ API 에러:", error.response?.data);
+      console.error("❌ 배포 시작 실패:", error);
+      setErrorMessage(
+        error.response?.data?.message || "배포 시작에 실패했습니다."
+      );
       setStep(3);
       setDeployStatus("failure");
-      setErrorMessage(error.response?.data?.message || "API 호출 실패");
     }
   };
+
+  // 📊 배포 상태 폴링
+  const pollDeployStatus = async () => {
+    if (!deploymentId) return;
+
+    try {
+      const response = await client.get(
+        `/deploy/poll?deployment_id=${deploymentId}`
+      );
+      const status = response.data.status;
+
+      setDeployStatus(status);
+
+      if (status === "success") {
+        // 성공하면 도메인 체크 시작
+        const domainFromApi = response.data.domain || domain;
+        setDomain(domainFromApi);
+      } else if (status === "failure") {
+        setStep(3);
+        setErrorMessage(response.data.message || "빌드에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("❌ 상태 폴링 에러:", error);
+      // 에러가 나도 계속 시도 (네트워크 일시적 문제일 수 있음)
+    }
+  };
+
+  // 🌐 도메인 준비 상태 체크
+  const checkDomainReady = async () => {
+    if (!domain) return;
+
+    try {
+      // domain 변수에는 앞부분만 있으니까 .qw1k.cloud 붙여서 체크
+      const response = await fetch(`https://${domain}.qw1k.cloud`, {
+        method: "GET",
+        mode: "cors",
+      });
+
+      if (response.ok) {
+        setDomainReady(true);
+      }
+    } catch (error) {
+      // 아직 준비 안됨, 계속 체크
+      console.log("도메인 아직 준비 중...", error);
+    }
+  };
+
+  // 🎯 ProgressBar 완료 콜백
+  const handleProgressComplete = () => {
+    setStep(3);
+  };
+
+  // 🔄 새로고침 방지
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (step === 2) {
+        e.preventDefault();
+        e.returnValue = "배포가 진행 중입니다. 페이지를 떠나시겠습니까?";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [step]);
 
   return (
     <section className={`deploy-section step-${step}`}>
       <div className="wrap">
+        {/* 📝 입력 영역 */}
         <div className="input-container">
           <div className="input-box">
             <input
@@ -66,48 +175,63 @@ const Deploy = () => {
           </div>
         </div>
 
+        {/* 📊 진행 상황 */}
         {step === 2 && (
           <ProgressBar
-            phase={deployPhase}
+            phase={currentPhase}
             deploymentId={deploymentId}
+            deployStatus={deployStatus}
+            domainReady={domainReady}
             onComplete={handleProgressComplete}
           />
         )}
 
-        {step === 3 && deployStatus === "success" && (
+        {/* ✅ 성공 결과 */}
+        {step === 3 && deployStatus === "success" && domainReady && (
           <div className="result-container success">
             <div className="text-box">
               <p className="success-message title-text">
                 배포가 완료되었습니다!
               </p>
-              <p>githubname-reponame.qw1k.me로 배포되었어요.</p>
+              <p>{domain}.qw1k.cloud로 배포되었어요.</p>
               <p>확인하러 가볼까요?</p>
             </div>
             <div className="btn-box">
-              <button className="move-to-site main">사이트로 이동</button>
-              <button className="move-to-detail accent">
+              <button
+                className="move-to-site main"
+                onClick={() =>
+                  window.open(`https://${domain}.qw1k.cloud`, "_blank")
+                }
+              >
+                사이트로 이동
+              </button>
+              <button
+                className="move-to-detail accent"
+                onClick={() => {
+                  // 🔥 수정: projectId 저장 로직 추가 필요
+                  window.location.href = `/project/${projectId}`;
+                }}
+              >
                 상세페이지로 이동
               </button>
             </div>
           </div>
         )}
 
+        {/* ❌ 실패 결과 */}
         {step === 3 && deployStatus === "failure" && (
           <div className="result-container failure">
             <div className="text-box">
-              <p className="failure-message title-text">배포가 실패했어요.</p>
-              <p>error code message handling</p>
+              <p className="error-message title-text">배포에 실패했습니다</p>
+              <p>{errorMessage}</p>
+              <p>다시 시도해주세요.</p>
             </div>
             <div className="btn-box">
               <button
                 className="retry-btn accent"
-                onClick={() => {
-                  setStep(1);
-                  setDeployStatus(null);
-                  setErrorMessage("");
-                }}
+                onClick={() => window.location.reload()}
               >
-                재시도
+                다시 시도
               </button>
             </div>
           </div>
