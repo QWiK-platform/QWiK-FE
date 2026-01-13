@@ -8,7 +8,7 @@ const Setting = () => {
         <div className="user-profile-container">
           <h2 className="user-name">USER NAME</h2>
           <a href="#" target="_tap">
-            git hub repository url
+            git hub url
           </a>
         </div>
         <div className="plan-container">

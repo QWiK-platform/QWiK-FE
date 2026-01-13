@@ -1,41 +1,111 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import "./ProgressBar.css";
 
-const ProgressBar = ({ mockMode = true }) => {
+const ProgressBar = ({
+  phase = 1,
+  deploymentId = null,
+  deployStatus = null,
+  domainReady = false,
+  onComplete = null,
+}) => {
   const [displayProgress, setDisplayProgress] = useState(0);
   const [progressText, setProgressText] = useState("배포 준비 중");
   const [targetProgress, setTargetProgress] = useState(0);
+  const [buildingStartTime, setBuildingStartTime] = useState(null);
 
-  // 단계별 진행
+  // 🎯 단계별 진행률 매핑
+  const getProgressByStatus = useCallback((status) => {
+    const statusMap = {
+      queue: { progress: 20, message: "빌드 대기" },
+      building: { progress: 40, message: "의존성 설치" }, // 시작 지점
+      success: { progress: 90, message: "도메인 등록" },
+      failure: { progress: 0, message: "빌드 실패" }, // 일단 기본값
+    };
+    return statusMap[status] || { progress: 0, message: "준비 중" };
+  }, []);
+
+  // 🚀 Phase 1: 초기 단계
   useEffect(() => {
-    if (!mockMode) return;
+    if (phase === 1) {
+      setTargetProgress(5);
+      setProgressText("레포지토리 검사");
 
-    const steps = [
-      { progress: 5, message: "코드 검사" },
-      { progress: 10, message: "용량 확인" },
-      { progress: 20, message: "의존성 설치" },
-      { progress: 60, message: "코드 빌드" },
-      { progress: 80, message: "배포 준비" },
-      { progress: 100, message: "배포 완료" },
-    ];
+      const timer = setTimeout(() => {
+        setTargetProgress(10);
+        setProgressText("용량 검사");
+      }, 800);
 
-    let currentStep = 0;
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
 
-    const interval = setInterval(() => {
-      if (currentStep < steps.length) {
-        setTargetProgress(steps[currentStep].progress);
-        setProgressText(steps[currentStep].message);
-        currentStep++;
-      } else {
-        clearInterval(interval);
+  // 📦 Phase 2: deployment ID 받음
+  useEffect(() => {
+    if (phase === 2 && deploymentId) {
+      setTargetProgress(15);
+      setProgressText("작업 대기 등록");
+    }
+  }, [phase, deploymentId]);
+
+  // 🔄 Phase 3: 실제 배포 진행
+  useEffect(() => {
+    if (phase === 3 && deployStatus) {
+      const statusInfo = getProgressByStatus(deployStatus);
+
+      switch (deployStatus) {
+        case "queue":
+          setTargetProgress(statusInfo.progress);
+          setProgressText(statusInfo.message);
+          break;
+
+        case "building":
+          // building 시작 시간 기록 (중복 방지)
+          if (!buildingStartTime) {
+            setBuildingStartTime(Date.now());
+            setTargetProgress(40);
+            setProgressText("의존성 설치");
+
+            // 10초 후 빌드 단계로 진행 (체감 15-16초에 맞춤)
+            setTimeout(() => {
+              setTargetProgress(80);
+              setProgressText("코드 빌드");
+            }, 10000);
+          }
+          break;
+
+        case "success":
+          setTargetProgress(statusInfo.progress);
+          setProgressText(statusInfo.message);
+          break;
+
+        case "failure":
+          setProgressText("빌드 실패");
+          // TODO: 나중에 에러 메시지 받으면 처리
+          break;
+
+        default:
+          console.warn(`알 수 없는 상태: ${deployStatus}`);
+          break;
       }
-    }, 2000);
+    }
+  }, [phase, deployStatus, buildingStartTime, getProgressByStatus]);
 
-    return () => clearInterval(interval);
-  }, [mockMode]);
+  // 🌐 도메인 준비 완료
+  useEffect(() => {
+    if (domainReady) {
+      setTargetProgress(100);
+      setProgressText("배포 완료");
 
-  // 숫자 부드럽게 애니메이션
+      const completeTimer = setTimeout(() => {
+        onComplete?.();
+      }, 1000);
+
+      return () => clearTimeout(completeTimer);
+    }
+  }, [domainReady, onComplete]);
+
+  // 🎨 부드러운 애니메이션 (기존 방식 유지)
   useEffect(() => {
     let startTime = null;
     let startValue = displayProgress;
@@ -44,7 +114,7 @@ const ProgressBar = ({ mockMode = true }) => {
     const animate = (timestamp) => {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / 1500, 1); // 1.5초 애니메이션
+      const progress = Math.min(elapsed / 1500, 1); // 1.5초 애니메이션 (기존 유지)
 
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const currentValue = startValue + (targetProgress - startValue) * easeOut;
@@ -65,7 +135,7 @@ const ProgressBar = ({ mockMode = true }) => {
         cancelAnimationFrame(animationFrame);
       }
     };
-  }, [targetProgress]); // displayProgress 의존성 제거
+  }, [targetProgress]);
 
   return (
     <div className="progress-component">
@@ -78,10 +148,10 @@ const ProgressBar = ({ mockMode = true }) => {
           <div
             className="fill"
             style={{
-              width: `${displayProgress}%`, // 숫자와 동기화
-              transition: "none", // JS 애니메이션 사용
+              width: `${displayProgress}%`,
+              transition: "none", // 기존 방식 유지
             }}
-          ></div>
+          />
         </div>
       </div>
     </div>
@@ -89,7 +159,11 @@ const ProgressBar = ({ mockMode = true }) => {
 };
 
 ProgressBar.propTypes = {
-  mockMode: PropTypes.bool,
+  phase: PropTypes.number,
+  deploymentId: PropTypes.string,
+  deployStatus: PropTypes.string,
+  domainReady: PropTypes.bool,
+  onComplete: PropTypes.func,
 };
 
 export default ProgressBar;
