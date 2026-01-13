@@ -17,10 +17,10 @@ const ProgressBar = ({
   // 🎯 단계별 진행률 매핑
   const getProgressByStatus = useCallback((status) => {
     const statusMap = {
-      queue: { progress: 20, message: "빌드 대기" },
-      building: { progress: 40, message: "의존성 설치" }, // 시작 지점
-      success: { progress: 90, message: "도메인 등록" },
-      failure: { progress: 0, message: "빌드 실패" }, // 일단 기본값
+      Queued: { progress: 20, message: "빌드 대기" },
+      Building: { progress: 40, message: "의존성 설치" },
+      Success: { progress: 90, message: "도메인 등록" },
+      Failed: { progress: 0, message: "빌드 실패" },
     };
     return statusMap[status] || { progress: 0, message: "준비 중" };
   }, []);
@@ -54,12 +54,12 @@ const ProgressBar = ({
       const statusInfo = getProgressByStatus(deployStatus);
 
       switch (deployStatus) {
-        case "queue":
+        case "Queued":
           setTargetProgress(statusInfo.progress);
           setProgressText(statusInfo.message);
           break;
 
-        case "building":
+        case "Building":
           // building 시작 시간 기록 (중복 방지)
           if (!buildingStartTime) {
             setBuildingStartTime(Date.now());
@@ -74,12 +74,12 @@ const ProgressBar = ({
           }
           break;
 
-        case "success":
+        case "Success":
           setTargetProgress(statusInfo.progress);
           setProgressText(statusInfo.message);
           break;
 
-        case "failure":
+        case "Failed":
           setProgressText("빌드 실패");
           // TODO: 나중에 에러 메시지 받으면 처리
           break;
