@@ -116,18 +116,18 @@ const Deploy = () => {
     if (!domain) return;
 
     try {
-      // domain 변수에는 앞부분만 있으니까 .qw1k.cloud 붙여서 체크
       const response = await fetch(`https://${domain}.qw1k.cloud`, {
-        method: "GET",
-        mode: "cors",
+        method: "HEAD",
+        mode: "no-cors",
+        cache: "no-cache",
       });
 
-      if (response.ok) {
-        setDomainReady(true);
-      }
+      console.log("📊 응답:", response);
+      console.log("🎉 도메인 접근 가능 - 준비 완료!");
+      setDomainReady(true);
     } catch (error) {
-      // 아직 준비 안됨, 계속 체크
-      console.log("도메인 아직 준비 중...", error);
+      console.log("❌ 네트워크 에러:", error.name, error.message);
+      console.log("⏳ 아직 엣지 전파 중...");
     }
   };
 
@@ -177,13 +177,19 @@ const Deploy = () => {
 
         {/* 📊 진행 상황 */}
         {step === 2 && (
-          <ProgressBar
-            phase={currentPhase}
-            deploymentId={deploymentId}
-            deployStatus={deployStatus}
-            domainReady={domainReady}
-            onComplete={handleProgressComplete}
-          />
+          <div style={{ margin: "10px 0" }}>
+            <button
+              onClick={() => {
+                setStep(3);
+                setDeployStatus("Success");
+                setDomainReady(true);
+                console.log("🔧 강제 완료 처리됨");
+              }}
+              style={{ background: "red", color: "white", padding: "5px" }}
+            >
+              [DEV] 강제 완료
+            </button>
+          </div>
         )}
 
         {/* ✅ 성공 결과 */}

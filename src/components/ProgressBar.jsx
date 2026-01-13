@@ -70,7 +70,7 @@ const ProgressBar = ({
             setTimeout(() => {
               setTargetProgress(80);
               setProgressText("코드 빌드");
-            }, 10000);
+            }, 8000);
           }
           break;
 
