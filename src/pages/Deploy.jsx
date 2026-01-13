@@ -111,7 +111,9 @@ const Deploy = () => {
   };
 
   // 도메인 준비 상태 체크
-  const checkDomainReady = async () => {
+
+  /*
+    const checkDomainReady = async () => {
     if (!domain) return;
 
     try {
@@ -121,20 +123,41 @@ const Deploy = () => {
         cache: "no-cache",
       });
 
-      console.log("📊 응답 전체:", response);
-      console.log("📊 status:", response.status);
-      console.log("📊 ok:", response.ok);
-      console.log("📊 type:", response.type);
+      console.log("🎉 200 OK - 콜스 없이 성공!");
+      setDomainReady(true);
+    } catch (error) {
+      console.log("❌ 콜스 에러 발생:", error.message);
+      console.log("🎉 콜스 에러지만 서버 응답 있음 - 준비 완료!");
+      setDomainReady(true);
+    }
+  };
+  */
 
-      // 더 엄격한 체크
-      if (response.status === 200 && response.ok === true) {
-        console.log("🎉 확실한 200 OK!");
+  const checkDomainReady = async () => {
+    if (!domain) return;
+
+    const startTime = Date.now();
+
+    try {
+      const response = await fetch(`https://${domain}.qw1k.cloud`, {
+        method: "HEAD",
+        mode: "cors",
+        cache: "no-cache",
+      });
+
+      setDomainReady(true);
+    } catch (error) {
+      const elapsed = Date.now() - startTime;
+
+      console.log(`❌ 콜스 에러 (${elapsed}ms 소요):`, error.message);
+
+      // 빠른 콜스 에러 = 200이지만 콜스 차단됨
+      if (elapsed < 100) {
+        console.log("🎉 빠른 콜스 에러 = 200 응답! 준비 완료!");
         setDomainReady(true);
       } else {
-        console.log(`❌ 비정상 응답: ${response.status}`);
+        console.log("❌ 느린 에러 = 403 또는 네트워크 문제, 계속 대기");
       }
-    } catch (error) {
-      console.log("❌ CORS/네트워크 에러");
     }
   };
 
