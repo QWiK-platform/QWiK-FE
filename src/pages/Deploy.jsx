@@ -117,26 +117,24 @@ const Deploy = () => {
     try {
       const response = await fetch(`https://${domain}.qw1k.cloud`, {
         method: "HEAD",
-        mode: "cors", //200이랑 403 구분
+        mode: "cors",
         cache: "no-cache",
       });
 
-      if (response.ok) {
+      console.log("📊 응답 전체:", response);
+      console.log("📊 status:", response.status);
+      console.log("📊 ok:", response.ok);
+      console.log("📊 type:", response.type);
+
+      // 더 엄격한 체크
+      if (response.status === 200 && response.ok === true) {
+        console.log("🎉 확실한 200 OK!");
         setDomainReady(true);
       } else {
-        console.log(`❌ ${response.status} - 아직 준비 중`);
+        console.log(`❌ 비정상 응답: ${response.status}`);
       }
     } catch (error) {
-      if (
-        error.message.includes("CORS") ||
-        error.message.includes("Access-Control-Allow-Origin") ||
-        error.name === "TypeError"
-      ) {
-        console.log("CORS 에러 감지 = 서버 응답 있음, 도메인 준비 완료!");
-        setDomainReady(true);
-      } else {
-        console.log("❌ 네트워크 에러:", error.message);
-      }
+      console.log("❌ CORS/네트워크 에러");
     }
   };
 
