@@ -136,28 +136,17 @@ const Deploy = () => {
   const checkDomainReady = async () => {
     if (!domain) return;
 
-    const startTime = Date.now();
-
     try {
       const response = await fetch(`https://${domain}.qw1k.cloud`, {
         method: "HEAD",
-        mode: "cors",
         cache: "no-cache",
       });
 
-      setDomainReady(true);
-    } catch (error) {
-      const elapsed = Date.now() - startTime;
-
-      console.log(`❌ 콜스 에러 (${elapsed}ms 소요):`, error.message);
-
-      // 빠른 콜스 에러 = 200이지만 콜스 차단됨
-      if (elapsed < 100) {
-        console.log("🎉 빠른 콜스 에러 = 200 응답! 준비 완료!");
+      if (response.ok) {
         setDomainReady(true);
-      } else {
-        console.log("❌ 느린 에러 = 403 또는 네트워크 문제, 계속 대기");
       }
+    } catch (error) {
+      console.log("네트워크 에러:", error.message);
     }
   };
 
