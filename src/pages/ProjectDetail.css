@@ -70,15 +70,15 @@
   margin-left: 4px;
 }
 
-.project-detail-section .subdomain-box {
+.project-detail-section .domain-box {
   line-height: 4rem;
 }
 
-.project-detail-section .subdomain-box .project-url {
+.project-detail-section .domain-box .project-url {
   display: inline-block;
   font-size: 2rem;
 }
-.project-detail-section .subdomain-box .change-subdomain-btn {
+.project-detail-section .domain-box .change-domain-btn {
   display: inline-block;
   margin-left: 20px;
   padding: 0px 10px;
@@ -89,7 +89,7 @@
   font-size: 1.4rem;
 }
 
-.project-detail-section .change-subdomain-btn:hover {
+.project-detail-section .change-domain-btn:hover {
   color: #fff;
   background-color: var(--accent-color);
 }
@@ -105,10 +105,7 @@
   display: flex;
   justify-content: space-between;
 }
-.project-detail-section .resource-container .title {
-}
-.project-detail-section .resource-container .usage {
-}
+
 .project-detail-section .resource-container .used {
   font-weight: 400;
 }
@@ -164,7 +161,7 @@
   margin-right: 10px;
 }
 
-/* change subdomain modal */
+/* change domain modal */
 
 .project-detail-section .modal-popup .title-box .title {
   font-size: 2rem;
@@ -179,30 +176,19 @@
   margin: 6px 0;
 }
 
-.change-subdomain-modal .notice-box span {
+.change-domain-modal .notice-box span {
   color: #afafaf;
 }
 
-.change-subdomain-modal .input-box {
-  margin: 20px 0;
+.change-domain-modal .input-box {
+  margin: 20px 0 10px;
 }
 
-.change-subdomain-modal .input-box input[type="text"] {
-  width: calc(100% - 90px);
-}
-
-.change-subdomain-modal .input-box button {
-  display: inline-block;
-  margin-left: 5px;
-  padding: 5px 14px;
-  background-color: var(--secondary-color);
-  border-radius: 16px;
-  transition: 0.3s;
-}
-
-.change-subdomain-modal .input-box button:hover {
-  background-color: var(--primary-color);
-  color: #fff;
+.change-domain-modal .input-box .error-message {
+  font-size: 1.4rem;
+  color: red;
+  text-indent: 1rem;
+  line-height: 2.5;
 }
 
 .delete-project-modal .input-box {

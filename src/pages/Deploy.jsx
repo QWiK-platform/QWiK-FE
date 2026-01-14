@@ -192,29 +192,6 @@ const Deploy = () => {
               domainReady={domainReady}
               onComplete={handleProgressComplete}
             />
-
-            {/* 🔧 개발용 강제 완료 버튼 */}
-            <div style={{ margin: "20px 0", textAlign: "center" }}>
-              <button
-                onClick={() => {
-                  setStep(3);
-                  setDeployStatus("Success");
-                  setDomainReady(true);
-                  console.log("🔧 강제 완료 처리됨 - 콘솔 로그 보존!");
-                }}
-                style={{
-                  background: "#ff4757",
-                  color: "white",
-                  padding: "8px 16px",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  fontSize: "12px",
-                }}
-              >
-                [DEV] 강제 완료 (디버깅용)
-              </button>
-            </div>
           </div>
         )}
 

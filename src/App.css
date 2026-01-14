@@ -145,6 +145,7 @@ input {
 
 input[type="text"] {
   display: inline-block;
+  width: 100%;
   border: none;
   background-color: var(--bg-sub-color);
   line-height: 2;

@@ -283,7 +283,7 @@ const Dashboard = () => {
                   ></span>
                   <p className="project-title">{project.repo_name}</p>
                   <p className="project-url ellipsis-1">
-                    {project.subdomain}.qw1k.cloud
+                    {project.domain}.qw1k.cloud
                   </p>
                   <p className="version">
                     ver.{" "}
