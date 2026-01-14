@@ -216,7 +216,9 @@ const ProjectDetail = () => {
                 className="change-btn accent"
                 onClick={handleChangeDomain}
                 disabled={isSubmittingDomain}
-              ></button>
+              >
+                변경
+              </button>
             </div>
           </div>
         </div>
