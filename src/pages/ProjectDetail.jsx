@@ -9,9 +9,52 @@ const ProjectDetail = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
 
-  const [subdomainModalOpen, setSubdomainModalOpen] = useState(false);
+  const [domainModalOpen, setDomainModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  // const [newSubdomain, setNewSubdomain] = useState("");
+  const [newDomain, setNewDomain] = useState("");
+  const [isSubmittingDomain, setIsSubmittingDomain] = useState(false);
+  const [domainError, setDomainError] = useState("에러메시지 위치");
+
+  // 서브도메인 변경 API 호출
+  const handleChangeDomain = async () => {
+    if (!newDomain.trim()) {
+      setDomainError("서브도메인을 입력해주세요");
+      return;
+    }
+
+    setIsSubmittingDomain(true);
+    setDomainError("");
+
+    try {
+      console.log("🔍 도메인 변경 요청:", {
+        projectId: projectId,
+        newDomain: newDomain,
+      });
+
+      const response = await client.patch(`/projects/${projectId}/domain`, {
+        new_domain: newDomain, // 백엔드 요구 형식에 맞춰서
+      });
+
+      console.log("도메인 변경", response.data);
+
+      // 성공 시 모달 닫기
+      setDomainModalOpen(false);
+      setNewDomain("");
+
+      // TODO: 성공 메시지 표시 또는 페이지 데이터 새로고침
+      alert("서브도메인이 성공적으로 변경되었습니다!");
+    } catch (error) {
+      console.log("서브도메인 변경 실패:", error.response?.data);
+
+      const errorMsg =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "서브도메인 변경에 실패했습니다";
+      setDomainError(errorMsg);
+    } finally {
+      setIsSubmittingDomain(false);
+    }
+  };
 
   // project delete api
   useEffect(() => {
@@ -38,13 +81,13 @@ const ProjectDetail = () => {
   };
 
   // 모달 핸들링
-  const handleOpenSubdomainModal = () => {
-    setSubdomainModalOpen(true);
-    // setNewSubdomain("");
+  const handleOpenDomainModal = () => {
+    setDomainModalOpen(true);
+    // setNewDomain("");
   };
 
-  const handleCloseSubdomainModal = () => {
-    setSubdomainModalOpen(false);
+  const handleCloseDomainModal = () => {
+    setDomainModalOpen(false);
   };
 
   const handleOpenDeleteModal = () => {
@@ -74,18 +117,18 @@ const ProjectDetail = () => {
               <span className="toggle"></span>
             </div>
           </div>
-          <div className="subdomain-box">
+          <div className="domain-box">
             <a
               href="#"
               target="_blank"
               rel="noopener noreferrer"
               className="project-url eng"
             >
-              subdomain.qw1k.cloud
+              domain.qw1k.cloud
             </a>
             <button
-              className="change-subdomain-btn"
-              onClick={() => setSubdomainModalOpen(true)}
+              className="change-domain-btn"
+              onClick={() => setDomainModalOpen(true)}
             >
               변경하기
             </button>
@@ -135,13 +178,13 @@ const ProjectDetail = () => {
           </div>
         </div>
       </div>
-      {subdomainModalOpen && (
+      {domainModalOpen && (
         <div className="modal-bg">
-          <div className="modal-popup change-subdomain-modal">
+          <div className="modal-popup change-domain-modal">
             <div className="title-box">
               <p className="title">변경 전 확인해주세요!</p>
               <div className="notice-box">
-                <p>변경 버튼을 눌러야만 변경됩니다.</p>
+                <p>도메인 변경 조건</p>
                 <p>
                   변경시, 기존 주소는 사용 불가하며<br></br> 변경 처리로 인해
                   일시적으로 접속이 불가할 수 있습니다.{" "}
@@ -153,19 +196,27 @@ const ProjectDetail = () => {
             <div className="input-box">
               <input
                 type="text"
-                className="input-subdomin"
+                className="input-domin"
+                value={newDomain}
                 placeholder="원하는 서브도메인을 입력해주세요."
+                onChange={(e) => setNewDomain(e.target.value)}
+                disabled={isSubmittingDomain}
               />
-              <button className="check for duplicates">중복확인</button>
+              {domainError && <p className="error-message">{domainError}</p>}
             </div>
             <div className="confirm-btn-box btn-box">
               <button
                 className="cancel-btn"
-                onClick={() => setSubdomainModalOpen(false)}
+                onClick={handleCloseDomainModal}
+                disabled={isSubmittingDomain}
               >
                 닫기
               </button>
-              <button className="change-btn accent">변경</button>
+              <button
+                className="change-btn accent"
+                onClick={handleChangeDomain}
+                disabled={isSubmittingDomain}
+              ></button>
             </div>
           </div>
         </div>
@@ -190,7 +241,7 @@ const ProjectDetail = () => {
             <div className="input-box">
               <input
                 type="text"
-                className="check-subdomain"
+                className="check-domain"
                 placeholder="삭제하는 프로젝트의 주소를 정확하게 입력해주세요."
               />
             </div>
