@@ -1,5 +1,6 @@
 .dashboard-section {
-  height: 100vh;
+  padding-bottom: 130px;
+  min-height: 100vh;
 }
 
 .dashboard-section .user-info-container {

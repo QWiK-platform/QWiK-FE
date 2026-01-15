@@ -50,6 +50,7 @@ const Terms = () => {
   const [currentTerms, setCurrentTerms] = useState(null);
   const [agreeing, setAgreeing] = useState(false);
   const [allAgreed, setAllAgreed] = useState(false);
+  const [individualAgreements, setIndividualAgreements] = useState({});
   const navigate = useNavigate();
 
   // 사용자 정보 불러오기
@@ -60,9 +61,14 @@ const Terms = () => {
         const response = await client.get("/user");
         setUser(response.data);
 
-        // 보여줄 약관들 결정
         const updatedTerms = getUpdatedTerms(response.data.terms);
         setTermsToShow(updatedTerms);
+
+        const initialAgreements = {};
+        updatedTerms.forEach((_, index) => {
+          initialAgreements[index] = false;
+        });
+        setIndividualAgreements(initialAgreements);
       } catch (error) {
         console.error("❌ 유저 API 에러:", error);
       } finally {
@@ -73,8 +79,42 @@ const Terms = () => {
     fetchUser();
   }, []);
 
-  // 약관 동의 처리
+  const handleTermsAgreement = (index, isChecked) => {
+    setIndividualAgreements((prev) => ({
+      ...prev,
+      [index]: isChecked,
+    }));
+  };
+
+  const handleAllAgreed = (isChecked) => {
+    setAllAgreed(isChecked);
+
+    const newIndividualAgreements = {};
+    termsToShow.forEach((_, index) => {
+      newIndividualAgreements[index] = isChecked;
+    });
+    setIndividualAgreements(newIndividualAgreements);
+  };
+
+  useEffect(() => {
+    const allChecked = Object.values(individualAgreements).every(
+      (agreed) => agreed
+    );
+    const hasAnyAgreement = Object.keys(individualAgreements).length > 0;
+
+    setAllAgreed(allChecked && hasAnyAgreement);
+  }, [individualAgreements]);
+
+  const canProceed =
+    Object.values(individualAgreements).every((agreed) => agreed) &&
+    Object.keys(individualAgreements).length > 0;
+
   const handleAgree = async () => {
+    if (!canProceed) {
+      alert("모든 약관에 동의해주세요.");
+      return;
+    }
+
     try {
       setAgreeing(true);
       await agreeToTerms();
@@ -116,26 +156,45 @@ const Terms = () => {
     <section className="terms-section">
       <div className="wrap">
         <div className="title-box">
-          <div className="img-box">
-            <img src="/logo-qwik.png" alt="qwik logo" />
+          <h4>안녕하세요,</h4>
+          <div className="logo-box">
+            <div className="img-box">
+              <img src="/logo-qwik.png" alt="qwik logo" />
+            </div>
+            <p>입니다.</p>
           </div>
-          <h4>서비스 이용약관</h4>
-          <p>
+          <p className="explain-text">
             {isFirstTimeUser
-              ? "서비스 이용을 위해 약관에 동의해주세요"
-              : "약관이 업데이트되었습니다"}
+              ? "서비스 이용을 위해 약관에 동의해주세요."
+              : "약관이 업데이트되었습니다."}
           </p>
         </div>
 
         <div className="terms-container">
           {termsToShow.map((term, index) => (
             <div key={index} className="service-terms-container">
-              <div className="input-box">
-                <input type="checkbox" />
-                <label onClick={() => handleOpenTermsModal(term)}>
-                  {term.title} 동의 (필수)
+              <div className="agreement-container">
+                <div className="input-box">
+                  <input
+                    type="checkbox"
+                    id={`terms-${index}`}
+                    className="custom-checkbox"
+                    checked={individualAgreements[index] || false}
+                    onChange={(e) =>
+                      handleTermsAgreement(index, e.target.checked)
+                    }
+                  />
+                  <label htmlFor={`terms-${index}`} className="checkbox-label">
+                    {term.title} 동의 (필수)
+                  </label>
+                </div>
+                <button
+                  className="view-terms-btn"
+                  onClick={() => handleOpenTermsModal(term)}
+                >
+                  약관 보기
                   <i className="fa-solid fa-angle-right"></i>
-                </label>
+                </button>
               </div>
             </div>
           ))}
@@ -145,10 +204,14 @@ const Terms = () => {
           <div className="input-box">
             <input
               type="checkbox"
+              id="all-agreed"
+              className="custom-checkbox"
               checked={allAgreed}
-              onChange={(e) => setAllAgreed(e.target.checked)}
+              onChange={(e) => handleAllAgreed(e.target.checked)}
             />
-            <label>전체 동의</label>
+            <label htmlFor="all-agreed" className="checkbox-label">
+              전체 동의
+            </label>
           </div>
         </div>
 
