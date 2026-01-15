@@ -12,7 +12,143 @@ const Dashboard = () => {
   const [projectsLoading, setProjectsLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] =
     useState("사용자 정보 로딩 중...");
+  const [showDeployLoader, setShowDeployLoader] = useState(false);
+  const [deployPollingActive, setDeployPollingActive] = useState(false);
+
   const navigate = useNavigate();
+
+  // 🔥 통합된 배포 상태 체크 및 Dashboard 로드
+  useEffect(() => {
+    const isDeploying = localStorage.getItem("deploying");
+    const deployStartTime = localStorage.getItem("deploy_started_at");
+
+    if (isDeploying && deployStartTime) {
+      const elapsed = Date.now() - parseInt(deployStartTime);
+
+      console.log(
+        "배포 진행 중 감지, 경과 시간:",
+        Math.round(elapsed / 1000) + "초"
+      );
+
+      if (elapsed < 45000) {
+        setShowDeployLoader(true);
+        const remainingTime = 45000 - elapsed;
+
+        console.log(
+          "로더 카드 표시 중,",
+          Math.round(remainingTime / 1000) + "초 후 폴링 시작"
+        );
+
+        setTimeout(() => {
+          console.log("🔄 45초 경과, 프로젝트 개별 폴링 시작");
+          startProjectPolling();
+        }, remainingTime);
+      } else {
+        console.log("🔄 45초 이미 경과, 즉시 프로젝트 개별 폴링 시작");
+        setShowDeployLoader(true);
+        startProjectPolling();
+      }
+    } else {
+      // 배포 중이 아니면 일반 Dashboard 로드
+      fetchDashboard();
+    }
+  }, []);
+
+  // 🔥 프로젝트 개별 폴링 함수
+  const startProjectPolling = () => {
+    if (deployPollingActive) return; // 중복 방지
+
+    setDeployPollingActive(true);
+    const deployingProjectId = localStorage.getItem("deploying_project_id");
+    console.log("📊 프로젝트 개별 폴링 시작:", deployingProjectId);
+
+    const interval = setInterval(async () => {
+      try {
+        const response = await client.get(`/dashboard/${deployingProjectId}`);
+        const projectData = response.data;
+
+        console.log("📊 프로젝트 상태:", projectData);
+
+        if (projectData.domain) {
+          console.log("🎉 프로젝트 배포 완료:", projectData.domain);
+          clearInterval(interval);
+          setShowDeployLoader(false);
+          setDeployPollingActive(false);
+          localStorage.removeItem("deploying");
+          localStorage.removeItem("deploy_started_at");
+          localStorage.removeItem("deploying_project_id");
+          localStorage.removeItem("current_deployment_id");
+
+          // 전체 Dashboard 새로고침
+          fetchDashboard();
+        } else {
+          console.log("⏳ 프로젝트 domain 아직 null");
+        }
+      } catch (error) {
+        console.error("❌ 프로젝트 폴링 에러:", error);
+
+        if (error.response?.status === 404) {
+          console.log("⏳ 프로젝트 아직 생성 중...");
+        }
+      }
+    }, 5000);
+
+    // Deploy 실패 감지
+    startFailurePolling(interval);
+
+    // 타임아웃 설정 (10분)
+    setTimeout(() => {
+      clearInterval(interval);
+      setDeployPollingActive(false);
+      console.log("⏰ 프로젝트 폴링 타임아웃 (10분)");
+      if (showDeployLoader) {
+        setShowDeployLoader(false);
+        localStorage.removeItem("deploying");
+        localStorage.removeItem("deploy_started_at");
+        localStorage.removeItem("deploying_project_id");
+        localStorage.removeItem("current_deployment_id");
+        fetchDashboard(); // 타임아웃 시 일반 로드
+      }
+    }, 600000);
+  };
+
+  // 🔥 Deploy 실패 감지 폴링
+  const startFailurePolling = (dashboardInterval) => {
+    const deploymentId = localStorage.getItem("current_deployment_id");
+    if (!deploymentId) return;
+
+    const failureInterval = setInterval(async () => {
+      try {
+        const response = await client.get(
+          `/deploy/poll?deployment_id=${deploymentId}`
+        );
+        const status = response.data.status;
+
+        if (status === "Failed") {
+          console.log("❌ 배포 실패 감지, 로더 카드 제거");
+          clearInterval(failureInterval);
+          clearInterval(dashboardInterval);
+
+          setShowDeployLoader(false);
+          setDeployPollingActive(false);
+          localStorage.removeItem("deploying");
+          localStorage.removeItem("deploy_started_at");
+          localStorage.removeItem("deploying_project_id");
+          localStorage.removeItem("current_deployment_id");
+
+          // 실패 후 일반 Dashboard 로드
+          fetchDashboard();
+        }
+      } catch (error) {
+        console.error("❌ Deploy 실패 감지 폴링 에러:", error);
+      }
+    }, 5000);
+
+    // 15분 후 정리
+    setTimeout(() => {
+      clearInterval(failureInterval);
+    }, 900000);
+  };
 
   // 유저 API 호출
   useEffect(() => {
@@ -35,35 +171,31 @@ const Dashboard = () => {
     fetchUser();
   }, []);
 
-  // 프로젝트 API 호출
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        setProjectsLoading(true);
-        const response = await client.get("/dashboard");
+  // 일반 Dashboard 로드 함수
+  const fetchDashboard = async () => {
+    try {
+      setProjectsLoading(true);
+      const response = await client.get("/dashboard");
 
-        if (response.status === 200) {
-          setProjects(response.data.projects);
-          console.log("✅ 대시보드 더미데이터:", response.data.projects);
-        }
-      } catch (error) {
-        console.error("❌ 대시보드 API 에러:", error);
-      } finally {
-        setProjectsLoading(false);
+      if (response.status === 200) {
+        setProjects(response.data.projects);
+        console.log("✅ 대시보드 데이터:", response.data.projects);
       }
-    };
-
-    fetchDashboard();
-  }, []);
+    } catch (error) {
+      console.error("❌ 대시보드 API 에러:", error);
+    } finally {
+      setProjectsLoading(false);
+    }
+  };
 
   // 로딩 메시지 변경용 useEffect
   useEffect(() => {
     if (userLoading) {
-      setLoadingMessage("사용자 정보 로딩 중..."); // 초기 메시지
+      setLoadingMessage("사용자 정보 로딩 중...");
 
       const timer = setTimeout(() => {
         setLoadingMessage("프로젝트 카드 구성 중...");
-      }, 1500); // 2초 후 메시지 변경
+      }, 1500);
 
       return () => clearTimeout(timer);
     }
@@ -97,12 +229,6 @@ const Dashboard = () => {
   // 유틸리티 함수들
   const formatStorage = (bytes) => {
     const mb = Math.round(bytes / 1048576);
-
-    // if (mb >= 1000) {
-    //   const gb = mb / 1000;
-    //   return gb % 1 === 0 ? `${gb} GB` : `${gb.toFixed(1)} GB`;
-    // }
-
     return `${mb} MB`;
   };
 
@@ -115,7 +241,7 @@ const Dashboard = () => {
     if (!projects || projects.length === 0) return 0;
 
     return projects.reduce((total, project) => {
-      const projectUsage = project.usage?.[usageType] || 0; // MB 단위
+      const projectUsage = project.usage?.[usageType] || 0;
       return total + projectUsage;
     }, 0);
   };
@@ -161,7 +287,7 @@ const Dashboard = () => {
   const maxProjects = user?.plan?.projects || 0;
   const canAddMore = totalProjects < maxProjects;
 
-  // 사용량 계산 (실제 계산된 값 사용)
+  // 사용량 계산
   const totalStorageUsed = calculateTotalUsage("storage_used");
   const totalTrafficUsed = calculateTotalUsage("traffic_used");
 
@@ -188,7 +314,6 @@ const Dashboard = () => {
             <h3 className="title-text">
               <span className="tab-block">{user.username} 님의 </span>
               <span className="tab-block">서비스 이용 현황입니다.</span>
-              {/* <span className="membership-badge">{user.plan.name}</span> */}
             </h3>
             <p>
               <span className="tab-block">
@@ -198,8 +323,7 @@ const Dashboard = () => {
                 현재 활성화 프로젝트는 {activeProjects}개,{" "}
               </span>
               <span className="tab-block">
-                비활성화 프로젝트는 {inactiveProjects}
-                개입니다.
+                비활성화 프로젝트는 {inactiveProjects}개입니다.
               </span>
             </p>
           </div>
@@ -251,14 +375,26 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
         {/* 프로젝트 목록 */}
         <div className="project-list-container">
           <p className="project-counter eng">
             {totalProjects} / {maxProjects}
           </p>
           <div className="project-list-box">
+            {/* 배포 중 로더 카드 */}
+            {showDeployLoader && (
+              <div className="project-box loader-card">
+                <div className="loader-content">
+                  <div className="spinner"></div>
+                  <p className="loader-title">프로젝트 배포 중</p>
+                  <p className="loader-subtitle">잠시만 기다려주세요...</p>
+                </div>
+              </div>
+            )}
+
             {/* 프로젝트 로딩 */}
-            {projectsLoading && (
+            {projectsLoading && !showDeployLoader && (
               <div className="project-box">
                 <p>프로젝트 로딩 중...</p>
               </div>
@@ -270,7 +406,6 @@ const Dashboard = () => {
                 <div
                   key={project.project_id}
                   className="project-box eng pos-rel"
-                  onClick={() => handleProjectClick(project)}
                   style={{ cursor: "pointer" }}
                 >
                   <span className="git-repository">
@@ -281,10 +416,20 @@ const Dashboard = () => {
                       project.status ? "active" : "inactive"
                     }`}
                   ></span>
-                  <p className="project-title">{project.repo_name}</p>
-                  <p className="project-url ellipsis-1">
-                    {project.domain}.qw1k.cloud
+                  <p
+                    className="project-title"
+                    onClick={() => handleProjectClick(project)}
+                  >
+                    {project.repo_name}
                   </p>
+                  <a
+                    className="project-url ellipsis-1"
+                    href={`https://${project.domain}.qw1k.cloud`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {project.domain}.qw1k.cloud
+                  </a>
                   <p className="version">
                     ver.{" "}
                     <span>
