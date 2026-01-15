@@ -71,12 +71,20 @@ const Deploy = () => {
       setProjectId(project_id);
       setCurrentPhase(2);
 
+      // 로더 카드
+      localStorage.setItem("deploying", "true");
+      localStorage.setItem("deploying_project_id", project_id);
+
       // 1초 후 Phase 3으로 이동 (실제 폴링 시작)
       setTimeout(() => {
         setCurrentPhase(3);
       }, 1000);
     } catch (error) {
       console.error("❌ 배포 시작 실패:", error);
+
+      localStorage.removeItem("deploying");
+      localStorage.setItem("deploying_project_id");
+
       setErrorMessage(
         error.response?.data?.message || "배포 시작에 실패했습니다."
       );
@@ -141,6 +149,8 @@ const Deploy = () => {
   // ProgressBar 완료 콜백
   const handleProgressComplete = () => {
     setStep(3);
+    localStorage.removeItem("deploying");
+    localStorage.setItem("deploying_project_id");
   };
 
   // 새로고침 방지

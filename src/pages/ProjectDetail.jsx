@@ -9,16 +9,50 @@ const ProjectDetail = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
 
+  const [projectData, setProjectData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [domainModalOpen, setDomainModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [newDomain, setNewDomain] = useState("");
   const [isSubmittingDomain, setIsSubmittingDomain] = useState(false);
-  const [domainError, setDomainError] = useState("에러메시지 위치");
+  const [domainError, setDomainError] = useState("");
 
-  // 서브도메인 변경 API 호출
+  // project detail api
+  useEffect(() => {
+    const fetchProjectData = async () => {
+      if (!projectId) {
+        alert("잘못된 접근입니다.");
+        navigate("/dashboard");
+        return;
+      }
+
+      try {
+        setLoading(true);
+
+        const response = await client.get(`/dashboard/${projectId}`);
+        setProjectData(response.data);
+      } catch (error) {
+        console.error("load project error", error);
+        setError("프로젝트 데이터를 불러올 수 없습니다.");
+
+        if (error.response?.status === 404) {
+          alert("존재하지 않는 프로젝트입니다.");
+          navigate("/dashboard");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjectData();
+  }, [projectId, navigate]);
+
+  // change domain api
   const handleChangeDomain = async () => {
     if (!newDomain.trim()) {
-      setDomainError("서브도메인을 입력해주세요");
+      setDomainError("도메인을 입력해주세요");
       return;
     }
 
@@ -26,30 +60,23 @@ const ProjectDetail = () => {
     setDomainError("");
 
     try {
-      console.log("🔍 도메인 변경 요청:", {
-        projectId: projectId,
-        newDomain: newDomain,
-      });
-
       const response = await client.patch(`/projects/${projectId}/domain`, {
-        new_domain: newDomain, // 백엔드 요구 형식에 맞춰서
+        new_domain: newDomain,
       });
 
-      console.log("도메인 변경", response.data);
+      // 성공 시 프로젝트 데이터 새로고침
+      const updatedProject = await client.get(`/dashboard/${projectId}`);
+      setProjectData(updatedProject.data);
 
-      // 성공 시 모달 닫기
       setDomainModalOpen(false);
       setNewDomain("");
-
-      // TODO: 성공 메시지 표시 또는 페이지 데이터 새로고침
-      alert("서브도메인이 성공적으로 변경되었습니다!");
+      alert("도메인이 성공적으로 변경되었습니다!");
     } catch (error) {
-      console.log("서브도메인 변경 실패:", error.response?.data);
-
+      console.error("change domain error", error);
       const errorMsg =
         error.response?.data?.message ||
         error.response?.data?.error ||
-        "서브도메인 변경에 실패했습니다";
+        "도메인 변경에 실패했습니다";
       setDomainError(errorMsg);
     } finally {
       setIsSubmittingDomain(false);
@@ -57,30 +84,59 @@ const ProjectDetail = () => {
   };
 
   // project delete api
-  useEffect(() => {
-    console.log("extracting params from a link", projectId);
-    if (!projectId) {
-      alert("잘못된 접근입니다.");
-      navigate("/dashboard");
-    }
-  }, [projectId, navigate]);
-
   const handleDeleteProject = async () => {
     try {
-      console.log("project id to delete", projectId);
       const response = await client.delete(`/projects/${projectId}`);
-      console.log("deletion complete", response.data);
       navigate("/dashboard");
     } catch (error) {
       console.error("delete error", error);
-      console.error("original error", error.response);
-      console.error("error data", error.response?.data);
     } finally {
       setDeleteModalOpen(false);
     }
   };
 
-  // 모달 핸들링
+  // loading
+  if (loading) {
+    return (
+      <section className="project-detail-section">
+        <div className="wrap">
+          <div className="loading">프로젝트 정보를 불러오는 중...</div>
+        </div>
+      </section>
+    );
+  }
+
+  // error
+  if (error || !projectData) {
+    return (
+      <section className="project-detail-section">
+        <div className="wrap">
+          <div className="error">{error || "프로젝트 데이터가 없습니다."}</div>
+          <button onClick={() => navigate("/dashboard")}>
+            대시보드로 돌아가기
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  // fn formatting date
+  const formatDate = (dateString, includeTime = false) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear().toString().slice(-2);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    if (includeTime) {
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      return `${year}.${month}.${day} ${hours}:${minutes}`;
+    }
+    return `${year}.${month}.${day}`;
+  };
+
+  // handling modal
   const handleOpenDomainModal = () => {
     setDomainModalOpen(true);
     // setNewDomain("");
@@ -110,21 +166,39 @@ const ProjectDetail = () => {
               DELETE
             </button>
           </div>
-          <p className="project-address eng">githubId/repository-name</p>
+          <p className="project-address eng">
+            {projectData.github_username || "user"}/
+            {projectData.repo_name || "repository"}
+          </p>
+
           <div className="title-box pos-rel">
-            <p className="title">Project Name</p>
-            <div className="toggle-box inactive">
+            <p className="title">{projectData.repo_name || "Project Name"}</p>
+            <div
+              className={`toggle-box ${
+                projectData.status ? "active" : "inactive"
+              }`}
+            >
               <span className="toggle"></span>
             </div>
           </div>
+
           <div className="domain-box">
             <a
-              href="#"
+              href={
+                projectData.domain
+                  ? `https://${projectData.domain}.qw1k.cloud`
+                  : "#"
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="project-url eng"
+              onClick={(e) => {
+                if (!projectData.domain) e.preventDefault();
+              }}
             >
-              domain.qw1k.cloud
+              {projectData.domain
+                ? `${projectData.domain}.qw1k.cloud`
+                : "배포 중..."}
             </a>
             <button
               className="change-domain-btn"
@@ -134,32 +208,54 @@ const ProjectDetail = () => {
             </button>
           </div>
         </div>
+
         <div className="resource-container">
           <div className="memory-container">
             <div className="text-box">
               <p className="title">메모리 사용량</p>
               <p className="usage eng">
-                <span className="used">NNN</span>/
-                <span className="total">200MB</span>
+                <span className="used">
+                  {projectData.usage?.storage_used || 0}
+                </span>
+                /<span className="total">200MB</span>
               </p>
             </div>
             <div className="bar-box">
-              <div className="fill-bar"></div>
+              <div
+                className="fill-bar"
+                style={{
+                  width: `${Math.min(
+                    ((projectData.usage?.storage_used || 0) / 200) * 100,
+                    100
+                  )}%`,
+                }}
+              ></div>
             </div>
           </div>
           <div className="traffic-container">
             <div className="text-box">
               <p className="title">트래픽 사용량</p>
               <p className="usage eng">
-                <span className="used">NNN</span>/
-                <span className="total">2GB</span>
+                <span className="used">
+                  {projectData.usage?.traffic_used || 0}
+                </span>
+                /<span className="total">2GB</span>
               </p>
             </div>
             <div className="bar-box">
-              <div className="fill-bar"></div>
+              <div
+                className="fill-bar"
+                style={{
+                  width: `${Math.min(
+                    ((projectData.usage?.traffic_used || 0) / 2048) * 100,
+                    100
+                  )}%`,
+                }}
+              ></div>
             </div>
           </div>
         </div>
+
         <div className="history-container">
           <div className="title-box">
             <p className="title">프로젝트 히스토리</p>
@@ -169,12 +265,19 @@ const ProjectDetail = () => {
           </div>
           <div className="history-box">
             <p>
-              <span className="eng">yy.mm.dd hh:mm</span> commit message
+              <span className="eng">
+                {formatDate(projectData.created_at, true)}
+              </span>{" "}
+              {projectData.commit_message || "초기 배포"}
             </p>
-            <p>
-              <span className="eng">yy.mm.dd hh:mm</span> 어느길이까지 가능한지
-              테스트 작업 말줄임표 나올 때까지 길어지게 입력
-            </p>
+            {projectData.reload_at && (
+              <p>
+                <span className="eng">
+                  {formatDate(projectData.reload_at, true)}
+                </span>{" "}
+                {projectData.last_commit_message || "재배포"}
+              </p>
+            )}
           </div>
         </div>
       </div>
