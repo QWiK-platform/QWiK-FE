@@ -1,4 +1,109 @@
-.terms-section .term-open-modal {
+.terms-section {
+  padding-top: 200px;
+}
+
+.terms-section .wrap {
+  width: 500px;
+}
+
+.terms-section .title-box {
+  padding-bottom: 15px;
+  box-shadow: 0 0.5px 0 0 var(--primary-color);
+}
+
+.terms-section .title-box h4 {
+  font-size: 2.5rem;
+  font-weight: 500;
+  line-height: 2;
+}
+
+.terms-section .title-box .img-box {
+  width: 140px;
+}
+
+.terms-section .logo-box {
+  display: flex;
+  align-items: center;
+}
+
+.terms-section .logo-box p {
+  color: var(--text-color);
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.terms-section .title-box .explain-text {
+  margin-top: 16px;
+}
+
+.terms-section .terms-container {
+  padding: 30px 0;
+  box-shadow: 0 0.5px 0 0 var(--primary-color);
+}
+
+.terms-section .agreement-container {
+  display: flex;
+  gap: 20px;
+}
+
+.terms-section .input-box input {
+  display: none;
+}
+
+.terms-section label {
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  line-height: 2;
+}
+
+.terms-section .input-box input[type="checkbox"]:checked + label::before {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.terms-section .input-box input[type="checkbox"]:checked + label::after {
+  content: "✓";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 12px;
+}
+
+.terms-section label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  background: white;
+}
+
+.terms-section .service-terms-container .view-terms-btn {
+  font-size: 1.4rem;
+  color: var(--text-color);
+}
+
+.terms-section .btn-box {
+  margin-top: 50px;
+}
+
+.terms-section .btn-box .patch-terms-btn {
+  padding: 12px 24px;
+  border-radius: 16px;
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+/* modal */
+
+.terms-section .wrap .terms-section .term-open-modal {
   width: 400px;
 }
 
