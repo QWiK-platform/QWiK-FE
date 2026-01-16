@@ -80,6 +80,7 @@
 }
 
 .dashboard-section .project-list-box .project-box {
+  position: relative;
   width: calc((100% - 60px) / 4);
   background-color: #fff;
   border-radius: 16px;
@@ -117,10 +118,17 @@
   font-weight: 400;
   margin-top: 10px;
 }
+
 .dashboard-section .project-box .project-url {
+  display: block;
   font-size: 1.4rem;
   line-height: 2;
 }
+
+.dashboard-section .project-box .project-url:hover {
+  text-decoration: underline;
+}
+
 .dashboard-section .project-box .version {
   margin-top: 10px;
   overflow: hidden;
@@ -130,6 +138,24 @@
   letter-spacing: -0.12rem;
   font-weight: 400;
 }
+
+.dashboard-section .project-box .version:hover:after {
+  content: attr(data-full-text);
+  position: absolute;
+  bottom: 55px;
+  left: 10%;
+  max-width: 90%;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background-color: #cbbbab;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  color: var(--text-color);
+  font-size: 1.4rem;
+  word-break: break-all;
+  white-space: normal;
+  z-index: 1000;
+}
+
 .dashboard-section .project-box .date-box {
   display: flex;
   margin-top: 15px;

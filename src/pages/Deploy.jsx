@@ -4,7 +4,6 @@ import client from "../api/client";
 import ProgressBar from "../components/ProgressBar";
 
 const Deploy = () => {
-  // 핵심 상태만 남기기
   const [step, setStep] = useState(1); // 1: 입력, 2: 진행, 3: 완료
   const [repositoryUrl, setRepositoryUrl] = useState("");
 
@@ -73,7 +72,9 @@ const Deploy = () => {
 
       // 로더 카드
       localStorage.setItem("deploying", "true");
+      localStorage.setItem("deploy_started_at", Date.now().toString());
       localStorage.setItem("deploying_project_id", project_id);
+      localStorage.setItem("current_deployment_id", deployment_id);
 
       // 1초 후 Phase 3으로 이동 (실제 폴링 시작)
       setTimeout(() => {
@@ -83,7 +84,9 @@ const Deploy = () => {
       console.error("❌ 배포 시작 실패:", error);
 
       localStorage.removeItem("deploying");
-      localStorage.setItem("deploying_project_id");
+      localStorage.removeItem("deploy_started_at");
+      localStorage.removeItem("deploying_project_id");
+      localStorage.removeItem("current_deployment_id");
 
       setErrorMessage(
         error.response?.data?.message || "배포 시작에 실패했습니다."
@@ -135,13 +138,8 @@ const Deploy = () => {
       if (response.status === 200) {
         console.log("🎉 200 OK - 준비 완료!");
         setDomainReady(true);
-      } else if (response.status === 403) {
-        console.log("❌ 403 Forbidden - 아직 대기");
-      } else {
-        console.log(`❌ ${response.status} - 계속 대기`);
       }
     } catch (error) {
-      // 이제 진짜 네트워크 에러만 여기로 옴
       console.log("❌ 네트워크 에러:", error.message);
     }
   };
@@ -169,7 +167,7 @@ const Deploy = () => {
   return (
     <section className={`deploy-section step-${step}`}>
       <div className="wrap">
-        {/* 📝 입력 영역 */}
+        {/* 입력 영역 */}
         <div className="input-container">
           <div className="input-box">
             <input
@@ -192,7 +190,7 @@ const Deploy = () => {
           </div>
         </div>
 
-        {/* 📊 진행 상황 */}
+        {/* 진행 상황 */}
         {step === 2 && (
           <div>
             <ProgressBar
@@ -205,7 +203,7 @@ const Deploy = () => {
           </div>
         )}
 
-        {/* ✅ 성공 결과 */}
+        {/* 성공 결과 */}
         {step === 3 && deployStatus === "Success" && domainReady && (
           <div className="result-container success">
             <div className="text-box">
@@ -227,7 +225,6 @@ const Deploy = () => {
               <button
                 className="move-to-detail accent"
                 onClick={() => {
-                  // 🔥 수정: projectId 저장 로직 추가 필요
                   window.location.href = `/project/${projectId}`;
                 }}
               >
@@ -237,7 +234,7 @@ const Deploy = () => {
           </div>
         )}
 
-        {/* ❌ 실패 결과 */}
+        {/* 실패 결과 */}
         {step === 3 && deployStatus === "Failed" && (
           <div className="result-container failure">
             <div className="text-box">

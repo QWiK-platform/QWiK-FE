@@ -54,7 +54,7 @@ const Dashboard = () => {
     }
   }, []);
 
-  // 🔥 프로젝트 개별 폴링 함수
+  // 프로젝트 개별 폴링 함수
   const startProjectPolling = () => {
     if (deployPollingActive) return; // 중복 방지
 
@@ -67,9 +67,14 @@ const Dashboard = () => {
         const response = await client.get(`/dashboard/${deployingProjectId}`);
         const projectData = response.data;
 
-        console.log("📊 프로젝트 상태:", projectData);
+        console.log("프로젝트 상태:", projectData);
 
-        if (projectData.domain) {
+        // domain이 null이 아닐 때까지 계속 폴링
+        if (
+          projectData.domain !== null &&
+          projectData.domain !== undefined &&
+          projectData.domain !== ""
+        ) {
           console.log("🎉 프로젝트 배포 완료:", projectData.domain);
           clearInterval(interval);
           setShowDeployLoader(false);
@@ -82,13 +87,13 @@ const Dashboard = () => {
           // 전체 Dashboard 새로고침
           fetchDashboard();
         } else {
-          console.log("⏳ 프로젝트 domain 아직 null");
+          console.log("프로젝트 domain null 상태");
         }
       } catch (error) {
-        console.error("❌ 프로젝트 폴링 에러:", error);
+        console.error("프로젝트 폴링 에러:", error);
 
         if (error.response?.status === 404) {
-          console.log("⏳ 프로젝트 아직 생성 중...");
+          console.log("프로젝트 아직 생성 중...");
         }
       }
     }, 5000);
@@ -107,12 +112,12 @@ const Dashboard = () => {
         localStorage.removeItem("deploy_started_at");
         localStorage.removeItem("deploying_project_id");
         localStorage.removeItem("current_deployment_id");
-        fetchDashboard(); // 타임아웃 시 일반 로드
+        fetchDashboard();
       }
     }, 600000);
   };
 
-  // 🔥 Deploy 실패 감지 폴링
+  // Deploy 실패 감지 폴링
   const startFailurePolling = (dashboardInterval) => {
     const deploymentId = localStorage.getItem("current_deployment_id");
     if (!deploymentId) return;
@@ -159,7 +164,6 @@ const Dashboard = () => {
 
         if (response.status === 200) {
           setUser(response.data);
-          console.log("✅ 유저 데이터:", response.data);
         }
       } catch (error) {
         console.error("❌ 유저 API 에러:", error);
@@ -179,7 +183,6 @@ const Dashboard = () => {
 
       if (response.status === 200) {
         setProjects(response.data.projects);
-        console.log("✅ 대시보드 데이터:", response.data.projects);
       }
     } catch (error) {
       console.error("❌ 대시보드 API 에러:", error);
@@ -406,6 +409,7 @@ const Dashboard = () => {
                 <div
                   key={project.project_id}
                   className="project-box eng pos-rel"
+                  onClick={() => handleProjectClick(project)}
                   style={{ cursor: "pointer" }}
                 >
                   <span className="git-repository">
@@ -416,21 +420,36 @@ const Dashboard = () => {
                       project.status ? "active" : "inactive"
                     }`}
                   ></span>
-                  <p
-                    className="project-title"
-                    onClick={() => handleProjectClick(project)}
-                  >
+                  <p className="project-title ellipsis-1">
                     {project.repo_name}
                   </p>
+
+                  {/* URL 부분만 별도 처리 */}
                   <a
                     className="project-url ellipsis-1"
-                    href={`https://${project.domain}.qw1k.cloud`}
+                    href={
+                      project.domain
+                        ? `https://${project.domain}.qw1k.cloud`
+                        : "#"
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!project.domain) {
+                        e.preventDefault();
+                      }
+                    }}
                   >
-                    {project.domain}.qw1k.cloud
+                    {project.domain
+                      ? `${project.domain}.qw1k.cloud`
+                      : "배포 중..."}
                   </a>
-                  <p className="version">
+
+                  <p
+                    className="version"
+                    data-full-text={formatCommitMessage(project.commit_message)}
+                  >
                     ver.{" "}
                     <span>
                       {formatCommitMessage(
