@@ -136,7 +136,6 @@ const Deploy = () => {
       console.log("📊 OK:", response.ok);
 
       if (response.status === 200) {
-        console.log("🎉 200 OK - 준비 완료!");
         setDomainReady(true);
       }
     } catch (error) {
