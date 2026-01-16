@@ -258,6 +258,8 @@ const ProjectDetail = () => {
 
   const handleCloseDeleteModal = () => {
     setDeleteModalOpen(false);
+    setDeleteRepoName("");
+    setDeleteDomainName("");
   };
 
   return (
