@@ -314,7 +314,7 @@ const ProjectDetail = () => {
         <div className="resource-container">
           <div className="memory-container">
             <div className="text-box">
-              <p className="title">메모리 사용량</p>
+              <p className="title">스토리지 사용량</p>
               <p className="usage eng">
                 <span className="used">
                   {projectData.usage?.storage_used || 0}
@@ -366,20 +366,23 @@ const ProjectDetail = () => {
             </button>
           </div>
           <div className="history-box">
-            <p>
-              <span className="eng">
-                {formatDate(projectData.created_at, true)}
-              </span>{" "}
-              {projectData.commit_message || "초기 배포"}
-            </p>
-            {projectData.reload_at && (
-              <p>
-                <span className="eng">
-                  {formatDate(projectData.reload_at, true)}
-                </span>{" "}
-                {projectData.last_commit_message || "재배포"}
-              </p>
-            )}
+            {projectData.history
+              ?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+              .map((historyItem, index) => (
+                <div key={index} className="history-item">
+                  <span className="dated eng">
+                    {formatDate(historyItem.created_at)}
+                  </span>
+                  <span
+                    className={`status-bullet eng ${historyItem.build_status}`}
+                  >
+                    {historyItem.build_status}
+                  </span>
+                  <span className="commit-message ellipsis-1">
+                    {historyItem.commit_message}
+                  </span>
+                </div>
+              ))}
           </div>
         </div>
       </div>
@@ -438,7 +441,6 @@ const ProjectDetail = () => {
                 <p>삭제 이후에는 해당 프로젝트 내용을 복구할 수 없습니다.</p>
               </div>
             </div>
-
             <div className="input-box">
               <p className="input-label">
                 레포지토리 이름:{" "}
@@ -452,7 +454,6 @@ const ProjectDetail = () => {
                 onChange={(e) => setDeleteRepoName(e.target.value)}
               />
             </div>
-
             <div className="input-box">
               <p className="input-label">
                 프로젝트 주소:{" "}

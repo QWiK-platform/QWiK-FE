@@ -287,7 +287,7 @@ const Dashboard = () => {
   const activeProjects = projects?.filter((p) => p.status === true).length || 0;
   const inactiveProjects = totalProjects - activeProjects;
 
-  const maxProjects = user?.plan?.projects || 0;
+  const maxProjects = user?.plan?.project_limit || 0;
   const canAddMore = totalProjects < maxProjects;
 
   // 사용량 계산
@@ -295,8 +295,9 @@ const Dashboard = () => {
   const totalTrafficUsed = calculateTotalUsage("traffic_used");
 
   // 제한량
-  const storageLimit = (user?.plan?.storage / 1048576) * user?.plan?.projects;
-  const trafficLimit = user?.plan?.traffic / 1048576;
+  const storageLimit =
+    (user?.plan?.storage_limit / 1048576) * user?.plan?.project_limit;
+  const trafficLimit = user?.plan?.traffic_limit / 1048576;
 
   // 퍼센티지
   const storagePercentage = calculateUsagePercentage(
@@ -365,7 +366,7 @@ const Dashboard = () => {
                 <p className="usage eng">
                   <span className="used">{Math.round(totalTrafficUsed)}</span>/
                   <span className="total">
-                    {formatStorage(user.plan.traffic)}
+                    {formatStorage(user?.plan?.traffic_limit)}
                   </span>
                 </p>
               </div>

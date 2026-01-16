@@ -148,16 +148,34 @@
   background-color: var(--bg-sub-color);
 }
 
-.project-detail-section .history-box p {
-  line-height: 1.8;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
+.project-detail-section .history-container .history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-.project-detail-section .history-box p span {
-  margin-right: 10px;
+.project-detail-section .history-container .history-item:last-child {
+  margin-bottom: 0;
+}
+
+.project-detail-section .history-container .history-item .eng {
+  letter-spacing: -1.4px;
+}
+
+.project-detail-section .history-item .status-bullet {
+  font-size: 1.4rem;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 16px;
+}
+
+.project-detail-section .history-item .status-bullet.success {
+  background-color: #5f9167;
+}
+
+.project-detail-section .history-item .status-bullet.failed {
+  background-color: #df5252;
 }
 
 /* change domain modal */
@@ -171,7 +189,7 @@
   margin-top: 20px;
 }
 
-.project-detail-section .modal-popup .notice-box p {
+.change-domain-moda .notice-box p {
   margin: 6px 0;
 }
 
@@ -190,8 +208,26 @@
   line-height: 2.5;
 }
 
+/* delete modal */
+
+.delete-project-modal .notice-box p {
+  margin: 0;
+  line-height: 1.2;
+}
+
 .delete-project-modal .input-box {
-  margin: 5px 0;
+  margin-top: 20px;
+}
+
+.delete-project-modal .input-box .input-label {
+  line-height: 2;
+}
+
+.delete-project-modal .required-text {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .delete-project-modal .input-box input {
