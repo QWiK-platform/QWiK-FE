@@ -17,7 +17,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
-  // 🔥 통합된 배포 상태 체크 및 Dashboard 로드
+  // 배포 상태 체크 및 Dashboard 로드
   useEffect(() => {
     const isDeploying = localStorage.getItem("deploying");
     const deployStartTime = localStorage.getItem("deploy_started_at");
@@ -230,9 +230,15 @@ const Dashboard = () => {
   }
 
   // 유틸리티 함수들
-  const formatStorage = (bytes) => {
-    const mb = Math.round(bytes / 1048576);
-    return `${mb} MB`;
+  const formatStorage = (mb) => {
+    // 1000MB 이상이면 GB로 표시
+    if (mb >= 1000) {
+      const gb = mb / 1000;
+      // 소수점이 .0이면 정수로 표시
+      return gb % 1 === 0 ? `${gb} GB` : `${gb.toFixed(1)} GB`;
+    }
+
+    return `${Math.round(mb)} MB`;
   };
 
   const calculateUsagePercentage = (used, total) => {
@@ -287,7 +293,7 @@ const Dashboard = () => {
   const activeProjects = projects?.filter((p) => p.status === true).length || 0;
   const inactiveProjects = totalProjects - activeProjects;
 
-  const maxProjects = user?.plan?.project_limit || 0;
+  const maxProjects = user?.project_limit || 0;
   const canAddMore = totalProjects < maxProjects;
 
   // 사용량 계산
@@ -295,9 +301,8 @@ const Dashboard = () => {
   const totalTrafficUsed = calculateTotalUsage("traffic_used");
 
   // 제한량
-  const storageLimit =
-    (user?.plan?.storage_limit / 1048576) * user?.plan?.project_limit;
-  const trafficLimit = user?.plan?.traffic_limit / 1048576;
+  const storageLimit = user?.storage_limit * user?.project_limit;
+  const trafficLimit = user?.traffic_limit;
 
   // 퍼센티지
   const storagePercentage = calculateUsagePercentage(
@@ -343,9 +348,10 @@ const Dashboard = () => {
                   </Tooltip>
                 </div>
                 <p className="usage eng">
-                  <span className="used">{Math.round(totalStorageUsed)}</span>/
-                  <span className="total">{Math.round(storageLimit)}</span>
-                  <span> MB</span>
+                  <span className="used">
+                    {formatStorage(totalStorageUsed)}
+                  </span>
+                  /<span className="total">{formatStorage(storageLimit)}</span>
                 </p>
               </div>
               <div className="bar-box">
@@ -364,9 +370,12 @@ const Dashboard = () => {
                   </Tooltip>
                 </div>
                 <p className="usage eng">
-                  <span className="used">{Math.round(totalTrafficUsed)}</span>/
+                  <span className="used">
+                    {formatStorage(totalTrafficUsed)}
+                  </span>
+                  /
                   <span className="total">
-                    {formatStorage(user?.plan?.traffic_limit)}
+                    {formatStorage(user?.traffic_limit)}
                   </span>
                 </p>
               </div>
