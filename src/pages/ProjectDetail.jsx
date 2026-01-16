@@ -167,7 +167,7 @@ const ProjectDetail = () => {
             </button>
           </div>
           <p className="project-address eng">
-            {projectData.github_username || "user"}/
+            {projectData.username || "user"}/
             {projectData.repo_name || "repository"}
           </p>
 
