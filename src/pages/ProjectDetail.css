@@ -38,24 +38,20 @@
   word-wrap: break-word;
 }
 
-.project-detail-section .project-info-container .toggle-box {
-  flex-shrink: 0;
-  width: 80px;
-  height: 35px;
-  background-color: var(--secondary-bg);
-  border-radius: 50px;
-  cursor: pointer;
-  transition: 0.3s ease-in-out;
-  box-shadow: 0px 0px 8px var(--secondary-color);
-}
-
-.project-detail-section .toggle-box .toggle {
+.project-detail-section .title-box .status {
   display: inline-block;
   width: 26px;
   aspect-ratio: 1 / 1;
-  background-color: #fff;
   border-radius: 50px;
   margin: 4px;
+}
+
+.project-detail-section .status.active {
+  background-color: #23a038;
+}
+
+.project-detail-section .status.inactive {
+  background-color: #ff1818;
 }
 
 .project-detail-section .toggle-box:hover {
@@ -71,21 +67,24 @@
 }
 
 .project-detail-section .domain-box {
+  display: flex;
+  gap: 20px;
+  align-items: center;
   line-height: 4rem;
 }
 
 .project-detail-section .domain-box .project-url {
-  display: inline-block;
   font-size: 2rem;
+  line-height: 1;
+  word-break: break-all;
 }
 .project-detail-section .domain-box .change-domain-btn {
-  display: inline-block;
-  margin-left: 20px;
-  padding: 0px 10px;
+  flex-shrink: 0;
+  width: 70px;
   background-color: var(--accent-bg);
   border-radius: 20px;
   transition: 0.3s ease-in-out;
-  line-height: 3rem;
+  line-height: 2.2;
   font-size: 1.4rem;
 }
 
