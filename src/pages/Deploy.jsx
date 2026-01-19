@@ -71,10 +71,10 @@ const Deploy = () => {
       setCurrentPhase(2);
 
       // 로더 카드
-      localStorage.setItem("deploying", "true");
-      localStorage.setItem("deploy_started_at", Date.now().toString());
-      localStorage.setItem("deploying_project_id", project_id);
-      localStorage.setItem("current_deployment_id", deployment_id);
+      // localStorage.setItem("deploying", "true");
+      // localStorage.setItem("deploy_started_at", Date.now().toString());
+      // localStorage.setItem("deploying_project_id", project_id);
+      // localStorage.setItem("current_deployment_id", deployment_id);
 
       // 1초 후 Phase 3으로 이동 (실제 폴링 시작)
       setTimeout(() => {
