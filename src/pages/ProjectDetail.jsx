@@ -269,7 +269,7 @@ const ProjectDetail = () => {
     const interval = setInterval(async () => {
       try {
         const response = await client.get(`/dashboard/${projectId}`);
-        const projectStatus = response.history.build_status;
+        const projectStatus = response.data.history[0].build_status;
 
         setReloadDeployStatus(projectStatus);
         console.log("📊 재배포 상태:", projectStatus);
