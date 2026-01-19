@@ -72,6 +72,13 @@ pre {
   text-overflow: ellipsis;
 }
 
+.error-message {
+  font-size: 1.4rem;
+  color: red;
+  text-indent: 1rem;
+  margin-top: 5px;
+}
+
 /* modal popup setting */
 
 .modal-bg {
@@ -134,6 +141,10 @@ button.main {
 button.main:hover {
   color: #fff;
   background-color: var(--primary-color);
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 /* input setting */

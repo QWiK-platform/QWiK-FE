@@ -201,13 +201,6 @@
   margin: 20px 0 10px;
 }
 
-.change-domain-modal .input-box .error-message {
-  font-size: 1.4rem;
-  color: red;
-  text-indent: 1rem;
-  line-height: 2.5;
-}
-
 /* delete modal */
 
 .delete-project-modal .notice-box p {
@@ -236,6 +229,16 @@
 
 .delete-project-modal .btn-box {
   margin-top: 20px;
+}
+
+/* domain loader modal */
+.domain-loading-modal {
+  width: 300px;
+}
+
+/* reload progress bar modal */
+.reload-modal {
+  width: 500px;
 }
 
 @media (max-width: 650px) {
