@@ -1,4 +1,8 @@
 /* loader */
+.loader-container {
+  text-align: center;
+}
+
 .loader-container .lds-spinner,
 .lds-spinner div,
 .lds-spinner div:after {

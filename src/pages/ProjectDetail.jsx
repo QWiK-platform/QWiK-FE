@@ -219,6 +219,7 @@ const ProjectDetail = () => {
 
   // 리로드 처리 함수
   const handleReloadProject = async () => {
+    console.log("start reloading");
     const confirmReload = window.confirm(
       `${projectData.repo_name} 레포지토리의 최신 내용으로 다시 배포하시겠습니까?`
     );
@@ -268,7 +269,7 @@ const ProjectDetail = () => {
     const interval = setInterval(async () => {
       try {
         const response = await client.get(`/dashboard/${projectId}`);
-        const projectStatus = response.data.build_status;
+        const projectStatus = response.history.build_status;
 
         setReloadDeployStatus(projectStatus);
         console.log("📊 재배포 상태:", projectStatus);
@@ -564,6 +565,12 @@ const ProjectDetail = () => {
                 value={deleteRepoName}
                 onChange={(e) => setDeleteRepoName(e.target.value)}
               />
+              {deleteRepoName &&
+                deleteRepoName.trim() !== projectData.repo_name && (
+                  <p className="error-message validation-error">
+                    레포지토리 이름이 일치하지 않습니다
+                  </p>
+                )}
             </div>
             <div className="input-box">
               <p className="input-label">
@@ -579,6 +586,13 @@ const ProjectDetail = () => {
                 value={deleteDomainName}
                 onChange={(e) => setDeleteDomainName(e.target.value)}
               />
+              {deleteDomainName &&
+                deleteDomainName.trim() !==
+                  `${projectData.domain}.qw1k.cloud` && (
+                  <p className="error-message validation-error">
+                    프로젝트 주소가 일치하지 않습니다
+                  </p>
+                )}
             </div>
 
             <div className="btn-box delete-btn-box">
@@ -588,10 +602,6 @@ const ProjectDetail = () => {
               <button
                 className="delete-btn accent"
                 onClick={handleDeleteProject}
-                disabled={
-                  deleteRepoName.trim() !== projectData.repo_name ||
-                  deleteDomainName.trim() !== `${projectData.domain}.qw1k.cloud`
-                }
               >
                 삭제
               </button>
