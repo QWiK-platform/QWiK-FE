@@ -136,10 +136,10 @@ const Dashboard = () => {
 
           setShowDeployLoader(false);
           setDeployPollingActive(false);
-          localStorage.removeItem("deploying");
-          localStorage.removeItem("deploy_started_at");
-          localStorage.removeItem("deploying_project_id");
-          localStorage.removeItem("current_deployment_id");
+          // localStorage.removeItem("deploying");
+          // localStorage.removeItem("deploy_started_at");
+          // localStorage.removeItem("deploying_project_id");
+          // localStorage.removeItem("current_deployment_id");
 
           // 실패 후 일반 Dashboard 로드
           fetchDashboard();
