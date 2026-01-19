@@ -45,6 +45,7 @@ const exceptDomainSet = new Set([
     "login",
     "mail",
     "main",
+    "mob",
     "mongo",
     "monitor",
     "monitoring",

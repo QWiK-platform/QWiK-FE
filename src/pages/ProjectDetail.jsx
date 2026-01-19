@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import client from "../api/client";
 import "./ProjectDetail.css";
 import Loader from "../components/Loader";
+import ProgressBar from "../components/ProgressBar";
 import exceptDomainSet from "../data/domain/exceptDomainSet";
 
 const ProjectDetail = () => {
@@ -23,6 +24,11 @@ const ProjectDetail = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteRepoName, setDeleteRepoName] = useState("");
   const [deleteDomainName, setDeleteDomainName] = useState("");
+
+  const [reloadModalOpen, setReloadModalOpen] = useState(false);
+  const [reloadDeployStatus, setReloadDeployStatus] = useState(null);
+  const [reloadCurrentPhase, setReloadCurrentPhase] = useState(1);
+  const [isReloading, setIsReloading] = useState(false);
 
   // project detail api
   useEffect(() => {
@@ -54,13 +60,18 @@ const ProjectDetail = () => {
     fetchProjectData();
   }, [projectId, navigate]);
 
-  // verficate domain
+  // validate domain
   const validateDomain = (domain) => {
     const normalizedDomain = domain.toLowerCase().trim();
 
     // 빈 값 체크
     if (!normalizedDomain) {
       return "도메인을 입력해주세요";
+    }
+
+    // 길이 체크 (3글자 이상)
+    if (normalizedDomain.length < 3) {
+      return "도메인은 3글자 이상부터 가능합니다";
     }
 
     // 예약어 체크
@@ -108,7 +119,7 @@ const ProjectDetail = () => {
       const errorMsg =
         error.response?.data?.message ||
         error.response?.data?.error ||
-        "도메인 변경에 실패했습니다";
+        "도메인 변경에 실패했습니다.";
       setDomainError(errorMsg);
       setIsSubmittingDomain(false);
     }
@@ -116,7 +127,7 @@ const ProjectDetail = () => {
 
   // 도메인 준비 상태 폴링
   const startDomainPolling = (domain) => {
-    console.log("🔄 도메인 준비 상태 폴링 시작:", `${domain}.qw1k.cloud`);
+    console.log("도메인 준비 상태 폴링 시작:", `${domain}.qw1k.cloud`);
 
     const interval = setInterval(async () => {
       try {
@@ -201,6 +212,99 @@ const ProjectDetail = () => {
     }
   };
 
+  // repo_url 생성 함수
+  const constructRepoUrl = (username, repoName) => {
+    return `https://github.com/${username}/${repoName}`;
+  };
+
+  // 리로드 처리 함수
+  const handleReloadProject = async () => {
+    const confirmReload = window.confirm(
+      `${projectData.repo_name} 레포지토리의 최신 내용으로 다시 배포하시겠습니까?`
+    );
+
+    if (!confirmReload) return;
+
+    setIsReloading(true);
+    setReloadModalOpen(true);
+    setReloadCurrentPhase(1);
+    // 모달 열고 시작
+    setReloadModalOpen(true);
+    setReloadCurrentPhase(1);
+
+    try {
+      const repoUrl = constructRepoUrl(
+        projectData.username,
+        projectData.repo_name
+      );
+      console.log("🔄 재배포 시작:", repoUrl);
+
+      // Phase 1: API 전송
+      const response = await client.post("/deploy", {
+        repo_url: repoUrl,
+      });
+
+      console.log("✅ 재배포 API 응답 받음:", response.data);
+
+      // Phase 2: API 응답 받음
+      setReloadCurrentPhase(2);
+
+      // 1초 후 Phase 3으로 이동하여 상태 폴링 시작
+      setTimeout(() => {
+        setReloadCurrentPhase(3);
+        startReloadStatusPolling(); // deployment_id 없이 폴링
+      }, 1000);
+    } catch (error) {
+      console.error("❌ 재배포 실패:", error);
+      setReloadModalOpen(false);
+      setIsReloading(false);
+      alert("재배포에 실패했습니다.");
+    }
+  };
+
+  const startReloadStatusPolling = () => {
+    console.log("🔄 재배포 상태 폴링 시작 (현재 프로젝트)");
+
+    const interval = setInterval(async () => {
+      try {
+        const response = await client.get(`/dashboard/${projectId}`);
+        const projectStatus = response.data.build_status;
+
+        setReloadDeployStatus(projectStatus);
+        console.log("📊 재배포 상태:", projectStatus);
+
+        if (projectStatus === "Success") {
+          console.log("🎉 재배포 완료!");
+          clearInterval(interval);
+
+          setTimeout(() => {
+            setReloadModalOpen(false);
+            setIsReloading(false);
+            alert("재배포가 완료되었습니다!");
+            window.location.reload();
+          }, 1500);
+        } else if (projectStatus === "Failed") {
+          console.log("❌ 재배포 실패");
+          clearInterval(interval);
+          setReloadModalOpen(false);
+          setIsReloading(false);
+          alert("재배포에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("❌ 재배포 폴링 에러:", error);
+      }
+    }, 5000);
+
+    // 타임아웃
+    setTimeout(() => {
+      clearInterval(interval);
+      if (reloadModalOpen) {
+        setReloadModalOpen(false);
+        alert("재배포 시간이 초과되었습니다.");
+      }
+    }, 600000); // 10분
+  };
+
   // loading
   if (loading) {
     return (
@@ -258,6 +362,8 @@ const ProjectDetail = () => {
 
   const handleCloseDeleteModal = () => {
     setDeleteModalOpen(false);
+    setDeleteRepoName("");
+    setDeleteDomainName("");
   };
 
   return (
@@ -361,8 +467,13 @@ const ProjectDetail = () => {
         <div className="history-container">
           <div className="title-box">
             <p className="title">프로젝트 히스토리</p>
-            <button className="project-reload-btn accent">
-              프로젝트 Reload <i className="fa-solid fa-arrows-rotate"></i>
+            <button
+              className="project-reload-btn accent"
+              onClick={handleReloadProject}
+              disabled={isReloading}
+            >
+              {isReloading ? "재배포 중..." : "프로젝트 Reload"}{" "}
+              <i className="fa-solid fa-arrows-rotate"></i>
             </button>
           </div>
           <div className="history-box">
@@ -499,6 +610,20 @@ const ProjectDetail = () => {
           </div>
         </div>
       )}
+      {reloadModalOpen && (
+        <div className="modal-bg">
+          <div className="modal-popup reload-modal">
+            <ProgressBar
+              phase={reloadCurrentPhase}
+              deploymentId={null}
+              deployStatus={reloadDeployStatus}
+              domainReady={false}
+              onComplete={() => {}}
+            />
+          </div>
+        </div>
+      )}
+      ;
     </section>
   );
 };
