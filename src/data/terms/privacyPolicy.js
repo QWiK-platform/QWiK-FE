@@ -1,7 +1,7 @@
 export const privacyPolicy = {
   title: "QWiK 개인정보처리방침",
-  lastUpdated: "2025.11.21",
-  effectiveDate: "2025.11.21",
+  lastUpdated: "2025-11-21",
+  effectiveDate: "2025-11-21",
   sections: [
     {
       id: "purpose",
