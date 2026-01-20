@@ -615,10 +615,10 @@ const ProjectDetail = () => {
                 className="check-domain"
                 placeholder="유저 이름을 입력해주세요."
                 value={deleteUserName}
-                onChange={(e) => setDeleteDomainName(e.target.value)}
+                onChange={(e) => setDeleteUserName(e.target.value)}
               />
-              {deleteDomainName &&
-                deleteDomainName.trim() !== projectData.username && (
+              {deleteUserName &&
+                deleteUserName.trim() !== projectData.username && (
                   <p className="error-message validation-error">
                     유저 이름이 일치하지 않습니다
                   </p>
