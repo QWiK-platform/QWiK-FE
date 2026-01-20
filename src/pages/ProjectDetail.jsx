@@ -438,9 +438,10 @@ const ProjectDetail = () => {
 
           <div className="title-box pos-rel">
             <p className="title">{projectData.repo_name || "Project Name"}</p>
-            <span
+            {/* <span
               className={`status ${projectData.status ? "active" : "inactive"}`}
-            ></span>
+            ></span> */}
+            <span className={`status ${projectData.status}`}></span>
           </div>
 
           <div className="domain-box">
