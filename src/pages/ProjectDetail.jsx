@@ -23,12 +23,13 @@ const ProjectDetail = () => {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteRepoName, setDeleteRepoName] = useState("");
-  const [deleteDomainName, setDeleteDomainName] = useState("");
+  const [deleteUserName, setDeleteUserName] = useState("");
 
   const [reloadModalOpen, setReloadModalOpen] = useState(false);
   const [reloadDeployStatus, setReloadDeployStatus] = useState(null);
   const [reloadCurrentPhase, setReloadCurrentPhase] = useState(1);
   const [isReloading, setIsReloading] = useState(false);
+  const [deploymentId, setDeploymentId] = useState(null);
 
   // project detail api
   useEffect(() => {
@@ -175,7 +176,7 @@ const ProjectDetail = () => {
         setDomainChangeLoading(false);
         setIsSubmittingDomain(false);
         alert(
-          "도메인 변경이 완료되었지만, 아직 접속이 불가할 수 있습니다. 잠시 후 다시 시도해주세요."
+          "도메인 변경이 완료되었지만, 아직 접속이 불가할 수 있습니다. 잠시 후 다시 시도해주세요.",
         );
       }
     }, 300000);
@@ -183,16 +184,15 @@ const ProjectDetail = () => {
 
   // project delete api
   const handleDeleteProject = async () => {
-    // 레포지토리 이름 검증
-    if (deleteRepoName.trim() !== projectData.repo_name) {
-      alert("레포지토리 이름이 일치하지 않습니다.");
+    // 유저 이름 검증
+    if (deleteUserName.trim() !== projectData.username) {
+      alert("유저 이름이 일치하지 않습니다.");
       return;
     }
 
-    // 도메인 주소 검증 (qw1k.cloud 포함)
-    const fullDomainName = `${projectData.domain}.qw1k.cloud`;
-    if (deleteDomainName.trim() !== fullDomainName) {
-      alert("프로젝트 주소가 일치하지 않습니다.");
+    // 레포지토리 이름 검증
+    if (deleteRepoName.trim() !== projectData.repo_name) {
+      alert("레포지토리 이름이 일치하지 않습니다.");
       return;
     }
 
@@ -207,8 +207,8 @@ const ProjectDetail = () => {
     } finally {
       setDeleteModalOpen(false);
       // 상태 초기화
+      setDeleteUserName("");
       setDeleteRepoName("");
-      setDeleteDomainName("");
     }
   };
 
@@ -217,35 +217,37 @@ const ProjectDetail = () => {
     return `https://github.com/${username}/${repoName}`;
   };
 
-  // 리로드 처리 함수
+  // 수정된 리로드 처리 함수
   const handleReloadProject = async () => {
     console.log("start reloading");
     const confirmReload = window.confirm(
-      `${projectData.repo_name} 레포지토리의 최신 내용으로 다시 배포하시겠습니까?`
+      `${projectData.repo_name} 레포지토리의 최신 내용으로 다시 배포하시겠습니까?`,
     );
 
     if (!confirmReload) return;
-
+    // reset progress bar
     setIsReloading(true);
     setReloadModalOpen(true);
     setReloadCurrentPhase(1);
-    // 모달 열고 시작
-    setReloadModalOpen(true);
-    setReloadCurrentPhase(1);
+    setReloadDeployStatus(null);
 
     try {
       const repoUrl = constructRepoUrl(
         projectData.username,
-        projectData.repo_name
+        projectData.repo_name,
       );
-      console.log("🔄 재배포 시작:", repoUrl);
+      console.log("재배포 시작:", repoUrl);
 
       // Phase 1: API 전송
       const response = await client.post("/deploy", {
         repo_url: repoUrl,
       });
 
-      console.log("✅ 재배포 API 응답 받음:", response.data);
+      console.log("재배포 API 답:", response.data);
+
+      // ✅ 핵심: deployment_id 저장!
+      const { deployment_id } = response.data;
+      setDeploymentId(deployment_id);
 
       // Phase 2: API 응답 받음
       setReloadCurrentPhase(2);
@@ -253,7 +255,7 @@ const ProjectDetail = () => {
       // 1초 후 Phase 3으로 이동하여 상태 폴링 시작
       setTimeout(() => {
         setReloadCurrentPhase(3);
-        startReloadStatusPolling(); // deployment_id 없이 폴링
+        startReloadStatusPolling(deployment_id);
       }, 1000);
     } catch (error) {
       console.error("❌ 재배포 실패:", error);
@@ -263,28 +265,25 @@ const ProjectDetail = () => {
     }
   };
 
-  const startReloadStatusPolling = () => {
-    console.log("🔄 재배포 상태 폴링 시작 (현재 프로젝트)");
+  // 폴링 함수
+  const startReloadStatusPolling = (deploymentId) => {
+    console.log("🔄 재배포 상태 폴링 시작:", deploymentId);
 
     const interval = setInterval(async () => {
       try {
-        const response = await client.get(`/dashboard/${projectId}`);
-        const projectStatus = response.data.history[0].build_status;
+        const response = await client.get(
+          `/deploy/poll?deployment_id=${deploymentId}`,
+        );
+        const status = response.data.status;
 
-        setReloadDeployStatus(projectStatus);
-        console.log("📊 재배포 상태:", projectStatus);
+        setReloadDeployStatus(status);
+        console.log("📊 재배포 상태:", status);
 
-        if (projectStatus === "Success") {
+        if (status === "Success") {
           console.log("🎉 재배포 완료!");
           clearInterval(interval);
-
-          setTimeout(() => {
-            setReloadModalOpen(false);
-            setIsReloading(false);
-            alert("재배포가 완료되었습니다!");
-            window.location.reload();
-          }, 1500);
-        } else if (projectStatus === "Failed") {
+          startReloadDomainCheck();
+        } else if (status === "Failed") {
           console.log("❌ 재배포 실패");
           clearInterval(interval);
           setReloadModalOpen(false);
@@ -293,17 +292,70 @@ const ProjectDetail = () => {
         }
       } catch (error) {
         console.error("❌ 재배포 폴링 에러:", error);
+        // 에러 시에도 계속 폴링 (네트워크 일시적 문제일 수 있음)
       }
     }, 5000);
 
-    // 타임아웃
+    // 타임아웃 (10분)
     setTimeout(() => {
       clearInterval(interval);
       if (reloadModalOpen) {
         setReloadModalOpen(false);
+        setIsReloading(false);
         alert("재배포 시간이 초과되었습니다.");
       }
-    }, 600000); // 10분
+    }, 600000);
+  };
+
+  // 리로드용 도메인 체크 함수
+  const startReloadDomainCheck = () => {
+    const interval = setInterval(async () => {
+      try {
+        const response = await fetch(
+          `https://${projectData.domain}.qw1k.cloud`,
+          {
+            method: "HEAD",
+            mode: "cors",
+            cache: "no-cache",
+          },
+        );
+
+        if (response.status === 200) {
+          clearInterval(interval);
+
+          // 완료 처리
+          setTimeout(() => {
+            setReloadModalOpen(false);
+            setIsReloading(false);
+            alert("재배포가 완료되었습니다!");
+            window.location.reload(); // 페이지 새로고침
+          }, 1500);
+        }
+      } catch (error) {
+        if (error.message.includes("CORS") || error.name === "TypeError") {
+          clearInterval(interval);
+
+          // CORS 에러 = 성공으로 간주
+          setTimeout(() => {
+            setReloadModalOpen(false);
+            setIsReloading(false);
+            alert("재배포가 완료되었습니다!");
+            window.location.reload();
+          }, 1500);
+        }
+      }
+    }, 5000);
+
+    // 도메인 체크 타임아웃 (5분)
+    setTimeout(() => {
+      clearInterval(interval);
+      if (reloadModalOpen) {
+        setReloadModalOpen(false);
+        setIsReloading(false);
+        alert("재배포가 완료되었습니다! (도메인 체크 타임아웃)");
+        window.location.reload();
+      }
+    }, 300000);
   };
 
   // loading
@@ -363,8 +415,8 @@ const ProjectDetail = () => {
 
   const handleCloseDeleteModal = () => {
     setDeleteModalOpen(false);
+    setDeleteUserName("");
     setDeleteRepoName("");
-    setDeleteDomainName("");
   };
 
   return (
@@ -435,7 +487,7 @@ const ProjectDetail = () => {
                 style={{
                   width: `${Math.min(
                     ((projectData.usage?.storage_used || 0) / 200) * 100,
-                    100
+                    100,
                   )}%`,
                 }}
               ></div>
@@ -457,7 +509,7 @@ const ProjectDetail = () => {
                 style={{
                   width: `${Math.min(
                     ((projectData.usage?.traffic_used || 0) / 2048) * 100,
-                    100
+                    100,
                   )}%`,
                 }}
               ></div>
@@ -555,6 +607,25 @@ const ProjectDetail = () => {
             </div>
             <div className="input-box">
               <p className="input-label">
+                유저 이름:{" "}
+                <span className="required-text">{projectData.username}</span>
+              </p>
+              <input
+                type="text"
+                className="check-domain"
+                placeholder="유저 이름을 입력해주세요."
+                value={deleteUserName}
+                onChange={(e) => setDeleteDomainName(e.target.value)}
+              />
+              {deleteDomainName &&
+                deleteDomainName.trim() !== projectData.username && (
+                  <p className="error-message validation-error">
+                    유저 이름이 일치하지 않습니다
+                  </p>
+                )}
+            </div>
+            <div className="input-box">
+              <p className="input-label">
                 레포지토리 이름:{" "}
                 <span className="required-text">{projectData.repo_name}</span>
               </p>
@@ -569,28 +640,6 @@ const ProjectDetail = () => {
                 deleteRepoName.trim() !== projectData.repo_name && (
                   <p className="error-message validation-error">
                     레포지토리 이름이 일치하지 않습니다
-                  </p>
-                )}
-            </div>
-            <div className="input-box">
-              <p className="input-label">
-                프로젝트 주소:{" "}
-                <span className="required-text">
-                  {projectData.domain}.qw1k.cloud
-                </span>
-              </p>
-              <input
-                type="text"
-                className="check-domain"
-                placeholder="삭제하는 프로젝트의 주소를 정확하게 입력해주세요."
-                value={deleteDomainName}
-                onChange={(e) => setDeleteDomainName(e.target.value)}
-              />
-              {deleteDomainName &&
-                deleteDomainName.trim() !==
-                  `${projectData.domain}.qw1k.cloud` && (
-                  <p className="error-message validation-error">
-                    프로젝트 주소가 일치하지 않습니다
                   </p>
                 )}
             </div>
