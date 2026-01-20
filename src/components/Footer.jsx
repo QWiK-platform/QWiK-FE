@@ -17,7 +17,11 @@ const Footer = () => {
             <Link to="/terms/repository">GitHub Repository 권한</Link>
           </li>
           <li>사업자 정보</li> {/* 나중에 추가 예정 */}
-          <li>고객센터</li> {/* 나중에 a 태그로 구글 폼 연결 */}
+          <li>
+            <a href="https://forms.gle/Gv8c9F9fqY2wG7VYA" target="_blank">
+              고객센터
+            </a>
+          </li>
         </ul>
         <ul className="company-info-container">
           <li>(c) 2025 QWiK</li>

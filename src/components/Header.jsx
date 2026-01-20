@@ -63,7 +63,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={location.pathname === "/pricing" ? "active" : ""}
               >
-                Pricing
+                Plan
               </Link>
               <Link
                 to="/settings"

@@ -89,7 +89,7 @@ const Deploy = () => {
       localStorage.removeItem("current_deployment_id");
 
       setErrorMessage(
-        error.response?.data?.message || "배포 시작에 실패했습니다."
+        error.response?.data?.message || "배포 시작에 실패했습니다.",
       );
       setStep(3);
       setDeployStatus("Failed");
@@ -102,7 +102,7 @@ const Deploy = () => {
 
     try {
       const response = await client.get(
-        `/deploy/poll?deployment_id=${deploymentId}`
+        `/deploy/poll?deployment_id=${deploymentId}`,
       );
       const status = response.data.status;
 
@@ -150,6 +150,13 @@ const Deploy = () => {
     localStorage.setItem("deploying_project_id");
   };
 
+  // press enter to post api
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && repositoryUrl.trim()) {
+      handleDeploy();
+    }
+  };
+
   // 새로고침 방지
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -175,6 +182,7 @@ const Deploy = () => {
               placeholder="본인 소유의 레포지토리 링크를 입력해주세요."
               value={repositoryUrl}
               onChange={(e) => setRepositoryUrl(e.target.value)}
+              onKeyDown={handleKeyPress}
               readOnly={step !== 1}
             />
             <button
