@@ -252,7 +252,7 @@ const Terms = () => {
           <button
             className="patch-terms-btn accent"
             onClick={handleAgree}
-            disabled={agreeing || !allAgreed}
+            disabled={agreeing}
           >
             {agreeing ? "처리 중..." : "동의하고 QWiK 이용하기"}
           </button>

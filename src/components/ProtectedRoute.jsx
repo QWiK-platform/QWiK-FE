@@ -10,23 +10,35 @@ const dateToNumber = (dateStr) => {
   return parseInt(dateStr.replace(/-/g, ""));
 };
 
-const getUpdatedTerms = (userTermsDate) => {
+function getUpdatedTerms(userTermsDate) {
   if (!userTermsDate) {
-    return Object.values(allTerms);
+    // 신규 사용자 → 시행된 모든 약관
+    const today = getKoreanToday();
+    const todayNum = dateToNumber(today);
+
+    return Object.values(allTerms).filter((term) => {
+      const effectiveDateNum = dateToNumber(term.effectiveDate);
+      return todayNum >= effectiveDateNum; // 오늘 이미 시행된 약관만
+    });
   }
 
   const userDateNum = dateToNumber(userTermsDate);
+  const today = getKoreanToday();
+  const todayNum = dateToNumber(today);
   const updatedTerms = [];
 
   Object.values(allTerms).forEach((term) => {
     const effectiveDateNum = dateToNumber(term.effectiveDate);
-    if (userDateNum < effectiveDateNum) {
+
+    // 사용자 동의일 < 시행일 && 오늘 >= 시행일
+    if (userDateNum < effectiveDateNum && todayNum >= effectiveDateNum) {
       updatedTerms.push(term);
     }
   });
 
+  console.log("업데이트된 약관들:", updatedTerms);
   return updatedTerms;
-};
+}
 
 const ProtectedRoute = ({ children }) => {
   const [termsValid, setTermsValid] = useState(null);

@@ -15,7 +15,7 @@ const ProgressBar = ({
   const [buildingStartTime, setBuildingStartTime] = useState(null);
   const [buildingTimer, setBuildingTimer] = useState(null);
 
-  // 🎯 단계별 진행률 매핑
+  // 단계별 진행률 매핑
   const getProgressByStatus = useCallback((status) => {
     const statusMap = {
       Queued: { progress: 20, message: "빌드 대기" },
