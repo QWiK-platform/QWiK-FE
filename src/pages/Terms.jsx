@@ -50,7 +50,7 @@ function getUpdatedTerms(userTermsDate) {
 // 약관 동의 API 호출 (수정됨)
 async function agreeToTerms() {
   try {
-    const response = await client.patch("/user/terms", {
+    const response = await client.patch("/user/term", {
       terms: getKoreanToday(), // 한국 시간 기준
     });
     return response.data;
