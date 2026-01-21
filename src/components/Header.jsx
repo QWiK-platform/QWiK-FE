@@ -3,10 +3,13 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-const Header = ({ isLoggedIn, setIsLoggedIn }) => {
+const Header = ({ isLoggedIn, setIsLoggedIn, isMinimal = false }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Terms 관련 페이지 체크
+  const isTermsPage = location.pathname.startsWith("/terms");
 
   const handleLogin = () => {
     navigate("/login");
@@ -15,7 +18,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setIsLoggedIn(false); // 부모 컴포넌트 상태 업데이트
+    setIsLoggedIn(false);
     navigate("/");
     setIsMobileMenuOpen(false);
   };
@@ -25,6 +28,67 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  // Footer 약관 페이지: 로고만
+  if (isMinimal) {
+    return (
+      <header className="header minimal">
+        <div className="header-container">
+          <div className="logo-box">
+            <Link to="/" className="logo">
+              <img src="/logo-qwik.svg" alt="QWIK" />
+            </Link>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
+  // Terms 페이지: 로고 + LOGOUT만
+  if (isTermsPage && isLoggedIn) {
+    return (
+      <header className="terms-header">
+        <div className="header-container">
+          <div className="logo-box">
+            <Link to="/" className="logo">
+              <img src="/logo-qwik.svg" alt="QWIK" />
+            </Link>
+          </div>
+
+          <div className="header-right">
+            <button className="logout-btn desk" onClick={handleLogout}>
+              LOGOUT
+            </button>
+
+            {/* 모바일 햄버거 (로그아웃 전용) */}
+            <button
+              className="mobile-menu-toggle mob"
+              onClick={toggleMobileMenu}
+            >
+              <span className="hamburger">
+                <i className="fa-solid fa-bars-staggered"></i>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* 모바일 메뉴 (로그아웃만) */}
+        <div
+          className={`wrap nav-container ${isMobileMenuOpen ? "mobile-open" : ""}`}
+        >
+          <nav className="services-nav">
+            <button className="close-btn mob" onClick={toggleMobileMenu}>
+              <i className="fa-solid fa-xmark"></i>
+            </button>
+            <button className="logout-btn mob" onClick={handleLogout}>
+              LOGOUT
+            </button>
+          </nav>
+        </div>
+      </header>
+    );
+  }
+
+  // 일반 페이지: 기존 헤더
   return (
     <header className="header">
       <div className="header-container">
@@ -108,6 +172,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
 Header.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   setIsLoggedIn: PropTypes.func.isRequired,
+  isMinimal: PropTypes.bool,
 };
 
 export default Header;
