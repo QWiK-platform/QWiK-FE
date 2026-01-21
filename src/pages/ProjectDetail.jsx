@@ -75,9 +75,9 @@ const ProjectDetail = () => {
       return "도메인은 3글자 이상부터 가능합니다";
     }
 
-    // 예약어 체크
+    // 사용 제약 도메인 체크
     if (exceptDomainSet.has(normalizedDomain)) {
-      return "이미 사용 중이거나 예약된 도메인입니다";
+      return "사용 불가한 도메인입니다";
     }
 
     // 추가 검증 (영문, 숫자, 하이픈만 허용)

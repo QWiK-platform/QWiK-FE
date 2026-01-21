@@ -31,7 +31,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn, isMinimal = false }) => {
   // Footer 약관 페이지: 로고만
   if (isMinimal) {
     return (
-      <header className="header minimal">
+      <header className="minimal-header">
         <div className="header-container">
           <div className="logo-box">
             <Link to="/" className="logo">
