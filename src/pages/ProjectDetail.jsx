@@ -683,7 +683,6 @@ const ProjectDetail = () => {
           </div>
         </div>
       )}
-      ;
     </section>
   );
 };

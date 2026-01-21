@@ -1,5 +1,6 @@
 .deploy-section .wrap {
   width: 794px;
+  max-width: calc(100% - 40px);
 }
 
 .deploy-section .input-container {
@@ -23,6 +24,7 @@
 .deploy-section .input-box .post-repository-btn {
   padding: 5px 32px;
   border-radius: 16px;
+  max-width: 100px;
 }
 
 .deploy-section .log-container {
@@ -85,4 +87,11 @@
 
 .deploy-section.step-3 .result-container {
   opacity: 1;
+}
+
+@media (max-width: 475px) {
+  .deploy-section .input-container .input- box {
+    flex-direction: column;
+    align-items: end;
+  }
 }

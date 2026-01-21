@@ -239,6 +239,7 @@
 /* reload progress bar modal */
 .reload-modal {
   width: 500px;
+  max-width: calc(100% - 40px);
 }
 
 @media (max-width: 650px) {
