@@ -8,19 +8,37 @@ import Loader from "../components/Loader";
 import { allTerms } from "../data/terms/termsIndex";
 import "./Terms.css";
 
+// 한국 시간 기준 오늘 날짜
+const getKoreanToday = () => {
+  const now = new Date();
+  const koreanTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+
+  const year = koreanTime.getUTCFullYear();
+  const month = String(koreanTime.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(koreanTime.getUTCDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+// 날짜를 숫자로 변환 (비교용)
+const dateToNumber = (dateStr) => {
+  if (!dateStr) return 0;
+  return parseInt(dateStr.replace(/-/g, ""));
+};
+
 // 사용자 약관 동의일 이후 업데이트된 약관들 찾기
 function getUpdatedTerms(userTermsDate) {
   if (!userTermsDate) {
-    // 첫 사용자면 모든 약관 반환
+    // 신규 사용자 → 모든 약관
     return Object.values(allTerms);
   }
 
-  const userDate = new Date(userTermsDate);
+  const userDateNum = dateToNumber(userTermsDate);
   const updatedTerms = [];
 
   Object.values(allTerms).forEach((term) => {
-    const termDate = new Date(term.effectiveDate);
-    if (termDate > userDate) {
+    const effectiveDateNum = dateToNumber(term.effectiveDate);
+    if (userDateNum < effectiveDateNum) {
       updatedTerms.push(term);
     }
   });
@@ -29,11 +47,11 @@ function getUpdatedTerms(userTermsDate) {
   return updatedTerms;
 }
 
-// 약관 동의 API 호출
+// 약관 동의 API 호출 (수정됨)
 async function agreeToTerms() {
   try {
-    const response = await client.patch("/user/terms", {
-      terms_agreed_date: new Date().toISOString(),
+    const response = await client.patch("/user/term", {
+      terms: getKoreanToday(), // 한국 시간 기준
     });
     return response.data;
   } catch (error) {
@@ -64,6 +82,12 @@ const Terms = () => {
         const updatedTerms = getUpdatedTerms(response.data.terms);
         setTermsToShow(updatedTerms);
 
+        // 동의할 약관이 없으면 바로 대시보드로
+        if (updatedTerms.length === 0) {
+          navigate("/dashboard");
+          return;
+        }
+
         const initialAgreements = {};
         updatedTerms.forEach((_, index) => {
           initialAgreements[index] = false;
@@ -71,13 +95,15 @@ const Terms = () => {
         setIndividualAgreements(initialAgreements);
       } catch (error) {
         console.error("❌ 유저 API 에러:", error);
+        // 사용자 정보 로드 실패 시 메인으로
+        navigate("/");
       } finally {
         setUserLoading(false);
       }
     };
 
     fetchUser();
-  }, []);
+  }, [navigate]);
 
   const handleTermsAgreement = (index, isChecked) => {
     setIndividualAgreements((prev) => ({
@@ -98,7 +124,7 @@ const Terms = () => {
 
   useEffect(() => {
     const allChecked = Object.values(individualAgreements).every(
-      (agreed) => agreed
+      (agreed) => agreed,
     );
     const hasAnyAgreement = Object.keys(individualAgreements).length > 0;
 
@@ -111,7 +137,9 @@ const Terms = () => {
 
   const handleAgree = async () => {
     if (!canProceed) {
-      alert("모든 약관에 동의해주세요.");
+      // 미동의 시 메인으로 이동
+      alert("서비스 이용에 제한이 있습니다.\n약관에 동의해주세요.");
+      navigate("/");
       return;
     }
 
@@ -120,7 +148,12 @@ const Terms = () => {
       await agreeToTerms();
       navigate("/dashboard");
     } catch (error) {
-      alert("약관 동의 중 오류가 발생했습니다.");
+      // API 실패 시 고객센터 연결
+      alert("약관 동의 처리에 실패했습니다.\n고객센터로 연결됩니다.");
+      window.open(
+        "https://docs.google.com/forms/d/e/1FAIpQLSfJhkSXZJR6tr_AI9cBpqpRRLOT_YA5uhFuVBK4X4iyu-akXA/viewform",
+        "_blank",
+      );
     } finally {
       setAgreeing(false);
     }

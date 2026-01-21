@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"; // ✅ 추가
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from './components/Footer';
 import Index from "./pages/Index";
@@ -12,7 +12,65 @@ import AuthCallback from "./pages/AuthCallback";
 import Pricing from "./pages/Pricing";
 import Terms from './pages/Terms';
 import Term from './components/Term';
+import ProtectedRoute from './components/ProtectedRoute';
 import "./App.css";
+
+// 헤더/푸터 표시 여부를 결정하는 컴포넌트
+function AppContent({ isLoggedIn, setIsLoggedIn }) {
+  const location = useLocation();
+
+  // Terms 페이지에서는 로그인 안 된 헤더로 표시
+  const isTermsPage = location.pathname === '/terms';
+  const isFooterTermsPage = location.pathname.startsWith('/terms/');
+
+  return (
+    <div className="App">
+      <Header
+        isLoggedIn={isFooterTermsPage ? false : isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+        isMinimal={isFooterTermsPage}  // 새로운 prop 필요
+      />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/auth/callback"
+          element={<AuthCallback setIsLoggedIn={setIsLoggedIn} />}
+        />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/terms/:type" element={<Term />} />
+
+        {/* 보호된 라우트들 */}
+        <Route path="/deploy" element={
+          <ProtectedRoute>
+            <Deploy />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/project/:projectId" element={
+          <ProtectedRoute>
+            <ProjectDetail />
+          </ProtectedRoute>
+        } />
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        } />
+        <Route path="/pricing" element={
+          <ProtectedRoute>
+            <Pricing />
+          </ProtectedRoute>
+        } />
+      </Routes>
+      <Footer />
+    </div>
+  );
+}
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,25 +82,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/auth/callback"
-            element={<AuthCallback setIsLoggedIn={setIsLoggedIn} />}
-          />
-          <Route path="/deploy" element={<Deploy />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/project/:projectId" element={<ProjectDetail />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/terms/:type" element={<Term />} />
-        </Routes>
-        <Footer />
-      </div>
+      <AppContent isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
     </Router>
   );
 }

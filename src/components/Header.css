@@ -1,4 +1,6 @@
-.header {
+.header,
+.minimal-header,
+.terms-header {
   position: fixed;
   top: 10px;
   left: 10px;
@@ -80,6 +82,41 @@
 }
 .hamburger.active span:nth-child(3) {
   transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* header minimal */
+
+.minimal-header .header-container {
+  width: 600px;
+  margin: 0 auto;
+}
+
+.minimal-header .header-container .logo-box {
+  height: 30px;
+}
+
+.minimal-header .logo-box .logo {
+  height: 100%;
+}
+
+.minimal-header .logo-box .logo img {
+  height: 100%;
+}
+
+/* terms header */
+.terms-header .header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  font-size: 2rem;
+  color: var(--text-color);
+}
+
+.terms-header .header-container .logo-box,
+.terms-header .header-container .logo,
+.terms-header .header-container .logo img {
+  height: 100%;
 }
 
 @media (max-width: 1600px) {
