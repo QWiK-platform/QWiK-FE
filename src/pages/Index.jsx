@@ -35,7 +35,8 @@ const Index = () => {
       <div className="wrap">
         <div className="service-info-container">
           <div className="copyright-box">
-            <h2>QWiK is the BEST, for YOU</h2>
+            {/* <h2>QWiK is the BEST, for YOU</h2> */}
+            <h2>Deploy? All set. it's QWiK</h2>
           </div>
           <div className="step-container">
             <div className="step-box">

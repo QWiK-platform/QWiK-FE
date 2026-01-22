@@ -125,22 +125,44 @@ const Deploy = () => {
   const checkDomainReady = async () => {
     if (!domain) return;
 
-    try {
-      const response = await fetch(`https://${domain}.qw1k.cloud`, {
-        method: "HEAD",
-        mode: "cors",
-        cache: "no-cache",
-      });
+    const maxDuration = 60 * 1000; // 1분 (60초)
+    const interval = 5000; // 5초 간격
+    const startTime = Date.now();
 
-      console.log("📊 상태코드:", response.status);
-      console.log("📊 OK:", response.ok);
+    let retryCount = 0;
 
-      if (response.status === 200) {
+    const intervalId = setInterval(async () => {
+      const elapsedTime = Date.now() - startTime;
+      retryCount++;
+
+      // 1분 초과 시 종료
+      if (elapsedTime >= maxDuration) {
+        console.log("⏰ 도메인 체크 1분 타임아웃 - 완료 처리");
+        clearInterval(intervalId);
         setDomainReady(true);
+        return;
       }
-    } catch (error) {
-      console.log("❌ 네트워크 에러:", error.message);
-    }
+
+      try {
+        const response = await fetch(`https://${domain}.qw1k.cloud`, {
+          method: "HEAD",
+          mode: "cors",
+          cache: "no-cache",
+        });
+
+        if (response.status === 200) {
+          console.log("✅ 도메인 준비 완료!");
+          clearInterval(intervalId);
+          setDomainReady(true);
+          return;
+        }
+      } catch (error) {
+        console.log("❌ 네트워크 에러:", error.message);
+      }
+    }, interval);
+
+    // 컴포넌트 언마운트 시 정리용
+    return () => clearInterval(intervalId);
   };
 
   // ProgressBar 완료 콜백
