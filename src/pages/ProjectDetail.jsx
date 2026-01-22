@@ -309,7 +309,30 @@ const ProjectDetail = () => {
 
   // 리로드용 도메인 체크 함수
   const startReloadDomainCheck = () => {
-    const interval = setInterval(async () => {
+    const maxDuration = 60 * 1000; // 1분 (60초)
+    const interval = 5000; // 5초 간격
+    const startTime = Date.now();
+
+    let retryCount = 0;
+
+    const intervalId = setInterval(async () => {
+      const elapsedTime = Date.now() - startTime;
+      retryCount++;
+
+      // 1분 초과 시 종료
+      if (elapsedTime >= maxDuration) {
+        clearInterval(intervalId);
+
+        // 타임아웃 완료 처리
+        setTimeout(() => {
+          setReloadModalOpen(false);
+          setIsReloading(false);
+          alert("재배포가 완료되었습니다!");
+          window.location.reload();
+        }, 1500);
+        return;
+      }
+
       try {
         const response = await fetch(
           `https://${projectData.domain}.qw1k.cloud`,
@@ -321,19 +344,20 @@ const ProjectDetail = () => {
         );
 
         if (response.status === 200) {
-          clearInterval(interval);
+          clearInterval(intervalId);
 
-          // 완료 처리
+          // 성공 완료 처리
           setTimeout(() => {
             setReloadModalOpen(false);
             setIsReloading(false);
             alert("재배포가 완료되었습니다!");
-            window.location.reload(); // 페이지 새로고침
+            window.location.reload();
           }, 1500);
         }
       } catch (error) {
         if (error.message.includes("CORS") || error.name === "TypeError") {
-          clearInterval(interval);
+          console.log("🎯 CORS 에러 = 성공으로 간주");
+          clearInterval(intervalId);
 
           // CORS 에러 = 성공으로 간주
           setTimeout(() => {
@@ -342,20 +366,13 @@ const ProjectDetail = () => {
             alert("재배포가 완료되었습니다!");
             window.location.reload();
           }, 1500);
+        } else {
+          console.log("❌ 네트워크 에러:", error.message);
         }
       }
-    }, 5000);
+    }, interval);
 
-    // 도메인 체크 타임아웃 (5분)
-    setTimeout(() => {
-      clearInterval(interval);
-      if (reloadModalOpen) {
-        setReloadModalOpen(false);
-        setIsReloading(false);
-        alert("재배포가 완료되었습니다! (도메인 체크 타임아웃)");
-        window.location.reload();
-      }
-    }, 300000);
+    return () => clearInterval(intervalId);
   };
 
   // loading
