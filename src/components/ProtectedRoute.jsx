@@ -4,6 +4,18 @@ import client from "../api/client";
 import { allTerms } from "../data/terms/termsIndex";
 import Loader from "./Loader";
 
+// ProtectedRoute.js 맨 위에 추가
+const getKoreanToday = () => {
+  const now = new Date();
+  const koreanTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+
+  const year = koreanTime.getUTCFullYear();
+  const month = String(koreanTime.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(koreanTime.getUTCDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
 // Terms 체크 로직 (Terms.js에서 분리)
 const dateToNumber = (dateStr) => {
   if (!dateStr) return 0;
