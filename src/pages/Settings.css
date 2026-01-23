@@ -45,16 +45,21 @@
 
 .my-page-section .history-item {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 5px;
+  padding: 5px 0;
+}
+
+.my-page-section .history-item:first-child {
+  padding-top: 0;
 }
 
 .my-page-section .history-item:last-child {
-  margin-bottom: 0;
+  padding-bottom: 0;
+  border: none;
 }
 
-.my-page-section .history-item span {
+.my-page-section .history-item span,
+.my-page-section .history-item a {
   margin-right: 10px;
 }
 
@@ -79,6 +84,8 @@
 
 .my-page-section .history-item .repo-name {
   flex-shrink: 0;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .my-page-section .history-item .update-content {
@@ -105,6 +112,12 @@
 }
 
 @media (max-width: 475px) {
+  .my-page-section .hitory-item {
+    flex-wrap: wrap;
+    padding: 10px 0;
+    border-bottom: solid 1px var(--bg-color);
+  }
+
   .my-page-section .explain-container {
     display: block;
   }
