@@ -88,7 +88,12 @@ const Setting = () => {
                     <span className={`update-type eng ${item.status}`}>
                       {item.status}
                     </span>
-                    <span className="repo-name eng">{item.repo_name}</span>
+                    <Link
+                      to={`/project/${item.project_id}`}
+                      className="repo-name eng"
+                    >
+                      {item.repo_name}
+                    </Link>
                     <span className="update-content ellipsis-1">
                       {item.commit_message}
                     </span>
