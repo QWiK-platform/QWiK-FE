@@ -45,13 +45,17 @@
 
 .my-page-section .history-item {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
   align-items: center;
   margin-bottom: 5px;
 }
 
 .my-page-section .history-item:last-child {
   margin-bottom: 0;
+}
+
+.my-page-section .history-item span {
+  margin-right: 10px;
 }
 
 .my-page-section .history-item .eng {
@@ -73,6 +77,14 @@
   background-color: #df5252;
 }
 
+.my-page-section .history-item .repo-name {
+  flex-shrink: 0;
+}
+
+.my-page-section .history-item .update-content {
+  margin-right: 0;
+}
+
 .my-page-section .total-history-container .no-history {
   margin: 50px 0;
   text-align: center;
@@ -90,4 +102,27 @@
 
 .my-page-section .no-history .deploy-link:hover {
   background-color: #163a4d;
+}
+
+@media (max-width: 475px) {
+  .my-page-section .explain-container {
+    display: block;
+  }
+
+  .my-page-section .explain-container span {
+    display: block;
+  }
+
+  .my-page-section .explain-container .eng {
+    text-align: right;
+  }
+
+  .my-page-section .history-item .repo-name {
+    margin-right: 0;
+  }
+
+  .my-page-section .history-item .update-content {
+    flex-basis: 100%;
+    margin-top: 5px;
+  }
 }

@@ -89,7 +89,7 @@ const Setting = () => {
                       {item.status}
                     </span>
                     <span className="repo-name eng">{item.repo_name}</span>
-                    <span className="udpate-content ellipsis-1">
+                    <span className="update-content ellipsis-1">
                       {item.commit_message}
                     </span>
                   </div>
