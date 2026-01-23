@@ -1,11 +1,88 @@
-.my-page-section .plan-container {
-  margin-top: 50px;
+.my-page-section .wrap {
+  width: 600px;
+  max-width: calc(100% - 40px);
 }
 
-.my-page-section .usage-container {
+.my-page-section .user-profile-container .github-url {
+  border-radius: 16px;
+  padding: 4px 12px;
+  color: var(--bg-color);
+  background-color: var(--primary-color);
+}
+
+.my-page-section .user-profile-container .user-name {
+  font-size: 2.4rem;
+  font-weight: 500;
+  line-height: 2;
+}
+
+.my-page-section .deploy-history-container {
+  margin-top: 70px;
+}
+
+.my-page-section .deploy-history-container h4 {
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 2;
+}
+
+.my-page-section .explain-container {
   display: flex;
-  gap: 20px;
   justify-content: space-between;
+  align-items: baseline;
+}
+
+.my-page-section .explain-container .eng {
+  font-size: 1.4rem;
+}
+
+.my-page-section .total-history-container {
+  margin-top: 20px;
+  background-color: var(--bg-sub-color);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.my-page-section .history-box {
+  display: flex;
+  gap: 10px;
   align-items: center;
-  width: 500px;
+}
+
+.my-page-section .history-box .eng {
+  letter-spacing: -1px;
+}
+
+.my-page-section .history-box .update-type {
+  font-size: 1.4rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background-color: #fff;
+}
+
+.my-page-section .history-box .update-type.success {
+  background-color: #5f9167;
+}
+
+.my-page-section .history-box .update-type.failed {
+  background-color: #df5252;
+}
+
+.my-page-section .total-history-container .no-history {
+  margin: 50px 0;
+  text-align: center;
+}
+
+.my-page-section .no-history .deploy-link {
+  display: inline-block;
+  padding: 5px 16px;
+  border-radius: 16px;
+  background-color: var(--accent-color);
+  color: var(--bg-color);
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.my-page-section .no-history .deploy-link:hover {
+  background-color: #163a4d;
 }
