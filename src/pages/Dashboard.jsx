@@ -27,7 +27,7 @@ const Dashboard = () => {
 
       console.log(
         "배포 진행 중 감지, 경과 시간:",
-        Math.round(elapsed / 1000) + "초"
+        Math.round(elapsed / 1000) + "초",
       );
 
       if (elapsed < 45000) {
@@ -36,7 +36,7 @@ const Dashboard = () => {
 
         console.log(
           "로더 카드 표시 중,",
-          Math.round(remainingTime / 1000) + "초 후 폴링 시작"
+          Math.round(remainingTime / 1000) + "초 후 폴링 시작",
         );
 
         setTimeout(() => {
@@ -125,7 +125,7 @@ const Dashboard = () => {
     const failureInterval = setInterval(async () => {
       try {
         const response = await client.get(
-          `/deploy/poll?deployment_id=${deploymentId}`
+          `/deploy/poll?deployment_id=${deploymentId}`,
         );
         const status = response.data.status;
 
@@ -307,11 +307,11 @@ const Dashboard = () => {
   // 퍼센티지
   const storagePercentage = calculateUsagePercentage(
     totalStorageUsed,
-    storageLimit
+    storageLimit,
   );
   const trafficPercentage = calculateUsagePercentage(
     totalTrafficUsed,
-    trafficLimit
+    trafficLimit,
   );
 
   return (
@@ -365,7 +365,10 @@ const Dashboard = () => {
               <div className="text-box">
                 <div className="title-box">
                   <p className="title">트래픽 사용량</p>
-                  <Tooltip content="트래픽 초과시 프로젝트 전체 비활성화될 수 있습니다.">
+                  {/* <Tooltip content="트래픽 초과시 프로젝트 전체 비활성화될 수 있습니다.">
+                    <i className="fa-solid fa-circle-info"></i>
+                  </Tooltip> */}
+                  <Tooltip content="트래픽은 현재 제공되지 않습니다.">
                     <i className="fa-solid fa-circle-info"></i>
                   </Tooltip>
                 </div>
@@ -415,75 +418,79 @@ const Dashboard = () => {
 
             {/* 프로젝트 목록 */}
             {!projectsLoading &&
-              projects.map((project) => (
-                <div
-                  key={project.project_id}
-                  className="project-box eng pos-rel"
-                  onClick={() => handleProjectClick(project)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <span className="git-repository">
-                    {user.username}/{project.repo_name}
-                  </span>
-                  <span
-                    className={`status ${
-                      project.status ? "active" : "inactive"
-                    }`}
-                  ></span>
-                  <p className="project-title ellipsis-1">
-                    {project.repo_name}
-                  </p>
-
-                  {/* URL 부분만 별도 처리 */}
-                  <a
-                    className="project-url ellipsis-1"
-                    href={
-                      project.domain
-                        ? `https://${project.domain}.qw1k.cloud`
-                        : "#"
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (!project.domain) {
-                        e.preventDefault();
-                      }
-                    }}
+              projects
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .map((project) => (
+                  <div
+                    key={project.project_id}
+                    className="project-box eng pos-rel"
+                    onClick={() => handleProjectClick(project)}
+                    style={{ cursor: "pointer" }}
                   >
-                    {project.domain
-                      ? `${project.domain}.qw1k.cloud`
-                      : "배포 중..."}
-                  </a>
-
-                  <p
-                    className="version"
-                    data-full-text={formatCommitMessage(project.commit_message)}
-                  >
-                    ver.{" "}
-                    <span>
-                      {formatCommitMessage(
-                        project.commit_message,
-                        project.reload_at
-                      )}
+                    <span className="git-repository">
+                      {user.username}/{project.repo_name}
                     </span>
-                  </p>
-                  <div className="date-box">
-                    <p className="origin">
-                      최초 <span>{formatDate(project.created_at)}</span>
+                    <span
+                      className={`status ${
+                        project.status ? "active" : "inactive"
+                      }`}
+                    ></span>
+                    <p className="project-title ellipsis-1">
+                      {project.repo_name}
                     </p>
-                    {project.reload_at && (
-                      <>
-                        <span>/</span>
-                        <p className="update">
-                          마지막{" "}
-                          <span>{formatDate(project.reload_at, true)}</span>
-                        </p>
-                      </>
-                    )}
+
+                    {/* URL 부분만 별도 처리 */}
+                    <a
+                      className="project-url ellipsis-1"
+                      href={
+                        project.domain
+                          ? `https://${project.domain}.qw1k.cloud`
+                          : "#"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!project.domain) {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      {project.domain
+                        ? `${project.domain}.qw1k.cloud`
+                        : "배포 중..."}
+                    </a>
+
+                    <p
+                      className="version"
+                      data-full-text={formatCommitMessage(
+                        project.commit_message,
+                      )}
+                    >
+                      ver.{" "}
+                      <span>
+                        {formatCommitMessage(
+                          project.commit_message,
+                          project.reload_at,
+                        )}
+                      </span>
+                    </p>
+                    <div className="date-box">
+                      <p className="origin">
+                        최초 <span>{formatDate(project.created_at)}</span>
+                      </p>
+                      {project.reload_at && (
+                        <>
+                          <span>/</span>
+                          <p className="update">
+                            마지막{" "}
+                            <span>{formatDate(project.reload_at, true)}</span>
+                          </p>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
             {/* 프로젝트 추가 버튼 */}
             <div

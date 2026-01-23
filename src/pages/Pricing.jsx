@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Pricing.css";
 import { planList } from "../data/pricing/planList";
 
 const Pricing = () => {
+  const [isVisible, setIsVisible] = useState(true);
+
   // MB를 GB로 변환하는 함수
   const formatTraffic = (trafficMB) => {
     const trafficGB = trafficMB / 1000;
@@ -16,6 +18,10 @@ const Pricing = () => {
       ...plan,
     }))
     .sort((a, b) => a.sortId - b.sortId);
+
+  const handleClose = () => {
+    setIsVisible(false);
+  };
 
   // 혜택 목록 생성 함수
   const getBenefits = (plan) => {
@@ -32,7 +38,7 @@ const Pricing = () => {
 
     if (plan.extraBenefit?.traffic) {
       benefits.push(
-        `트래픽 ${formatTraffic(plan.extraBenefit.traffic)} 추가 1회 무료`
+        `트래픽 ${formatTraffic(plan.extraBenefit.traffic)} 추가 1회 무료`,
       );
     }
 
@@ -80,6 +86,24 @@ const Pricing = () => {
           ))}
         </div>
       </div>
+      {isVisible && (
+        <div className="modal-bg">
+          <div className="modal-popup pricing-notice-modal">
+            <div className="text-box">
+              <p>
+                현재 <span className="eng">QWiK</span>은 테스트 운영 중으로,
+              </p>
+              <p>STARTER 요금제로만 이용 가능합니다.</p>
+              <p>요금제 변경이 어려운 점, 양해 바랍니다.</p>
+            </div>
+            <div className="btn-box close-btn-box">
+              <button className="accent" onClick={handleClose}>
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

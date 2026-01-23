@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Deploy.css";
 import client from "../api/client";
 import ProgressBar from "../components/ProgressBar";
+import Tooltip from "../components/Tooltip";
 
 const Deploy = () => {
   const [step, setStep] = useState(1); // 1: 입력, 2: 진행, 3: 완료
@@ -48,6 +49,18 @@ const Deploy = () => {
     };
   }, [deploymentId, deployStatus, domain, domainReady]);
 
+  // 툴팁
+  const FrameworkList = () => (
+    <div className="framework-list">
+      <div className="tooltip-header">
+        <p>정적 사이트 (HTML, CSS, JS),</p>
+        <p>Vite 기반 (React, Vue, Svelte),</p>
+        <p>Create React App (CRA),</p>
+        <p>Vue CLI 프로젝트</p>
+      </div>
+    </div>
+  );
+
   // 배포 시작
   const handleDeploy = async () => {
     if (!repositoryUrl.trim()) {
@@ -69,12 +82,6 @@ const Deploy = () => {
       setDomain(domain);
       setProjectId(project_id);
       setCurrentPhase(2);
-
-      // 로더 카드
-      // localStorage.setItem("deploying", "true");
-      // localStorage.setItem("deploy_started_at", Date.now().toString());
-      // localStorage.setItem("deploying_project_id", project_id);
-      // localStorage.setItem("current_deployment_id", deployment_id);
 
       // 1초 후 Phase 3으로 이동 (실제 폴링 시작)
       setTimeout(() => {
@@ -197,6 +204,18 @@ const Deploy = () => {
       <div className="wrap">
         {/* 입력 영역 */}
         <div className="input-container">
+          <Tooltip
+            content={<FrameworkList />}
+            position="top"
+            trigger="click"
+            className="framework-tooltip"
+            disabled={false}
+          >
+            <p className="notice-framework">
+              <i className="fa-solid fa-circle-info"></i> 배포 가능한 프레임워크
+              확인하기 <span className="click eng">CLICK!</span>
+            </p>
+          </Tooltip>
           <div className="input-box">
             <input
               type="text"
