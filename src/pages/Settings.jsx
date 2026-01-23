@@ -29,10 +29,8 @@ const Setting = () => {
     const year = date.getFullYear().toString().slice(-2);
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
 
-    return `${year}.${month}.${day} ${hours}:${minutes}`;
+    return `${year}.${month}.${day}`;
   };
 
   // 가장 최근 날짜 찾기
@@ -87,7 +85,9 @@ const Setting = () => {
                     <span className="update-date eng">
                       {formatDate(item.created_at)}
                     </span>
-                    <span className="update-type eng">{item.status}</span>
+                    <span className={`update-type eng ${item.status}`}>
+                      {item.status}
+                    </span>
                     <span className="repo-name eng">{item.repo_name}</span>
                     <span className="udpate-content ellipsis-1">
                       {item.commit_message}
