@@ -8,6 +8,18 @@
   transition: 0.3s ease-in-out;
 }
 
+.deploy-section .input-container .notice-framework {
+  margin-bottom: 10px;
+  cursor: help;
+}
+
+.deploy-section .input-container .notice-framework .click {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--accent-color);
+  line-height: 2rem;
+}
+
 .deploy-section .input-container .input-box {
   display: flex;
   gap: 10px;
@@ -87,6 +99,17 @@
 
 .deploy-section.step-3 .result-container {
   opacity: 1;
+}
+
+/* tooltip */
+
+.deploy-section .input-contaiainer .tooltip-wrapper {
+  position: relative;
+}
+
+.deploy-section .tooltip-wrapper .tooltip-content {
+  top: -400%;
+  left: 0;
 }
 
 @media (max-width: 475px) {

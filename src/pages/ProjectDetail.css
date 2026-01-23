@@ -234,6 +234,7 @@
 /* domain loader modal */
 .domain-loading-modal {
   width: 300px;
+  text-align: center;
 }
 
 /* reload progress bar modal */

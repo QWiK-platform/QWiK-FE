@@ -511,7 +511,12 @@ const ProjectDetail = () => {
           </div>
           <div className="traffic-container">
             <div className="text-box">
-              <p className="title">트래픽 사용량</p>
+              <div className="title-box">
+                <p className="title">트래픽 사용량</p>
+                <Tooltip content="트래픽은 현재 제공되지 않습니다.">
+                  <i className="fa-solid fa-circle-info"></i>
+                </Tooltip>
+              </div>
               <p className="usage eng">
                 <span className="used">{projectData.traffic_used || 0}</span>/
                 <span className="total">2GB</span>
