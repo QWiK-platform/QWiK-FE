@@ -493,10 +493,8 @@ const ProjectDetail = () => {
             <div className="text-box">
               <p className="title">스토리지 사용량</p>
               <p className="usage eng">
-                <span className="used">
-                  {projectData.usage?.storage_used || 0}
-                </span>
-                /<span className="total">200MB</span>
+                <span className="used">{projectData.storage_used || 0}</span>/
+                <span className="total">200MB</span>
               </p>
             </div>
             <div className="bar-box">
@@ -504,7 +502,7 @@ const ProjectDetail = () => {
                 className="fill-bar"
                 style={{
                   width: `${Math.min(
-                    ((projectData.usage?.storage_used || 0) / 200) * 100,
+                    ((projectData.storage_used || 0) / 200) * 100,
                     100,
                   )}%`,
                 }}
@@ -515,10 +513,8 @@ const ProjectDetail = () => {
             <div className="text-box">
               <p className="title">트래픽 사용량</p>
               <p className="usage eng">
-                <span className="used">
-                  {projectData.usage?.traffic_used || 0}
-                </span>
-                /<span className="total">2GB</span>
+                <span className="used">{projectData.traffic_used || 0}</span>/
+                <span className="total">2GB</span>
               </p>
             </div>
             <div className="bar-box">
@@ -526,7 +522,7 @@ const ProjectDetail = () => {
                 className="fill-bar"
                 style={{
                   width: `${Math.min(
-                    ((projectData.usage?.traffic_used || 0) / 2048) * 100,
+                    ((projectData.traffic_used || 0) / 2048) * 100,
                     100,
                   )}%`,
                 }}
