@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import client from "../api/client";
 import "./ProjectDetail.css";
 import Loader from "../components/Loader";
 import ProgressBar from "../components/ProgressBar";
+import Tooltip from "../components/Tooltip";
 import exceptDomainSet from "../data/domain/exceptDomainSet";
 
 const ProjectDetail = () => {
