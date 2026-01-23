@@ -43,17 +43,22 @@
   border-radius: 8px;
 }
 
-.my-page-section .history-box {
+.my-page-section .history-item {
   display: flex;
   gap: 10px;
   align-items: center;
+  margin-bottom: 5px;
 }
 
-.my-page-section .history-box .eng {
+.my-page-section .history-item:last-child {
+  margin-bottom: 0;
+}
+
+.my-page-section .history-item .eng {
   letter-spacing: -1px;
 }
 
-.my-page-section .history-box .update-type {
+.my-page-section .history-item .update-type {
   font-size: 1.4rem;
   padding: 3px 8px;
   border-radius: 12px;
