@@ -1,0 +1,32 @@
+.error-page .error-content {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  width: 345px;
+  word-break: keep-all;
+  text-align: center;
+}
+
+.error-page .error-icon {
+  color: var(--warning);
+  font-size: 3rem;
+}
+
+.error-page h4 {
+  font-weight: bold;
+  font-size: 2rem;
+  line-height: 2;
+}
+
+.error-page .error-content p {
+  margin-top: 10px;
+}
+
+.error-page .btn-box {
+  margin-top: 50px;
+}
+
+.error-page .btn-box .accent {
+  padding: 10px 20px;
+  border-radius: 16px;
+}
