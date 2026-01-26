@@ -55,7 +55,7 @@
 .pricing-section .plan-box .explanation-box {
   padding: 30px 0;
   line-height: 1.5;
-  word-break: keep-all;
+  word-break: auto-phrase;
   height: 72px;
   box-sizing: content-box;
   border-bottom: solid 1px #afafaf;
@@ -86,4 +86,24 @@
 
 .pricing-section .pricing-notice-modal .btn-box {
   margin-top: 20px;
+}
+
+@media (max-width: 1200px) {
+  .pricing-section .plan-box .explanation-box {
+    padding: 20px 0 40px;
+  }
+}
+
+@media (max-width: 880px) {
+  .pricing-section .plan-container {
+    flex-direction: column;
+  }
+  .pricing-section .plan-box .explanation-box {
+    padding: 20px 0;
+    height: auto;
+  }
+
+  .pricing-section .plan-box .benefit-container {
+    height: auto;
+  }
 }
