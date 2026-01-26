@@ -47,11 +47,11 @@
 }
 
 .project-detail-section .status.active {
-  background-color: #23a038;
+  background-color: var(--success);
 }
 
 .project-detail-section .status.inactive {
-  background-color: #ff1818;
+  background-color: var(--warning);
 }
 
 .project-detail-section .toggle-box:hover {

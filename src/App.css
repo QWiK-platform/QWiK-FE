@@ -10,6 +10,8 @@
   --text-color: #5c4f46;
   --bg-color: #fdf9f5;
   --bg-sub-color: #e2dad1;
+  --warning: #ff1818;
+  --success: #23a038;
   --wrap: 1200px;
 }
 
@@ -74,7 +76,7 @@ pre {
 
 .error-message {
   font-size: 1.4rem;
-  color: red;
+  color: var(--warning);
   text-indent: 1rem;
   margin-top: 5px;
 }

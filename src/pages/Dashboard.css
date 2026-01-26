@@ -106,11 +106,11 @@
 }
 
 .status.active {
-  background-color: #23a038;
+  background-color: var(--success);
 }
 
 .status.inactive {
-  background-color: #ff1818;
+  background-color: var(--warning);
 }
 
 .dashboard-section .project-box .project-title {
