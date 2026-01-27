@@ -85,6 +85,8 @@ const AuthCallback = ({ setIsLoggedIn }) => {
           console.error("에러 확인됨", error);
           navigate("/");
         }
+      } else {
+        navigate("/");
       }
     };
 
