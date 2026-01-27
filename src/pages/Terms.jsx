@@ -43,7 +43,6 @@ function getUpdatedTerms(userTermsDate) {
     }
   });
 
-  console.log("업데이트된 약관들:", updatedTerms);
   return updatedTerms;
 }
 

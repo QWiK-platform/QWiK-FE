@@ -127,8 +127,6 @@ const ProjectDetail = () => {
 
   // 도메인 준비 상태 폴링
   const startDomainPolling = (domain) => {
-    console.log("도메인 준비 상태 폴링 시작:", `${domain}.qw1k.cloud`);
-
     const interval = setInterval(async () => {
       try {
         const response = await fetch(`https://${domain}.qw1k.cloud`, {
@@ -196,9 +194,7 @@ const ProjectDetail = () => {
     }
 
     try {
-      console.log("project id to delete", projectId);
       const response = await client.delete(`/projects/${projectId}`);
-      console.log("deletion complete", response.data);
       navigate("/dashboard");
     } catch (error) {
       console.error("delete error", error);
@@ -218,7 +214,6 @@ const ProjectDetail = () => {
 
   // 수정된 리로드 처리 함수
   const handleReloadProject = async () => {
-    console.log("start reloading");
     const confirmReload = window.confirm(
       `${projectData.repo_name} 레포지토리의 최신 내용으로 다시 배포하시겠습니까?`,
     );
@@ -235,14 +230,11 @@ const ProjectDetail = () => {
         projectData.username,
         projectData.repo_name,
       );
-      console.log("재배포 시작:", repoUrl);
 
       // Phase 1: API 전송
       const response = await client.post("/deploy", {
         repo_url: repoUrl,
       });
-
-      console.log("재배포 API 답:", response.data);
 
       // ✅ 핵심: deployment_id 저장!
       const { deployment_id } = response.data;
@@ -266,8 +258,6 @@ const ProjectDetail = () => {
 
   // 폴링 함수
   const startReloadStatusPolling = (deploymentId) => {
-    console.log("🔄 재배포 상태 폴링 시작:", deploymentId);
-
     const interval = setInterval(async () => {
       try {
         const response = await client.get(
@@ -276,14 +266,11 @@ const ProjectDetail = () => {
         const status = response.data.status;
 
         setReloadDeployStatus(status);
-        console.log("📊 재배포 상태:", status);
 
         if (status === "Success") {
-          console.log("🎉 재배포 완료!");
           clearInterval(interval);
           startReloadDomainCheck();
         } else if (status === "Failed") {
-          console.log("❌ 재배포 실패");
           clearInterval(interval);
           setReloadModalOpen(false);
           setIsReloading(false);
