@@ -53,6 +53,9 @@ const Deploy = () => {
   const FrameworkList = () => (
     <div className="framework-list">
       <div className="tooltip-header">
+        <p>
+          <strong>index.html 파일이 있어야 합니다.</strong>
+        </p>
         <p>정적 사이트 (HTML, CSS, JS),</p>
         <p>Vite 기반 (React, Vue, Svelte),</p>
         <p>Create React App (CRA),</p>
@@ -95,9 +98,7 @@ const Deploy = () => {
       localStorage.removeItem("deploying_project_id");
       localStorage.removeItem("current_deployment_id");
 
-      setErrorMessage(
-        error.response?.data?.message || "배포 시작에 실패했습니다.",
-      );
+      setErrorMessage(error.response?.data?.message || "배포에 실패했습니다.");
       setStep(3);
       setDeployStatus("Failed");
     }
@@ -144,7 +145,6 @@ const Deploy = () => {
 
       // 1분 초과 시 종료
       if (elapsedTime >= maxDuration) {
-        console.log("⏰ 도메인 체크 1분 타임아웃 - 완료 처리");
         clearInterval(intervalId);
         setDomainReady(true);
         return;
@@ -158,7 +158,6 @@ const Deploy = () => {
         });
 
         if (response.status === 200) {
-          console.log("✅ 도메인 준비 완료!");
           clearInterval(intervalId);
           setDomainReady(true);
           return;
@@ -286,8 +285,7 @@ const Deploy = () => {
         {step === 3 && deployStatus === "Failed" && (
           <div className="result-container failure">
             <div className="text-box">
-              <p className="error-message title-text">배포에 실패했습니다</p>
-              <p>{errorMessage}</p>
+              <p className="error-message title-text">{errorMessage}</p>
               <p>다시 시도해주세요.</p>
             </div>
             <div className="btn-box">
@@ -296,6 +294,14 @@ const Deploy = () => {
                 onClick={() => window.location.reload()}
               >
                 다시 시도
+              </button>
+              <button
+                className="move-to-detail accent"
+                onClick={() => {
+                  window.location.href = `/project/${projectId}`;
+                }}
+              >
+                상세페이지로 이동
               </button>
             </div>
           </div>

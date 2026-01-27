@@ -25,26 +25,14 @@ const Dashboard = () => {
     if (isDeploying && deployStartTime) {
       const elapsed = Date.now() - parseInt(deployStartTime);
 
-      console.log(
-        "배포 진행 중 감지, 경과 시간:",
-        Math.round(elapsed / 1000) + "초",
-      );
-
       if (elapsed < 45000) {
         setShowDeployLoader(true);
         const remainingTime = 45000 - elapsed;
 
-        console.log(
-          "로더 카드 표시 중,",
-          Math.round(remainingTime / 1000) + "초 후 폴링 시작",
-        );
-
         setTimeout(() => {
-          console.log("🔄 45초 경과, 프로젝트 개별 폴링 시작");
           startProjectPolling();
         }, remainingTime);
       } else {
-        console.log("🔄 45초 이미 경과, 즉시 프로젝트 개별 폴링 시작");
         setShowDeployLoader(true);
         startProjectPolling();
       }
@@ -60,14 +48,11 @@ const Dashboard = () => {
 
     setDeployPollingActive(true);
     const deployingProjectId = localStorage.getItem("deploying_project_id");
-    console.log("📊 프로젝트 개별 폴링 시작:", deployingProjectId);
 
     const interval = setInterval(async () => {
       try {
         const response = await client.get(`/dashboard/${deployingProjectId}`);
         const projectData = response.data;
-
-        console.log("프로젝트 상태:", projectData);
 
         // domain이 null이 아닐 때까지 계속 폴링
         if (
@@ -75,7 +60,6 @@ const Dashboard = () => {
           projectData.domain !== undefined &&
           projectData.domain !== ""
         ) {
-          console.log("🎉 프로젝트 배포 완료:", projectData.domain);
           clearInterval(interval);
           setShowDeployLoader(false);
           setDeployPollingActive(false);
@@ -87,7 +71,6 @@ const Dashboard = () => {
           // 전체 Dashboard 새로고침
           fetchDashboard();
         } else {
-          console.log("프로젝트 domain null 상태");
         }
       } catch (error) {
         console.error("프로젝트 폴링 에러:", error);
@@ -105,7 +88,6 @@ const Dashboard = () => {
     setTimeout(() => {
       clearInterval(interval);
       setDeployPollingActive(false);
-      console.log("⏰ 프로젝트 폴링 타임아웃 (10분)");
       if (showDeployLoader) {
         setShowDeployLoader(false);
         localStorage.removeItem("deploying");

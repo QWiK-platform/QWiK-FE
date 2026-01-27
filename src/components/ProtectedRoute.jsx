@@ -48,7 +48,6 @@ function getUpdatedTerms(userTermsDate) {
     }
   });
 
-  console.log("업데이트된 약관들:", updatedTerms);
   return updatedTerms;
 }
 
@@ -61,11 +60,6 @@ const ProtectedRoute = ({ children }) => {
       try {
         const response = await client.get("/user");
         const updatedTerms = getUpdatedTerms(response.data.terms);
-
-        console.log("🔍 약관 체크:", {
-          userTermsDate: response.data.terms,
-          updatedTermsCount: updatedTerms.length,
-        });
 
         setTermsValid(updatedTerms.length === 0);
       } catch (error) {
